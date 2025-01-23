@@ -111,7 +111,7 @@ body {
 /* Cabeçalho */
 .home-header {
   background: url('https://source.unsplash.com/1600x900/?library,books') no-repeat center center/cover;
-  height: 100vh;
+  height: 80vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -199,7 +199,7 @@ body {
 }
 
 .intro-image img {
-  max-width: 100%;
+  max-width: 98%;
   border-radius: 10px;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
   transition: transform 0.3s ease;

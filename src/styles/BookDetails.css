@@ -1,0 +1,32 @@
+.book-details-container {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  .back-button {
+    margin-bottom: 1rem;
+    padding: 0.5rem 1rem;
+    border: none;
+    background-color: #4a90e2;
+    color: #fff;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  
+  .book-details-content {
+    display: flex;
+    gap: 2rem;
+  }
+  
+  .book-details-image img {
+    width: 300px;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  }
+  
+  .book-details-info {
+    flex: 1;
+  }
+  

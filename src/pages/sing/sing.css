@@ -1,0 +1,145 @@
+Estilos Globais
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Roboto', sans-serif;
+}
+
+/* Corpo da Página */
+
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* Contêiner de Formulário (Login e Registro) */
+.auth-box {
+  background-color: #fff;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Títulos */
+.auth-box h2 {
+  font-size: 28px;
+  color: #333;
+  margin-bottom: 20px;
+  font-weight: 700;
+}
+
+/* Formulário */
+.auth-box form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.auth-box input {
+  padding: 12px 18px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+  color: #333;
+  transition: all 0.3s ease;
+}
+
+.auth-box input:focus {
+  border-color: #ff7a00;
+  outline: none;
+  box-shadow: 0 0 10px rgba(255, 122, 0, 0.5);
+}
+
+.auth-box button {
+  padding: 12px;
+  border: none;
+  background-color: #ff7a00;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.auth-box button:hover {
+  background-color: #ff5722;
+}
+
+.auth-box button:active {
+  background-color: #e64a19;
+}
+
+/* Links */
+.auth-box p {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #777;
+}
+
+.auth-box a {
+  color: #ff7a00;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.auth-box a:hover {
+  color: #ff5722;
+}
+
+/* Mensagem de Erro */
+.auth-box .error {
+  color: red;
+  font-size: 14px;
+  margin-top: -10px;
+}
+
+/* Efeitos de Animação */
+.auth-box {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.auth-box:hover {
+  transform: translateY(-10px);
+  opacity: 0.9;
+}
+
+.auth-container {
+  animation: fadeIn 0.6s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+      opacity: 0;
+      transform: scale(0.8);
+  }
+  to {
+      opacity: 1;
+      transform: scale(1);
+  }
+}
+
+/* Estilos para Dispositivos Móveis */
+@media (max-width: 600px) {
+
+  .auth-box {
+      padding: 30px;
+      width: 90%;
+  }
+
+  .auth-box h2 {
+      font-size: 24px;
+  }
+
+  .auth-box input, .auth-box button {
+      font-size: 14px;
+  }
+}

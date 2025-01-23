@@ -1,37 +1,44 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import Login from "./pages/sing/Login";
+import Register from "./pages/sing/Register";
 import Home from './pages/Home';
 import Books from './pages/Books';
 import Users from './pages/Users';
 import SearchBooks from './pages/SearchBooks';
+import BookDetails from './pages/BookDetails';
+import Navbar from './components/Navbar';  // Importa a Navbar
 import './styles/global.css';
 
 function App() {
   return (
     <Router>
       <div>
-        {/* Navbar estilizada */}
-        <nav className="navbar">
-          <div className="navbar-container">
-            <h1 className="logo">📚 Biblioteca Virtual</h1>
-            <ul className="nav-links">
-              <li><Link to="/">Home</Link></li>
-              <li><Link to="/books">Livros</Link></li>
-              <li><Link to="/users">Usuários</Link></li>
-              <li><Link to="/search">Pesquisar Livros</Link></li> {/* Novo link */}
-            </ul>
-          </div>
-        </nav>
-
-        {/* Conteúdo das páginas */}
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/books" element={<Books />} />
-          <Route path="/users" element={<Users />} />
-          <Route path="/search" element={<SearchBooks />} /> {/* Nova rota */}
+          <Route path="*" element={<Layout />} />
         </Routes>
       </div>
     </Router>
+  );
+}
+
+function Layout() {
+  const location = useLocation();
+  const hideNavbar = location.pathname === "/register" || location.pathname === "/"; // Não renderiza a Navbar nessas rotas
+
+  return (
+    <div>
+      {!hideNavbar && <Navbar />}  {/* Renderiza a Navbar condicionalmente */}
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/home" element={<Home />} />
+        <Route path="/books" element={<Books />} />
+        <Route path="/users" element={<Users />} />
+        <Route path="/search" element={<SearchBooks />} /> 
+        <Route path="/book/:id" element={<BookDetails />} />
+      </Routes>
+    </div>
   );
 }
 
