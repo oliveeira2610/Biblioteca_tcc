@@ -1,0 +1,111 @@
+/* Container principal */
+.search-books-container {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Título da página */
+  h4 {
+    text-align: center;
+    color: #4a90e2;
+    margin-bottom: 1rem;
+  }
+  
+  /* Formulário de busca */
+  .search-form {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 2rem;
+  }
+  
+  .search-input {
+    width: 70%;
+    padding: 0.8rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  .search-button {
+    padding: 0.8rem 1.5rem;
+    font-size: 1rem;
+    color: #fff;
+    background-color: #4a90e2;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 0.5rem;
+  }
+  
+  .search-button:hover {
+    background-color: #357ab7;
+  }
+  
+  /* Lista de livros */
+  .books-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  /* Card principal */
+  .book-card {
+    display: flex;
+    align-items: flex-start;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  .book-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  /* Imagem do livro */
+  .book-card-image img {
+    width: 150px;
+    height: auto;
+    object-fit: cover;
+  }
+  
+  .no-image-placeholder {
+    width: 150px;
+    height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #ddd;
+    color: #555;
+    font-size: 0.9rem;
+    border-radius: 8px;
+  }
+  
+  /* Informações do livro */
+  .book-card-info {
+    padding: 1rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .book-card-info h2 {
+    color: #333;
+    margin-bottom: 0.5rem;
+    font-size: 1.25rem;
+  }
+  
+  .book-card-info p {
+    margin: 0;
+    color: #555;
+    line-height: 1.5;
+  }
+  
+  .book-card-info strong {
+    color: #333;
+  }
+  
