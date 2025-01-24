@@ -32,7 +32,7 @@ const Register = () => {
         <form onSubmit={handleRegister}>
         <input
             type="userName"
-            placeholder="Digite seu nome completo"
+            placeholder="Digite seu nome ou ID de administrador"
             value={userName}
             onChange={(e) => setUserName(e.target.value)}
             required
