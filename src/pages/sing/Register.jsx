@@ -5,9 +5,13 @@ import { useNavigate } from "react-router-dom";
 import './sing.css';
 
 const Register = () => {
+  const [userName, setUserName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [cpf, setCPF] = useState("");
   const [error, setError] = useState("");
+  const [telefone, setTelefone] = useState("");
   const navigate = useNavigate();
 
   const handleRegister = async (e) => {
@@ -26,11 +30,32 @@ const Register = () => {
       <h1 className="logo">📚 Biblioteca Virtual</h1>
         <h2>Cadastre-se!</h2>
         <form onSubmit={handleRegister}>
+        <input
+            type="userName"
+            placeholder="Digite seu nome completo"
+            value={userName}
+            onChange={(e) => setUserName(e.target.value)}
+            required
+          />
           <input
             type="email"
             placeholder="Digite seu email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <input
+            type="cpf"
+            placeholder="Digite seu CPF"
+            value={cpf}
+            onChange={(e) => setCPF(e.target.value)}
+            required
+          />
+          <input
+            type="telefone"
+            placeholder="Digite seu telefone"
+            value={telefone}
+            onChange={(e) => setTelefone(e.target.value)}
             required
           />
           <input
@@ -40,6 +65,14 @@ const Register = () => {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
+          <input
+            type="Password"
+            placeholder="Confirme sua senha"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            required
+          />
+    
           {error && <p className="error">{error}</p>}
           <button type="submit">Cadastrar</button>
           <p>
