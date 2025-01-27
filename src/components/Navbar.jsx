@@ -18,6 +18,12 @@ const Navbar = () => {
             <Link to="/users">Usuários</Link>
           </li>
           <li>
+            <Link to="/addBooks">Adcionar livros</Link>
+          </li>
+          <li>
+            <Link to="/manageBooks">Livros Adcionados</Link>
+          </li>
+          <li>
             <Link to="/search">Pesquisar Livros</Link>
           </li>{" "}
           {/* Novo link */}

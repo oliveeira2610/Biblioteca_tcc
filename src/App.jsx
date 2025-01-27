@@ -7,6 +7,8 @@ import Books from './pages/Books';
 import Users from './pages/Users';
 import SearchBooks from './pages/SearchBooks';
 import BookDetails from './pages/BookDetails';
+import AddBooks from './pages/AddBooks';
+import ManageBooks from './pages/ManageBooks';
 import Navbar from './components/Navbar';  // Importa a Navbar
 import './styles/global.css';
 
@@ -36,6 +38,8 @@ function Layout() {
         <Route path="/books" element={<Books />} />
         <Route path="/users" element={<Users />} />
         <Route path="/search" element={<SearchBooks />} /> 
+        <Route path="/addBooks" element={<AddBooks />} /> 
+        <Route path="/manageBooks" element={<ManageBooks />} /> 
         <Route path="/book/:id" element={<BookDetails />} />
       </Routes>
     </div>

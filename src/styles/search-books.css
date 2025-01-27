@@ -90,3 +90,21 @@
     background-color: #d32f2f; /* Tom de vermelho mais escuro */
   }
   
+
+  .status-message {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #f0f0f0;
+    border-radius: 5px;
+    text-align: center;
+    font-weight: bold;
+  }
+  
+  .status-message.success {
+    color: green;
+  }
+  
+  .status-message.error {
+    color: red;
+  }
+  
