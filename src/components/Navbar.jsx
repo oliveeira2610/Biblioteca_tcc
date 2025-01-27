@@ -21,7 +21,7 @@ const Navbar = () => {
             <Link to="/addBooks">Adcionar livros</Link>
           </li>
           <li>
-            <Link to="/manageBooks">Livros Adcionados</Link>
+            <Link to="/manage-database-books">Livros Adcionados</Link>
           </li>
           <li>
             <Link to="/search">Pesquisar Livros</Link>

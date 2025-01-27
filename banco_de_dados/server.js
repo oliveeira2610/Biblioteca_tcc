@@ -18,7 +18,7 @@ const db = new sqlite3.Database('./bibliotecaVirtual.db', (err) => {
   }
 });
 
-// Criar tabela "livros" caso não exista (Descomente isso)
+// Criar tabela "livros" caso não exista
 db.run(`
   CREATE TABLE IF NOT EXISTS livros (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -38,27 +38,49 @@ db.run(`
 });
 
 // Endpoint para adicionar um livro
-app.post('/livros', (req, res) => {
-  const { nome_do_livro, genero, autor, editora, sinopse, status } = req.body;
+// app.post('/livros', (req, res) => {
+//   const { nome_do_livro, genero, autor, editora, sinopse, status } = req.body;
 
-  // Log para depuração
-  console.log('Dados recebidos para adicionar livro:', req.body);
+//   if (!nome_do_livro || !genero || !autor || !editora || !status) {
+//     return res.status(400).json({ error: 'Todos os campos obrigatórios devem ser preenchidos.' });
+//   }
+
+//   const query = `INSERT INTO livros (nome_do_livro, genero, autor, editora, sinopse, status) VALUES (?, ?, ?, ?, ?, ?)`;
+//   const params = [nome_do_livro, genero, autor, editora, sinopse, status];
+
+//   db.run(query, params, function (err) {
+//     if (err) {
+//       console.error('Erro ao adicionar livro:', err.message);
+//       return res.status(500).json({ error: 'Erro ao adicionar o livro.' });
+//     }
+
+//     res.status(201).json({
+//       id: this.lastID,
+//       nome_do_livro,
+//       genero,
+//       autor,
+//       editora,
+//       sinopse,
+//       status,
+//     });
+//   });
+// });
+
+app.post('/livros', (req, res) => {
+  const { nome_do_livro, genero, autor, editora, sinopse, status, imagem } = req.body;
 
   if (!nome_do_livro || !genero || !autor || !editora || !status) {
     return res.status(400).json({ error: 'Todos os campos obrigatórios devem ser preenchidos.' });
   }
 
-  const query = `INSERT INTO livros (nome_do_livro, genero, autor, editora, sinopse, status) VALUES (?, ?, ?, ?, ?, ?)`;
-  const params = [nome_do_livro, genero, autor, editora, sinopse, status];
+  const query = `INSERT INTO livros (nome_do_livro, genero, autor, editora, sinopse, status, imagem) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+  const params = [nome_do_livro, genero, autor, editora, sinopse, status, imagem];
 
   db.run(query, params, function (err) {
     if (err) {
       console.error('Erro ao adicionar livro:', err.message);
       return res.status(500).json({ error: 'Erro ao adicionar o livro.' });
     }
-
-    // Log para depuração
-    console.log(`Livro adicionado com sucesso! ID: ${this.lastID}`);
 
     res.status(201).json({
       id: this.lastID,
@@ -68,7 +90,58 @@ app.post('/livros', (req, res) => {
       editora,
       sinopse,
       status,
+      imagem,
     });
+  });
+});
+
+
+// Endpoint para buscar um livro pelo ID
+app.get('/livros/:id', (req, res) => {
+  const { id } = req.params;
+  const query = `SELECT * FROM livros WHERE id = ?`;
+
+  db.get(query, [id], (err, row) => {
+    if (err) {
+      console.error('Erro ao buscar livro:', err.message);
+      return res.status(500).json({ error: 'Erro ao buscar o livro.' });
+    }
+
+    if (!row) {
+      return res.status(404).json({ error: 'Livro não encontrado.' });
+    }
+
+    res.status(200).json(row);
+  });
+});
+
+// app.get('/livros', (req, res) => {
+//   const query = `SELECT * FROM livros`;
+
+//   db.all(query, [], (err, rows) => {
+//     if (err) {
+//       console.error('Erro ao buscar livros:', err.message);
+//       return res.status(500).json({ error: 'Erro ao buscar os livros.' });
+//     }
+
+//     res.status(200).json(rows);
+//   });
+// });
+
+
+// Endpoint para atualizar o status do livro
+app.put('/livros/:id', (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+
+  const query = `UPDATE livros SET status = ? WHERE id = ?`;
+  db.run(query, [status, id], function (err) {
+    if (err) {
+      console.error('Erro ao atualizar status:', err.message);
+      return res.status(500).json({ error: 'Erro ao atualizar status.' });
+    }
+
+    res.status(200).json({ message: 'Status atualizado com sucesso!' });
   });
 });
 

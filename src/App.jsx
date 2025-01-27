@@ -8,7 +8,8 @@ import Users from './pages/Users';
 import SearchBooks from './pages/SearchBooks';
 import BookDetails from './pages/BookDetails';
 import AddBooks from './pages/AddBooks';
-import ManageBooks from './pages/ManageBooks';
+import ManageDatabaseBooks from './pages/ManageDatabaseBooks';
+import EditBook from './pages/EditBook';
 import Navbar from './components/Navbar';  // Importa a Navbar
 import './styles/global.css';
 
@@ -39,8 +40,9 @@ function Layout() {
         <Route path="/users" element={<Users />} />
         <Route path="/search" element={<SearchBooks />} /> 
         <Route path="/addBooks" element={<AddBooks />} /> 
-        <Route path="/manageBooks" element={<ManageBooks />} /> 
         <Route path="/book/:id" element={<BookDetails />} />
+        <Route path="/manage-database-books" element={<ManageDatabaseBooks />} />
+        <Route path="/edit-book/:bookId" element={<EditBook />} />
       </Routes>
     </div>
   );
