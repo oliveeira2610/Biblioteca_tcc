@@ -11,7 +11,7 @@ function AddBooks() {
     setLoading(true);
     try {
       const response = await fetch(
-        `https://www.googleapis.com/books/v1/volumes?q=${searchQuery}&maxResults=10`
+        `https://www.googleapis.com/books/v1/volumes?q=${searchQuery}&maxResults=40`
       );
       const data = await response.json();
       if (data.items) {

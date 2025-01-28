@@ -12,14 +12,20 @@ function ManageDatabaseBooks() {
     setLoading(true);
     try {
       const response = await fetch('http://localhost:3001/livros');
+      
+      if (!response.ok) {
+        throw new Error('Erro ao buscar livros: ' + response.statusText);
+      }
+      
       const data = await response.json();
       setBooks(data);
     } catch (error) {
-      console.error('Erro ao buscar livros:', error);
+      console.error(error);
     } finally {
       setLoading(false);
     }
   };
+  
 
   // Função para navegar para a tela de edição de disponibilidade
   const handleCardClick = (bookId) => {

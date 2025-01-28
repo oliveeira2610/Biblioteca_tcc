@@ -38,43 +38,15 @@ db.run(`
 });
 
 // Endpoint para adicionar um livro
-// app.post('/livros', (req, res) => {
-//   const { nome_do_livro, genero, autor, editora, sinopse, status } = req.body;
-
-//   if (!nome_do_livro || !genero || !autor || !editora || !status) {
-//     return res.status(400).json({ error: 'Todos os campos obrigatórios devem ser preenchidos.' });
-//   }
-
-//   const query = `INSERT INTO livros (nome_do_livro, genero, autor, editora, sinopse, status) VALUES (?, ?, ?, ?, ?, ?)`;
-//   const params = [nome_do_livro, genero, autor, editora, sinopse, status];
-
-//   db.run(query, params, function (err) {
-//     if (err) {
-//       console.error('Erro ao adicionar livro:', err.message);
-//       return res.status(500).json({ error: 'Erro ao adicionar o livro.' });
-//     }
-
-//     res.status(201).json({
-//       id: this.lastID,
-//       nome_do_livro,
-//       genero,
-//       autor,
-//       editora,
-//       sinopse,
-//       status,
-//     });
-//   });
-// });
-
 app.post('/livros', (req, res) => {
-  const { nome_do_livro, genero, autor, editora, sinopse, status, imagem } = req.body;
+  const { nome_do_livro, genero, autor, editora, sinopse, status } = req.body;
 
   if (!nome_do_livro || !genero || !autor || !editora || !status) {
     return res.status(400).json({ error: 'Todos os campos obrigatórios devem ser preenchidos.' });
   }
 
-  const query = `INSERT INTO livros (nome_do_livro, genero, autor, editora, sinopse, status, imagem) VALUES (?, ?, ?, ?, ?, ?, ?)`;
-  const params = [nome_do_livro, genero, autor, editora, sinopse, status, imagem];
+  const query = `INSERT INTO livros (nome_do_livro, genero, autor, editora, sinopse, status) VALUES (?, ?, ?, ?, ?, ?)`;
+  const params = [nome_do_livro, genero, autor, editora, sinopse, status];
 
   db.run(query, params, function (err) {
     if (err) {
@@ -90,12 +62,11 @@ app.post('/livros', (req, res) => {
       editora,
       sinopse,
       status,
-      imagem,
     });
   });
 });
 
-
+// Endpoint para buscar um livro pelo ID
 // Endpoint para buscar um livro pelo ID
 app.get('/livros/:id', (req, res) => {
   const { id } = req.params;
@@ -115,18 +86,21 @@ app.get('/livros/:id', (req, res) => {
   });
 });
 
-// app.get('/livros', (req, res) => {
-//   const query = `SELECT * FROM livros`;
 
-//   db.all(query, [], (err, rows) => {
-//     if (err) {
-//       console.error('Erro ao buscar livros:', err.message);
-//       return res.status(500).json({ error: 'Erro ao buscar os livros.' });
-//     }
+// Endpoint para buscar todos os livros
+app.get('/livros', (req, res) => {
+  const query = `SELECT * FROM livros`;
 
-//     res.status(200).json(rows);
-//   });
-// });
+  db.all(query, [], (err, rows) => {
+    if (err) {
+      console.error('Erro ao buscar livros:', err.message);
+      return res.status(500).json({ error: 'Erro ao buscar os livros.' });
+    }
+
+    res.status(200).json(rows);
+  });
+});
+
 
 
 // Endpoint para atualizar o status do livro
