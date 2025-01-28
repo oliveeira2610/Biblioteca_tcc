@@ -2,24 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import '../../src/styles/BookDetails.css';
 
-
-  
-
 function EditBook() {
   const { bookId } = useParams();
   const navigate = useNavigate();
   const [book, setBook] = useState(null);
   const [status, setStatus] = useState('');
 
-  // Função para buscar informações do livro pelo ID
   const fetchBook = async () => {
     try {
       const response = await fetch(`http://localhost:3001/livros/${bookId}`);
-  
       if (!response.ok) {
         throw new Error('Erro ao buscar o livro: ' + response.statusText);
       }
-  
       const data = await response.json();
       setBook(data);
       setStatus(data.status);
@@ -27,9 +21,7 @@ function EditBook() {
       console.error('Erro ao buscar o livro:', error);
     }
   };
-  
 
-  // Função para atualizar o status do livro
   const updateBookStatus = async () => {
     try {
       const response = await fetch(`http://localhost:3001/livros/${bookId}`, {
@@ -61,6 +53,12 @@ function EditBook() {
 
   return (
     <div className="edit-book-container">
+      <button
+        className="back-button"
+        onClick={() => navigate(-1)} // Volta à página anterior
+      >
+        ← Voltar
+      </button>
       <h1>✏️ Editar Livro</h1>
       <div className="book-details">
         {book.imagem ? (

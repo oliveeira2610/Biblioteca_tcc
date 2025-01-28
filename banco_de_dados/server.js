@@ -9,26 +9,29 @@ const PORT = 3001;
 app.use(cors());
 app.use(express.json());
 
-// Conectar ao banco SQLite
-const db = new sqlite3.Database('./bibliotecaVirtual.db', (err) => {
+
+// Criação e conexção do banco de dados
+const db = new sqlite3.Database('./books.db', (err) => {
   if (err) {
-    console.error('Erro ao conectar ao banco:', err.message);
+    console.error('Erro ao conectar ao banco de dados:', err.message);
   } else {
-    console.log('Conectado ao banco de dados.');
+    console.log('Banco de dados criado ou conectado com sucesso!');
   }
 });
 
 // Criar tabela "livros" caso não exista
 db.run(`
-  CREATE TABLE IF NOT EXISTS livros (
+    CREATE TABLE IF NOT EXISTS livros (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     nome_do_livro TEXT NOT NULL,
     genero TEXT NOT NULL,
     autor TEXT NOT NULL,
     editora TEXT NOT NULL,
     sinopse TEXT,
-    status TEXT CHECK(status IN ('disponivel', 'indisponivel', 'reservado')) NOT NULL
-  )
+    status TEXT NOT NULL,
+    imagem TEXT
+  );
+
 `, (err) => {
   if (err) {
     console.error('Erro ao criar a tabela livros:', err.message);
@@ -39,14 +42,14 @@ db.run(`
 
 // Endpoint para adicionar um livro
 app.post('/livros', (req, res) => {
-  const { nome_do_livro, genero, autor, editora, sinopse, status } = req.body;
+  const { nome_do_livro, genero, autor, editora, sinopse, status, imagem } = req.body;
 
   if (!nome_do_livro || !genero || !autor || !editora || !status) {
     return res.status(400).json({ error: 'Todos os campos obrigatórios devem ser preenchidos.' });
   }
 
-  const query = `INSERT INTO livros (nome_do_livro, genero, autor, editora, sinopse, status) VALUES (?, ?, ?, ?, ?, ?)`;
-  const params = [nome_do_livro, genero, autor, editora, sinopse, status];
+  const query = `INSERT INTO livros (nome_do_livro, genero, autor, editora, sinopse, status, imagem) VALUES (?, ?, ?, ?, ?, ?, ?)`;
+  const params = [nome_do_livro, genero, autor, editora, sinopse, status, imagem]; // Incluindo a URL da imagem
 
   db.run(query, params, function (err) {
     if (err) {
@@ -62,11 +65,12 @@ app.post('/livros', (req, res) => {
       editora,
       sinopse,
       status,
+      imagem, // Retornando a URL da imagem
     });
   });
 });
 
-// Endpoint para buscar um livro pelo ID
+
 // Endpoint para buscar um livro pelo ID
 app.get('/livros/:id', (req, res) => {
   const { id } = req.params;
@@ -101,7 +105,24 @@ app.get('/livros', (req, res) => {
   });
 });
 
+// Endpoint para deletar um livro pelo ID
+app.delete('/livros/:id', (req, res) => {
+  const { id } = req.params;
 
+  const query = `DELETE FROM livros WHERE id = ?`;
+  db.run(query, [id], function (err) {
+    if (err) {
+      console.error('Erro ao deletar livro:', err.message);
+      return res.status(500).json({ error: 'Erro ao deletar o livro.' });
+    }
+
+    if (this.changes === 0) {
+      return res.status(404).json({ error: 'Livro não encontrado.' });
+    }
+
+    res.status(200).json({ message: 'Livro deletado com sucesso!' });
+  });
+});
 
 // Endpoint para atualizar o status do livro
 app.put('/livros/:id', (req, res) => {

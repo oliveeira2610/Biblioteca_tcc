@@ -43,10 +43,11 @@ function AddBooks() {
       editora: volumeInfo.publisher || 'Editora desconhecida',
       sinopse: volumeInfo.description || 'Sem sinopse disponível',
       status: 'disponivel',
+      imagem: volumeInfo.imageLinks?.thumbnail || 'https://via.placeholder.com/150', // URL da imagem ou valor padrão
     };
-
+  
     console.log('Enviando dados para o servidor:', data);
-
+  
     try {
       const response = await fetch('http://localhost:3001/livros', {
         method: 'POST',
@@ -55,7 +56,7 @@ function AddBooks() {
         },
         body: JSON.stringify(data),
       });
-
+  
       if (response.ok) {
         setStatusMessage('Livro adicionado com sucesso!');
         console.log('Resposta da API:', await response.json());
@@ -69,6 +70,7 @@ function AddBooks() {
       setStatusMessage('Erro na comunicação com o servidor.');
     }
   };
+  
 
   return (
     <div className="search-books-container">
