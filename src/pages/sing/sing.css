@@ -96,7 +96,7 @@ Estilos Globais
 
 /* Mensagem de Erro */
 .auth-box .error {
-  color: red;
+  color: rgb(255, 0, 0);
   font-size: 14px;
   margin-top: -10px;
 }
