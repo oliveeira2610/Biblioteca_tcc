@@ -24,7 +24,7 @@ function ManageDatabaseBooks() {
   };
 
   const handleCardClick = (bookId) => {
-    navigate(`/book-status/${bookId}`);
+    navigate(`/bookStatus/${bookId}`);
   };
 
   useEffect(() => {

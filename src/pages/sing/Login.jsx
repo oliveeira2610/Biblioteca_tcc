@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import { signInWithEmailAndPassword } from "firebase/auth";
-// import { auth } from "./firebaseConfig";
 import { useNavigate } from "react-router-dom";
 import './sing.css';
 
@@ -12,18 +10,35 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setError(""); // Limpa erros anteriores
+  
     try {
-      await signInWithEmailAndPassword(auth, email, password);
-      navigate("/home");  // Redireciona para a página principal após login bem-sucedido
+      const response = await fetch("http://localhost:3001/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        // Salvar apenas o ID do usuário no localStorage
+        localStorage.setItem("userId", data.id);
+        navigate("/home"); // Redireciona após login bem-sucedido
+      } else {
+        setError(data.error || "Erro ao fazer login.");
+      }
     } catch (err) {
-      setError("Erro ao fazer login. Verifique suas credenciais.");
+      setError("Erro ao conectar com o servidor.");
     }
   };
 
   return (
     <div className="auth-container">
       <div className="auth-box">
-      <h1 className="logo">📚 Biblioteca Virtual</h1>
+        <h1 className="logo">📚 Biblioteca Virtual</h1>
         <h2>Faça seu Login!</h2>
         <form onSubmit={handleLogin}>
           <input
