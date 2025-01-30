@@ -40,7 +40,7 @@ const Register = () => {
   
       const data = await response.json();
       if (response.status === 201) {
-        navigate("/login");
+        navigate("/");
       } else {
         setError(data.error || "Erro ao salvar no banco de dados.");
       }

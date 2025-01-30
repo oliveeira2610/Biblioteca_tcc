@@ -478,3 +478,31 @@ app.get("/book-status/:id", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
+
+app.post('/usuarios', (req, res) => {
+  console.log("Recebendo dados:", req.body);
+  const { userName, email, password, confirmPassword, cpf, telefone } = req.body;
+  // Verifica se todos os campos obrigatórios foram preenchidos
+  if (!userName || !email || !password || !confirmPassword || !cpf || !telefone) {
+    return res.status(400).json({ error: "Todos os campos obrigatórios devem ser preenchidos." });
+  }
+  // Verifica se as senhas coincidem
+  if (password !== confirmPassword) {
+    return res.status(400).json({ error: "As senhas não coincidem." });
+  }
+  // Insere no banco de dados (REMOVENDO confirmPassword)
+  const query = `INSERT INTO usuarios (userName, email, password, cpf, telefone) VALUES (?, ?, ?, ?, ?)`;
+  db.run(query, [userName, email, password, cpf, telefone], function (err) {
+    if (err) {
+      console.error("Erro ao adicionar usuário:", err.message);
+      return res.status(500).json({ error: "Erro ao cadastrar usuário." });
+    }
+    res.status(201).json({
+      id: this.lastID,
+      userName,
+      email,
+      cpf,
+      telefone
+    });
+  });
+});

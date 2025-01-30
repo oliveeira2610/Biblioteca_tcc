@@ -13,6 +13,7 @@ import BookDescription from './pages/BookDescription';
 import BookStatus from './pages/BookStatus';
 import EditBook from './pages/EditBook';
 import Navbar from './components/Navbar';  // Importa a Navbar
+import BookCard from './components/BookCard'; 
 import './styles/global.css';
 
 function App() {
