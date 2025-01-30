@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import '../../src/styles/search-books.css';
 
 function AddBooks() {
@@ -7,26 +7,26 @@ function AddBooks() {
   const [loading, setLoading] = useState(false);
   const [statusMessage, setStatusMessage] = useState('');
 
+  // Função para buscar livros da API do Google
   const fetchBooks = async (searchQuery) => {
     setLoading(true);
+    setStatusMessage('');
+    
     try {
       const response = await fetch(
-        `https://www.googleapis.com/books/v1/volumes?q=${searchQuery}&maxResults=40`
+        `https://www.googleapis.com/books/v1/volumes?q=${searchQuery}&maxResults=10`
       );
       const data = await response.json();
-      if (data.items) {
-        setBooks(data.items);
-      } else {
-        setBooks([]);
-      }
+      setBooks(data.items || []);
     } catch (error) {
       console.error('Erro ao buscar livros:', error);
-      setBooks([]);
+      setStatusMessage('Erro ao buscar livros. Tente novamente.');
     } finally {
       setLoading(false);
     }
   };
 
+  // Função chamada ao enviar o formulário de pesquisa
   const handleSearch = (e) => {
     e.preventDefault();
     if (query.trim() !== '') {
@@ -34,6 +34,7 @@ function AddBooks() {
     }
   };
 
+  // Função para adicionar um livro ao banco de dados local
   const handleCardClick = async (book) => {
     const volumeInfo = book.volumeInfo;
     const data = {
@@ -42,35 +43,31 @@ function AddBooks() {
       autor: volumeInfo.authors ? volumeInfo.authors[0] : 'Autor desconhecido',
       editora: volumeInfo.publisher || 'Editora desconhecida',
       sinopse: volumeInfo.description || 'Sem sinopse disponível',
+      isbn: volumeInfo.industryIdentifiers ? volumeInfo.industryIdentifiers[0].identifier : 'Desconhecido',
+      ano_publicacao: volumeInfo.publishedDate ? parseInt(volumeInfo.publishedDate.slice(0, 4)) : 0,
       status: 'disponivel',
-      imagem: volumeInfo.imageLinks?.thumbnail || 'https://via.placeholder.com/150', // URL da imagem ou valor padrão
+      imagem: volumeInfo.imageLinks?.thumbnail || 'https://via.placeholder.com/150',
     };
-  
-    console.log('Enviando dados para o servidor:', data);
-  
+
     try {
       const response = await fetch('http://localhost:3001/livros', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
-  
+
+      const result = await response.json();
+
       if (response.ok) {
-        setStatusMessage('Livro adicionado com sucesso!');
-        console.log('Resposta da API:', await response.json());
+        setStatusMessage('✅ Livro adicionado com sucesso!');
       } else {
-        const errorData = await response.json();
-        setStatusMessage(`Erro ao adicionar o livro: ${errorData.message || 'Desconhecido'}`);
-        console.error('Erro na resposta da API:', errorData);
+        setStatusMessage(`❌ Erro: ${result.message || 'Erro desconhecido'}`);
       }
     } catch (error) {
-      console.error('Erro na comunicação com a API:', error);
-      setStatusMessage('Erro na comunicação com o servidor.');
+      console.error('Erro ao comunicar com a API:', error);
+      setStatusMessage('❌ Erro na comunicação com o servidor.');
     }
-  };
-  
+};
 
   return (
     <div className="search-books-container">
@@ -83,27 +80,18 @@ function AddBooks() {
           onChange={(e) => setQuery(e.target.value)}
           className="search-input"
         />
-        <button type="submit" className="search-button">
-          Buscar
-        </button>
+        <button type="submit" className="search-button">Buscar</button>
       </form>
+
       {loading && <p>Carregando...</p>}
+
       <div className="books-list">
         {books.map((book) => {
           const volumeInfo = book.volumeInfo;
-          const imageLinks = volumeInfo.imageLinks || {};
           return (
-            <div
-              key={book.id}
-              className="book-card"
-              onClick={() => handleCardClick(book)}
-            >
-              {imageLinks.thumbnail ? (
-                <img
-                  src={imageLinks.thumbnail}
-                  alt={volumeInfo.title}
-                  className="book-card-image"
-                />
+            <div key={book.id} className="book-card" onClick={() => handleCardClick(book)}>
+              {volumeInfo.imageLinks?.thumbnail ? (
+                <img src={volumeInfo.imageLinks.thumbnail} alt={volumeInfo.title} className="book-card-image" />
               ) : (
                 <div className="no-image-placeholder">Sem imagem</div>
               )}
@@ -113,7 +101,6 @@ function AddBooks() {
         })}
       </div>
 
-      {/* Exibe a mensagem de status abaixo dos livros */}
       {statusMessage && <div className="status-message">{statusMessage}</div>}
     </div>
   );

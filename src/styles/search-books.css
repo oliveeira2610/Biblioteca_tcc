@@ -107,4 +107,17 @@
   .status-message.error {
     color: red;
   }
+  .book-availability {
+    font-weight: bold;
+    font-size: 16px;
+    margin-top: 10px;
+  }
+  
+  .book-availability.available {
+    color: green;
+  }
+  
+  .book-availability.unavailable {
+    color: red;
+  }
   

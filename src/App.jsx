@@ -9,7 +9,7 @@ import SearchBooks from './pages/SearchBooks';
 import BookDetails from './pages/BookDetails';
 import AddBooks from './pages/AddBooks';
 import ManageDatabaseBooks from './pages/ManageDatabaseBooks';
-import BookReservation from './pages/BookReservation';
+import BookDescription from './pages/BookDescription';
 import BookStatus from './pages/BookStatus';
 import EditBook from './pages/EditBook';
 import Navbar from './components/Navbar';  // Importa a Navbar
@@ -42,8 +42,8 @@ function Layout() {
         <Route path="/users" element={<Users />} />
         <Route path="/search" element={<SearchBooks />} /> 
         <Route path="/addBooks" element={<AddBooks />} /> 
+        <Route path="/BookDescription/:id" element={<BookDescription />} />
         <Route path="/book/:id" element={<BookDetails />} />
-        <Route path="/bookReservation" element={<BookReservation/>} />
         <Route path="/manage-database-books" element={<ManageDatabaseBooks />} />
         <Route path="/bookStatus/:id" element={<BookStatus />} />
         <Route path="/edit-book/:bookId" element={<EditBook />} />
