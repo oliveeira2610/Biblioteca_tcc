@@ -16,6 +16,8 @@ melhorias das paginas
 
 // Feito // criar pagina perfil. Ex: dados pessoais, livros reservados com prazo de devolução e multas a pagar.
 
+// Feito // integrar totalmente o users.jsx ao banco de dados
+
 criar tipo de usuario Ex: Admin e comum, e determinar as paginas que só o usuario comum pode ver e entrar na pagina
 
 criar pagina acervo.
@@ -26,4 +28,3 @@ Colocar na navbar comprimento com o nome do usuario automaticamente Ex: Ola Japa
 
 fazer aparecer os livros 
 
-integrar totalmente o users.jsx ao banco de dados
