@@ -15,6 +15,9 @@ const Navbar = () => {
             <Link to="/books">Livros</Link>
           </li>
           <li>
+            <Link to="/notifications">Notificações</Link>
+          </li>
+          <li>
             <Link to="/users">Usuários</Link>
           </li>
           <li>
@@ -22,6 +25,9 @@ const Navbar = () => {
           </li>
           <li>
             <Link to="/manage-database-books">Livros Adcionados</Link>
+          </li>
+          <li>
+            <Link to="/perfil-usuario">Perfil</Link>
           </li>
           <li>
             <Link to="/search">Pesquisar Livros</Link>

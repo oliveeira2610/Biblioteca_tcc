@@ -1,0 +1,32 @@
+.notifications-container {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  .notifications-container h1 {
+    margin-bottom: 20px;
+  }
+  
+  .notifications-container ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .notifications-container li {
+    background: #f9f9f9;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .notifications-container li p {
+    margin: 0;
+  }
+  
+  .notifications-container li small {
+    color: #888;
+    display: block;
+    margin-top: 5px;
+  }
+  

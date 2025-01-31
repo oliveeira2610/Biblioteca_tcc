@@ -34,6 +34,7 @@ const Login = () => {
       setError("Erro ao conectar com o servidor.");
     }
   };
+  
 
   return (
     <div className="auth-container">

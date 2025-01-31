@@ -12,8 +12,9 @@ import ManageDatabaseBooks from './pages/ManageDatabaseBooks';
 import BookDescription from './pages/BookDescription';
 import BookStatus from './pages/BookStatus';
 import EditBook from './pages/EditBook';
-import Navbar from './components/Navbar';  // Importa a Navbar
-import BookCard from './components/BookCard'; 
+import PerfilUsuario from './pages/PerfilUsuario';
+import Notifications from './pages/Notifications';
+import Navbar from './components/Navbar';  
 import './styles/global.css';
 
 function App() {
@@ -44,10 +45,12 @@ function Layout() {
         <Route path="/search" element={<SearchBooks />} /> 
         <Route path="/addBooks" element={<AddBooks />} /> 
         <Route path="/BookDescription/:id" element={<BookDescription />} />
+        <Route path="/notifications" element={<Notifications />} />
         <Route path="/book/:id" element={<BookDetails />} />
         <Route path="/manage-database-books" element={<ManageDatabaseBooks />} />
         <Route path="/bookStatus/:id" element={<BookStatus />} />
         <Route path="/edit-book/:bookId" element={<EditBook />} />
+        <Route path="/perfil-usuario" element={<PerfilUsuario />} />
       </Routes>
     </div>
   );

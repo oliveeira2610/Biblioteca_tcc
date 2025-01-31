@@ -51,3 +51,19 @@
 .reservation-details strong {
   color: #333;
 }
+
+
+
+.notify-button {
+  background-color: #ff9800;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.notify-button:hover {
+  background-color: #e68900;
+}

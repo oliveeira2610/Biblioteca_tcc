@@ -1,3 +1,126 @@
+
+// import React, { useEffect, useState } from "react";
+// import { useParams, useNavigate } from "react-router-dom";
+// import "../../src/styles/BookDetails.css";
+
+// function BookDescription() {
+//   const { id } = useParams();
+//   const [bookDetails, setBookDetails] = useState(null);
+//   const [user, setUser] = useState(null);
+//   const [loading, setLoading] = useState(true);
+//   const [error, setError] = useState(null);
+//   const navigate = useNavigate();
+
+//   useEffect(() => {
+//     const fetchBookDetails = async () => {
+//       try {
+//         const response = await fetch(`http://localhost:3001/livro-detalhes/${id}`);
+//         if (!response.ok) {
+//           throw new Error("Livro não encontrado");
+//         }
+//         const data = await response.json();
+//         setBookDetails(data);
+//       } catch (err) {
+//         setError(err.message);
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+
+//     const fetchUserDetails = async () => {
+//       const userId = localStorage.getItem("userId");
+//       if (!userId) {
+//         setError("Usuário não autenticado");
+//         return;
+//       }
+
+//       try {
+//         const response = await fetch(`http://localhost:3001/usuario-logado?id=${userId}`);
+//         if (!response.ok) {
+//           throw new Error("Usuário não encontrado");
+//         }
+//         const data = await response.json();
+//         setUser(data);
+//       } catch (err) {
+//         setError(err.message);
+//       }
+//     };
+
+//     fetchBookDetails();
+//     fetchUserDetails();
+//   }, [id]);
+
+//   const handleNotify = async () => {
+//     if (!user?.id) {
+//       console.error("userId está indefinido");
+//       return;
+//     }
+//     try {
+//       const response = await fetch(`http://localhost:3001/notifications`, {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify({ userId: user.id, bookId: id, message: `O status do livro "${bookDetails.nome_do_livro}" mudou para ${bookDetails.status}.` }),
+//       });
+//       if (!response.ok) {
+//         throw new Error("Erro ao adicionar notificação");
+//       }
+//       alert(`Você será notificado quando o status do livro mudar para ${bookDetails.status}.`);
+//     } catch (error) {
+//       console.error("Erro ao adicionar notificação:", error);
+//     }
+//   };
+
+//   if (loading) return <p>Carregando detalhes...</p>;
+//   if (error) return <p>Erro: {error}</p>;
+//   if (!bookDetails) return <p>Livro não encontrado.</p>;
+
+//   return (
+//     <div className="book-details-container">
+//       <button onClick={() => navigate("/search")} className="back-button">
+//         ← Voltar
+//       </button>
+//       <div className="book-details-content">
+//         <div className="book-details-image">
+//           {bookDetails.imagem ? (
+//             <img src={bookDetails.imagem} alt={bookDetails.nome_do_livro} />
+//           ) : (
+//             <div className="no-image-placeholder">Sem imagem</div>
+//           )}
+//         </div>
+//         <div className="book-details-info">
+//           <h1>{bookDetails.nome_do_livro}</h1>
+//           <p><strong>Autor:</strong> {bookDetails.autor || "Não informado"}</p>
+//           <p><strong>Gênero:</strong> {bookDetails.genero || "Não informado"}</p>
+//           <p><strong>Data de Lançamento:</strong> {bookDetails.data_lancamento || "Não informado"}</p>
+//           <p><strong>Editora:</strong> {bookDetails.editora || "Não informado"}</p>
+//           <p><strong>Sinopse:</strong> {bookDetails.sinopse || "Sinopse não disponível"}</p>
+//           <p><strong>Reservado até:</strong> {bookDetails.data_devolucao || "Não informado"}</p>
+          
+//           {bookDetails.status !== "Disponível" && (
+//             <button onClick={handleNotify} className="notify-button">
+//               Notificar quando disponível
+//             </button>
+//           )}
+
+//           {bookDetails.status === "Disponível" ? (
+//             <button onClick={() => navigate(`/bookStatus/${id}`)} className="reserve-button">
+//               Reservar
+//             </button>
+//           ) : (
+//             <button className="reserve-button" disabled>
+//               Indisponível no momento
+//             </button>
+//           )}
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
+
+// export default BookDescription;
+
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "../../src/styles/BookDetails.css";
@@ -5,9 +128,11 @@ import "../../src/styles/BookDetails.css";
 function BookDescription() {
   const { id } = useParams();
   const [bookDetails, setBookDetails] = useState(null);
+  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+  const userId = localStorage.getItem("userId");
 
   useEffect(() => {
     const fetchBookDetails = async () => {
@@ -25,8 +150,67 @@ function BookDescription() {
       }
     };
 
+    const fetchUserDetails = async () => {
+      if (!userId) {
+        setError("Usuário não autenticado");
+        return;
+      }
+
+      try {
+        const response = await fetch(`http://localhost:3001/usuario-logado?id=${userId}`);
+        if (!response.ok) {
+          throw new Error("Usuário não encontrado");
+        }
+        const data = await response.json();
+        setUser(data);
+      } catch (err) {
+        setError(err.message);
+      }
+    };
+
     fetchBookDetails();
+    fetchUserDetails();
   }, [id]);
+
+  const registerNotification = async () => {
+    if (!user?.id) {
+      console.error("userId está indefinido");
+      return;
+    }
+    try {
+      const response = await fetch(`http://localhost:3001/register-notification`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId: user.id, bookId: id }),
+      });
+      if (!response.ok) {
+        throw new Error("Erro ao registrar notificação");
+      }
+      alert("Você será notificado sobre este livro.");
+    } catch (error) {
+      console.error("Erro ao registrar notificação:", error);
+    }
+  };
+
+  const cancelNotification = async () => {
+    if (!user?.id) {
+      console.error("userId está indefinido");
+      return;
+    }
+    try {
+      const response = await fetch(`http://localhost:3001/register-notification/${user.id}/${id}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) {
+        throw new Error("Erro ao cancelar notificação");
+      }
+      alert("Notificação deste livro foi cancelada.");
+    } catch (error) {
+      console.error("Erro ao cancelar notificação:", error);
+    }
+  };
 
   if (loading) return <p>Carregando detalhes...</p>;
   if (error) return <p>Erro: {error}</p>;
@@ -53,6 +237,13 @@ function BookDescription() {
           <p><strong>Editora:</strong> {bookDetails.editora || "Não informado"}</p>
           <p><strong>Sinopse:</strong> {bookDetails.sinopse || "Sinopse não disponível"}</p>
           <p><strong>Reservado até:</strong> {bookDetails.data_devolucao || "Não informado"}</p>
+          
+          <button onClick={registerNotification} className="notify-button">
+            Registrar Notificação
+          </button>
+          <button onClick={cancelNotification} className="cancel-notification-button">
+            Cancelar Notificação
+          </button>
 
           {bookDetails.status === "Disponível" ? (
             <button onClick={() => navigate(`/bookStatus/${id}`)} className="reserve-button">
@@ -70,3 +261,4 @@ function BookDescription() {
 }
 
 export default BookDescription;
+
