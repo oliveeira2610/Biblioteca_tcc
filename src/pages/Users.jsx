@@ -42,7 +42,7 @@ const Users = () => {
                     <ManageBookCard
                       key={book.id}
                       book={book}
-                      onClick={handleBookClick}
+                      onClick={() => handleBookClick(book.id)}
                       onReserve={() => {}}
                       onFree={() => {}}
                       onDelete={() => {}}

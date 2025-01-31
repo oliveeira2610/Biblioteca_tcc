@@ -24,3 +24,4 @@ livros aleatorios na home
 
 Colocar na navbar saudação com o nome do usuario automaticamente Ex: Ola Japa!.
 
+fazer aparecer os livros 

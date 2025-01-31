@@ -475,26 +475,63 @@ app.delete("/livros/:id", (req, res) => {
 });
 
 /// Rota para buscar usuários com reservas de livros
-app.get("/usuarios", (req, res) => {
-  db.all(
-    `SELECT usuarios.id, usuarios.userName, usuarios.email, usuarios.telefone, 
-                livros.nome_do_livro, livros.status, reservas.data_reserva
-        FROM usuarios
-        LEFT JOIN reservas ON usuarios.id = reservas.usuario_id
-        LEFT JOIN livros ON reservas.livro_id = livros.id`,
-    (err, rows) => {
-      if (err) {
-        console.error("Erro ao buscar usuários e reservas:", err);
-        return res
-          .status(500)
-          .json({ error: "Erro ao buscar usuários e reservas" });
-      }
+app.get('/usuarios', (req, res) => {
+  const query = `
+    SELECT 
+      usuarios.id, 
+      usuarios.userName, 
+      usuarios.email, 
+      usuarios.telefone, 
+      livros.id AS livro_id,
+      livros.nome_do_livro, 
+      reservas.data_reserva,
+      reservas.data_devolucao,
+      reservas.multa
+    FROM usuarios
+    LEFT JOIN reservas ON usuarios.id = reservas.usuario_id
+    LEFT JOIN livros ON reservas.livro_id = livros.id
+  `;
 
-      // Se não houverem dados, retorne um array vazio
-      res.status(200).json(rows || []);
+  db.all(query, (err, rows) => {
+    if (err) {
+      console.error('Erro ao buscar usuários e reservas:', err);
+      return res.status(500).json({ error: 'Erro ao buscar usuários e reservas' });
     }
-  );
+
+    // Agrupar os dados por usuário
+    const usuarios = rows.reduce((acc, row) => {
+      let user = acc.find(u => u.id === row.id);
+      if (user) {
+        user.livrosReservados.push({
+          id: row.livro_id,
+          nome_do_livro: row.nome_do_livro,
+          data_reserva: row.data_reserva,
+          data_devolucao: row.data_devolucao,
+          multa: row.multa
+        });
+      } else {
+        user = {
+          id: row.id,
+          userName: row.userName,
+          email: row.email,
+          telefone: row.telefone,
+          livrosReservados: [{
+            id: row.livro_id,
+            nome_do_livro: row.nome_do_livro,
+            data_reserva: row.data_reserva,
+            data_devolucao: row.data_devolucao,
+            multa: row.multa
+          }]
+        };
+        acc.push(user);
+      }
+      return acc;
+    }, []);
+
+    res.status(200).json(usuarios);
+  });
 });
+
 
 // Endpoint para pegar os usuários com os livros reservados
 app.get("/usuarios", (req, res) => {
