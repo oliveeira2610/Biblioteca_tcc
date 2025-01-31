@@ -5,9 +5,11 @@ import "../../src/styles/Users.css"; // Estilização
 const Users = () => {
   const [usuarios, setUsuarios] = useState([]);
 
+  // Função para buscar usuários e reservas do banco de dados
   const fetchUsers = async () => {
     try {
       const response = await fetch("http://localhost:3001/usuarios");
+      if (!response.ok) throw new Error("Erro ao buscar usuários");
       const data = await response.json();
       setUsuarios(data);
     } catch (error) {
@@ -15,13 +17,23 @@ const Users = () => {
     }
   };
 
-  const handleBookClick = (bookId) => {
-    alert(`Você clicou no livro de ID: ${bookId}`);
-  };
-
   useEffect(() => {
     fetchUsers();
   }, []);
+
+  // Função para cancelar uma reserva no banco de dados
+  const handleCancelReservation = async (livroId) => {
+    try {
+      const response = await fetch(`http://localhost:3001/reservas/${livroId}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) throw new Error("Erro ao cancelar reserva");
+      alert("Reserva cancelada com sucesso!");
+      fetchUsers(); // Atualiza a lista após exclusão
+    } catch (error) {
+      console.error("Erro ao cancelar reserva:", error);
+    }
+  };
 
   return (
     <div className="users-container">
@@ -37,15 +49,12 @@ const Users = () => {
             <div className="books-section">
               <h4>Livros Reservados:</h4>
               <div className="books-cards">
-                {usuario.livrosReservados && usuario.livrosReservados.length > 0 ? (
+                {usuario.livrosReservados.length > 0 ? (
                   usuario.livrosReservados.map((book) => (
                     <ManageBookCard
                       key={book.id}
                       book={book}
-                      onClick={() => handleBookClick(book.id)}
-                      onReserve={() => {}}
-                      onFree={() => {}}
-                      onDelete={() => {}}
+                      onDelete={() => handleCancelReservation(book.id)}
                     />
                   ))
                 ) : (

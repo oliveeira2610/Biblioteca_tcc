@@ -94,7 +94,7 @@ db.serialize(() => {
       );
     `);
 
-    db.run(`  
+  db.run(`  
     CREATE TABLE IF NOT EXISTS livros_para_notificacao (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       user_id INTEGER NOT NULL,
@@ -108,114 +108,153 @@ db.serialize(() => {
 console.log("Tabelas criadas ou já existentes.");
 
 const createNotification = (userId, bookId, message) => {
-  db.all(`SELECT * FROM livros_para_notificacao WHERE user_id = ? AND book_id = ?`, [userId, bookId], (err, rows) => {
-    if (err) {
-      console.error("Erro ao buscar registros de notificação:", err);
-      return;
-    }
-    if (rows.length > 0) {
-      db.run(`INSERT INTO notificacoes (user_id, book_id, message) VALUES (?, ?, ?)`,
-        [userId, bookId, message],
-        function (err) {
-          if (err) {
-            console.error("Erro ao adicionar notificação:", err);
-          } else {
-            console.log(`Notificação adicionada: ${message}`);
+  db.all(
+    `SELECT * FROM livros_para_notificacao WHERE user_id = ? AND book_id = ?`,
+    [userId, bookId],
+    (err, rows) => {
+      if (err) {
+        console.error("Erro ao buscar registros de notificação:", err);
+        return;
+      }
+      if (rows.length > 0) {
+        db.run(
+          `INSERT INTO notificacoes (user_id, book_id, message) VALUES (?, ?, ?)`,
+          [userId, bookId, message],
+          function (err) {
+            if (err) {
+              console.error("Erro ao adicionar notificação:", err);
+            } else {
+              console.log(`Notificação adicionada: ${message}`);
+            }
           }
-        });
+        );
+      }
     }
-  });
+  );
 };
-
-
 
 app.put("/livros/:id", (req, res) => {
   const { status, userId } = req.body;
 
-  db.get(`SELECT status FROM livros WHERE id = ?`, [req.params.id], (err, row) => {
-    if (err) return res.status(500).json({ error: "Erro ao buscar status atual do livro." });
+  db.get(
+    `SELECT status FROM livros WHERE id = ?`,
+    [req.params.id],
+    (err, row) => {
+      if (err)
+        return res
+          .status(500)
+          .json({ error: "Erro ao buscar status atual do livro." });
 
-    const currentStatus = row.status;
+      const currentStatus = row.status;
 
-    db.run(`UPDATE livros SET status = ? WHERE id = ?`, [status, req.params.id], function (err) {
-      if (err) return res.status(500).json({ error: "Erro ao atualizar status." });
+      db.run(
+        `UPDATE livros SET status = ? WHERE id = ?`,
+        [status, req.params.id],
+        function (err) {
+          if (err)
+            return res.status(500).json({ error: "Erro ao atualizar status." });
 
-      if (currentStatus !== status) {
-        const bookId = req.params.id;
-        let message;
+          if (currentStatus !== status) {
+            const bookId = req.params.id;
+            let message;
 
-        if (status === "Disponível") {
-          message = `O livro com ID ${bookId} está disponível.`;
-        } else if (status === "Indisponível") {
-          message = `O livro com ID ${bookId} está indisponível.`;
+            if (status === "Disponível") {
+              message = `O livro com ID ${bookId} está disponível.`;
+            } else if (status === "Indisponível") {
+              message = `O livro com ID ${bookId} está indisponível.`;
+            }
+
+            if (message) {
+              createNotification(userId, bookId, message);
+            }
+          }
+
+          res.status(200).json({ message: "Status atualizado com sucesso!" });
         }
-
-        if (message) {
-          createNotification(userId, bookId, message);
-        }
-      }
-
-      res.status(200).json({ message: "Status atualizado com sucesso!" });
-    });
-  });
+      );
+    }
+  );
 });
-
 
 // Endpoint para deletar todas as notificações de um usuário específico
 app.delete("/notifications/:userId", (req, res) => {
   const { userId } = req.params;
-  db.run(`DELETE FROM notificacoes WHERE user_id = ?`, [userId], function (err) {
-    if (err) {
-      console.error("Erro ao deletar notificações:", err);
-      return res.status(500).json({ message: "Erro ao deletar notificações" });
+  db.run(
+    `DELETE FROM notificacoes WHERE user_id = ?`,
+    [userId],
+    function (err) {
+      if (err) {
+        console.error("Erro ao deletar notificações:", err);
+        return res
+          .status(500)
+          .json({ message: "Erro ao deletar notificações" });
+      }
+      res.status(200).json({ message: "Notificações deletadas com sucesso." });
     }
-    res.status(200).json({ message: "Notificações deletadas com sucesso." });
-  });
+  );
 });
-
 
 // Endpoint para deletar notificações de um livro específico para um usuário específico
 app.delete("/notifications/:userId/:bookId", (req, res) => {
   const { userId, bookId } = req.params;
-  db.run(`DELETE FROM notificacoes WHERE user_id = ? AND book_id = ?`, [userId, bookId], function (err) {
-    if (err) {
-      console.error("Erro ao deletar notificações:", err);
-      return res.status(500).json({ message: "Erro ao deletar notificações" });
+  db.run(
+    `DELETE FROM notificacoes WHERE user_id = ? AND book_id = ?`,
+    [userId, bookId],
+    function (err) {
+      if (err) {
+        console.error("Erro ao deletar notificações:", err);
+        return res
+          .status(500)
+          .json({ message: "Erro ao deletar notificações" });
+      }
+      res
+        .status(200)
+        .json({ message: "Notificações do livro deletadas com sucesso." });
     }
-    res.status(200).json({ message: "Notificações do livro deletadas com sucesso." });
-  });
+  );
 });
-
 
 // Endpoint para registrar livros para notificação
 app.post("/register-notification", (req, res) => {
   const { userId, bookId } = req.body;
 
-  db.run(`INSERT INTO livros_para_notificacao (user_id, book_id) VALUES (?, ?)`, [userId, bookId], function (err) {
-    if (err) {
-      console.error("Erro ao registrar livro para notificação:", err);
-      return res.status(500).json({ message: "Erro ao registrar livro para notificação" });
+  db.run(
+    `INSERT INTO livros_para_notificacao (user_id, book_id) VALUES (?, ?)`,
+    [userId, bookId],
+    function (err) {
+      if (err) {
+        console.error("Erro ao registrar livro para notificação:", err);
+        return res
+          .status(500)
+          .json({ message: "Erro ao registrar livro para notificação" });
+      }
+      res
+        .status(201)
+        .json({ message: "Livro registrado para notificação com sucesso." });
     }
-    res.status(201).json({ message: "Livro registrado para notificação com sucesso." });
-  });
+  );
 });
-
 
 // Endpoint para cancelar notificação de um livro específico
 app.delete("/register-notification/:userId/:bookId", (req, res) => {
   const { userId, bookId } = req.params;
 
-  db.run(`DELETE FROM livros_para_notificacao WHERE user_id = ? AND book_id = ?`, [userId, bookId], function (err) {
-    if (err) {
-      console.error("Erro ao cancelar registro de notificação:", err);
-      return res.status(500).json({ message: "Erro ao cancelar registro de notificação" });
+  db.run(
+    `DELETE FROM livros_para_notificacao WHERE user_id = ? AND book_id = ?`,
+    [userId, bookId],
+    function (err) {
+      if (err) {
+        console.error("Erro ao cancelar registro de notificação:", err);
+        return res
+          .status(500)
+          .json({ message: "Erro ao cancelar registro de notificação" });
+      }
+      res
+        .status(200)
+        .json({ message: "Registro de notificação cancelado com sucesso." });
     }
-    res.status(200).json({ message: "Registro de notificação cancelado com sucesso." });
-  });
+  );
 });
-
-
-
 
 // 📌 ENDPOINTS 📌
 
@@ -332,11 +371,15 @@ app.get("/perfil-usuario/:userId", (req, res) => {
   db.all(query, [userId], (err, rows) => {
     if (err) {
       console.error("Erro ao buscar dados do usuário:", err);
-      return res.status(500).json({ error: "Erro ao buscar dados do usuário." });
+      return res
+        .status(500)
+        .json({ error: "Erro ao buscar dados do usuário." });
     }
-    
+
     if (rows.length === 0) {
-      return res.status(404).json({ message: "Usuário não encontrado ou sem reservas." });
+      return res
+        .status(404)
+        .json({ message: "Usuário não encontrado ou sem reservas." });
     }
 
     const userInfo = {
@@ -344,19 +387,20 @@ app.get("/perfil-usuario/:userId", (req, res) => {
       userName: rows[0].userName,
       email: rows[0].email,
       telefone: rows[0].telefone,
-      reservas: rows.filter(row => row.livro_id).map(row => ({
-        livroId: row.livro_id,
-        nome_do_livro: row.nome_do_livro,
-        data_reserva: row.data_reserva,
-        data_devolucao: row.data_devolucao,
-        multa: row.multa
-      }))
+      reservas: rows
+        .filter((row) => row.livro_id)
+        .map((row) => ({
+          livroId: row.livro_id,
+          nome_do_livro: row.nome_do_livro,
+          data_reserva: row.data_reserva,
+          data_devolucao: row.data_devolucao,
+          multa: row.multa,
+        })),
     };
 
     res.json(userInfo);
   });
 });
-
 
 // 🔹 Adicionar um livro
 app.post("/livros", (req, res) => {
@@ -444,25 +488,22 @@ app.put("/livros/:id", (req, res) => {
 });
 
 // Rota para deletar a reserva
-app.delete('/reservas/:livro_id', (req, res) => {
-  const livro_id = req.params.livro_id;
+app.delete("/reservas/:livro_id", (req, res) => {
+  const { livro_id } = req.params;
 
-  // A consulta para deletar a reserva no banco de dados
-  db.run('DELETE FROM reservas WHERE livro_id = ?', [livro_id], function(err) {
+  db.run("DELETE FROM reservas WHERE livro_id = ?", [livro_id], function (err) {
     if (err) {
-      console.error('Erro ao remover reserva:', err);
-      return res.status(500).json({ message: 'Erro ao remover reserva' });
+      console.error("Erro ao remover reserva:", err);
+      return res.status(500).json({ message: "Erro ao remover reserva" });
     }
 
     if (this.changes === 0) {
-      // Caso não tenha encontrado nada para excluir
-      return res.status(404).json({ message: 'Reserva não encontrada' });
+      return res.status(404).json({ message: "Reserva não encontrada" });
     }
 
-    return res.json({ message: 'Reserva removida com sucesso.' });
+    return res.json({ message: "Reserva removida com sucesso." });
   });
 });
-
 
 // 🔹 Deletar um livro
 app.delete("/livros/:id", (req, res) => {
@@ -475,7 +516,7 @@ app.delete("/livros/:id", (req, res) => {
 });
 
 /// Rota para buscar usuários com reservas de livros
-app.get('/usuarios', (req, res) => {
+app.get("/usuarios", (req, res) => {
   const query = `
     SELECT 
       usuarios.id, 
@@ -494,20 +535,22 @@ app.get('/usuarios', (req, res) => {
 
   db.all(query, (err, rows) => {
     if (err) {
-      console.error('Erro ao buscar usuários e reservas:', err);
-      return res.status(500).json({ error: 'Erro ao buscar usuários e reservas' });
+      console.error("Erro ao buscar usuários e reservas:", err);
+      return res
+        .status(500)
+        .json({ error: "Erro ao buscar usuários e reservas" });
     }
 
     // Agrupar os dados por usuário
     const usuarios = rows.reduce((acc, row) => {
-      let user = acc.find(u => u.id === row.id);
+      let user = acc.find((u) => u.id === row.id);
       if (user) {
         user.livrosReservados.push({
           id: row.livro_id,
           nome_do_livro: row.nome_do_livro,
           data_reserva: row.data_reserva,
           data_devolucao: row.data_devolucao,
-          multa: row.multa
+          multa: row.multa,
         });
       } else {
         user = {
@@ -515,13 +558,15 @@ app.get('/usuarios', (req, res) => {
           userName: row.userName,
           email: row.email,
           telefone: row.telefone,
-          livrosReservados: [{
-            id: row.livro_id,
-            nome_do_livro: row.nome_do_livro,
-            data_reserva: row.data_reserva,
-            data_devolucao: row.data_devolucao,
-            multa: row.multa
-          }]
+          livrosReservados: [
+            {
+              id: row.livro_id,
+              nome_do_livro: row.nome_do_livro,
+              data_reserva: row.data_reserva,
+              data_devolucao: row.data_devolucao,
+              multa: row.multa,
+            },
+          ],
         };
         acc.push(user);
       }
@@ -531,7 +576,6 @@ app.get('/usuarios', (req, res) => {
     res.status(200).json(usuarios);
   });
 });
-
 
 // Endpoint para pegar os usuários com os livros reservados
 app.get("/usuarios", (req, res) => {
@@ -716,7 +760,7 @@ app.get("/livro-detalhes/:id", (req, res) => {
       editora: row.editora,
       imagem: row.imagem,
       sinopse: row.sinopse,
-      status: row.status, 
+      status: row.status,
       reserva_status: row.reserva_status,
       nome_usuario: row.nome_usuario,
       usuario_email: row.usuario_email,
@@ -729,8 +773,6 @@ app.get("/livro-detalhes/:id", (req, res) => {
     });
   });
 });
-
-
 
 // Rota para pagar a multa
 app.post("/pagar-multa/:id", (req, res) => {

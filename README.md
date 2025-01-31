@@ -22,6 +22,8 @@ criar pagina acervo.
 
 livros aleatorios na home 
 
-Colocar na navbar saudação com o nome do usuario automaticamente Ex: Ola Japa!.
+Colocar na navbar comprimento com o nome do usuario automaticamente Ex: Ola Japa!.
 
 fazer aparecer os livros 
+
+integrar totalmente o users.jsx ao banco de dados
