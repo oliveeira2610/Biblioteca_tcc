@@ -6,8 +6,9 @@ function AddBooks() {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(false);
   const [statusMessage, setStatusMessage] = useState('');
+  const [selectedBook, setSelectedBook] = useState(null); // Estado para armazenar o livro selecionado
+  const [quantity, setQuantity] = useState(1); // Estado para armazenar a quantidade
 
-  // Função para buscar livros da API do Google
   const fetchBooks = async (searchQuery) => {
     setLoading(true);
     setStatusMessage('');
@@ -26,7 +27,6 @@ function AddBooks() {
     }
   };
 
-  // Função chamada ao enviar o formulário de pesquisa
   const handleSearch = (e) => {
     e.preventDefault();
     if (query.trim() !== '') {
@@ -34,9 +34,12 @@ function AddBooks() {
     }
   };
 
-  // Função para adicionar um livro ao banco de dados local
-  const handleCardClick = async (book) => {
-    const volumeInfo = book.volumeInfo;
+  const handleCardClick = (book) => {
+    setSelectedBook(book);
+  };
+
+  const handleAddBook = async () => {
+    const volumeInfo = selectedBook.volumeInfo;
     const data = {
       nome_do_livro: volumeInfo.title,
       genero: volumeInfo.categories ? volumeInfo.categories[0] : 'Gênero desconhecido',
@@ -47,17 +50,18 @@ function AddBooks() {
       ano_publicacao: volumeInfo.publishedDate ? parseInt(volumeInfo.publishedDate.slice(0, 4)) : 0,
       status: 'disponivel',
       imagem: volumeInfo.imageLinks?.thumbnail || 'https://via.placeholder.com/150',
+      quantidade: quantity // Adicionando a quantidade na requisição
     };
-
+  
     try {
       const response = await fetch('http://localhost:3001/livros', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
-
+  
       const result = await response.json();
-
+  
       if (response.ok) {
         setStatusMessage('✅ Livro adicionado com sucesso!');
       } else {
@@ -67,7 +71,8 @@ function AddBooks() {
       console.error('Erro ao comunicar com a API:', error);
       setStatusMessage('❌ Erro na comunicação com o servidor.');
     }
-};
+  };
+  
 
   return (
     <div className="search-books-container">
@@ -100,6 +105,23 @@ function AddBooks() {
           );
         })}
       </div>
+
+      {selectedBook && (
+        <div className="add-book-form">
+          <h2>Adicionar {selectedBook.volumeInfo.title}</h2>
+          <label>
+            Quantidade:
+            <input
+              type="number"
+              value={quantity}
+              onChange={(e) => setQuantity(Number(e.target.value))}
+              min="1"
+              className="quantity-input"
+            />
+          </label>
+          <button onClick={handleAddBook} className="add-book-button">Adicionar Livro</button>
+        </div>
+      )}
 
       {statusMessage && <div className="status-message">{statusMessage}</div>}
     </div>

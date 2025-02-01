@@ -18,6 +18,16 @@ melhorias das paginas
 
 // Feito // integrar totalmente o users.jsx ao banco de dados
 
+// Feito // colocar avisos de disponibilidade fisica e disponibilidade para reserva
+
+arrumar "Quantidade disponível:" da pagina bookdetails
+
+separar as reservas na bookdetails em cards grandes individuais com botoes para apagar a reserva independente 
+
+retirar a data na tela de bookstatus pois da auto increment na data da devolução:
+
+mta masi coisas 
+
 criar tipo de usuario Ex: Admin e comum, e determinar as paginas que só o usuario comum pode ver e entrar na pagina
 
 criar pagina acervo.
