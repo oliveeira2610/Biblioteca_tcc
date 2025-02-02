@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import ManageBookCard from "../../src/components/ManageBookCard";
 import "../../src/styles/Users.css";
 import { useNavigate } from "react-router-dom";
 
@@ -23,9 +22,9 @@ const Users = () => {
   }, []);
 
   // Função para deletar uma reserva
-  const handleCancelReservation = async (livroId) => {
+  const handleCancelReservation = async (livroId, usuarioId) => {
     try {
-      const response = await fetch(`http://localhost:3001/reservas/${livroId}`, { method: "DELETE" });
+      const response = await fetch(`http://localhost:3001/reservas/${livroId}/${usuarioId}`, { method: "DELETE" });
       if (!response.ok) throw new Error("Erro ao cancelar reserva");
       alert("Reserva cancelada!");
       fetchUsers(); // Atualiza os dados
@@ -73,13 +72,37 @@ const Users = () => {
               <div className="books-cards">
                 {usuario.livrosReservados.length > 0 ? (
                   usuario.livrosReservados.map((book) => (
-                    <ManageBookCard
+                    <div
                       key={book.id}
-                      book={book}
-                      onDelete={() => handleCancelReservation(book.id)}
-                      onReserve={() => handleReserveBook(book.id)}
-                      onFree={() => handleCancelReservation(book.id)}
-                    />
+                      className="book-card"
+                      onClick={() => navigate(`/book/${book.id}`)}
+                      style={{ cursor: "pointer" }}
+                    >
+                      {book.imagem ? (
+                        <img
+                          src={book.imagem.startsWith("http") ? book.imagem : `http://localhost:3001/${book.imagem}`}
+                          alt={book.nome_do_livro}
+                          className="book-card-image"
+                          onError={(e) => (e.target.src = "/placeholder.jpg")} // Mostra uma imagem padrão se der erro
+                        />
+                      ) : (
+                        <div className="no-image-placeholder">Sem imagem</div>
+                      )}
+
+                      <h3 className="book-card-title">{book.nome_do_livro}</h3>
+                      <p className="book-card-author">{book.autor}</p>
+
+                      <p className="book-card-status" style={{ color: book.status === "Disponível" ? "green" : "red" }}>
+                        Status: {book.status ? book.status : "Desconhecido"}
+                      </p>
+
+                      {book.atrasado && <p className="book-card-late">Atrasado por: {book.tempoAtraso} dias</p>}
+                      {book.multas && book.multas > 0 && <p className="book-card-fine">Multa: R$ {book.multas.toFixed(2)}</p>}
+
+
+                  
+                      <button onClick={(e) => { e.stopPropagation(); handleCancelReservation(book.id, usuario.id); }}>Liberar Reserva</button>
+                    </div>
                   ))
                 ) : (
                   <p>Sem livros reservados</p>

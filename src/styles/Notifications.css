@@ -1,32 +1,97 @@
-.notifications-container {
-    padding: 20px;
-    font-family: Arial, sans-serif;
-  }
-  
-  .notifications-container h1 {
-    margin-bottom: 20px;
-  }
-  
-  .notifications-container ul {
-    list-style-type: none;
-    padding: 0;
-  }
-  
-  .notifications-container li {
-    background: #f9f9f9;
-    padding: 10px;
-    margin-bottom: 10px;
-    border-radius: 5px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-  }
-  
-  .notifications-container li p {
-    margin: 0;
-  }
-  
-  .notifications-container li small {
-    color: #888;
-    display: block;
-    margin-top: 5px;
-  }
-  
+.search-books-container {
+  margin: 20px;
+}
+
+.clear-all-button {
+  margin-bottom: 20px;
+  padding: 10px 20px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.clear-all-button:hover {
+  background-color: #c82333;
+}
+
+.books-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.book-card {
+  background-color: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 300px;
+  width: 100%;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.book-card:hover {
+  transform: translateY(-5px);
+}
+
+.book-card-image {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.book-card-title {
+  margin: 10px 0;
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+.book-card-author {
+  margin-bottom: 10px;
+  font-style: italic;
+}
+
+.book-availability {
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.book-availability.available {
+  color: green;
+}
+
+.book-availability.unavailable {
+  color: red;
+}
+
+.notification-message {
+  margin-bottom: 10px;
+  color: #555;
+}
+
+.cancel-notification-button {
+  padding: 10px 15px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.cancel-notification-button:hover {
+  background-color: #c82333;
+}
+
+.no-image-placeholder {
+  width: 100%;
+  height: 200px;
+  background-color: #e0e0e0;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #757575;
+}

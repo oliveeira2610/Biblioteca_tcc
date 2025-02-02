@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
 
-const ManageBookCard = ({ book, onDelete, onReserve, onFree }) => {
+const ManageBookCard = ({ book, onDelete, onReserve, onFree, usuarioId }) => {
   const navigate = useNavigate();
 
   const handleCardClick = () => {
@@ -40,7 +40,7 @@ const ManageBookCard = ({ book, onDelete, onReserve, onFree }) => {
         <button onClick={(e) => { e.stopPropagation(); onReserve(book.id); }}>Reservar</button>
       )}
 
-      <button onClick={(e) => { e.stopPropagation(); onDelete(book.id); }}>Deletar</button>
+      <button onClick={(e) => { e.stopPropagation(); onDelete(book.id, usuarioId); }}>Deletar</button>
     </div>
   );
 };

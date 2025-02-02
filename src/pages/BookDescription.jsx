@@ -8,6 +8,7 @@ function BookDescription() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [notificationExists, setNotificationExists] = useState(false);
   const navigate = useNavigate();
   const userId = localStorage.getItem("userId");
 
@@ -45,9 +46,23 @@ function BookDescription() {
       }
     };
 
+    const checkNotification = async () => {
+      try {
+        const response = await fetch(`http://localhost:3001/check-notification/${userId}/${id}`);
+        if (!response.ok) {
+          throw new Error("Erro ao verificar notificação");
+        }
+        const data = await response.json();
+        setNotificationExists(data.exists);
+      } catch (err) {
+        setError(err.message);
+      }
+    };
+
     fetchBookDetails();
     fetchUserDetails();
-  }, [id]);
+    checkNotification();
+  }, [id, userId]);
 
   const registerNotification = async () => {
     if (!user?.id) {
@@ -63,8 +78,11 @@ function BookDescription() {
         body: JSON.stringify({ userId: user.id, bookId: id }),
       });
       if (!response.ok) {
-        throw new Error("Erro ao registrar notificação");
+        const data = await response.json();
+        setNotificationExists(true);
+        return;
       }
+      setNotificationExists(true);
       alert("Você será notificado sobre este livro.");
     } catch (error) {
       console.error("Erro ao registrar notificação:", error);
@@ -83,6 +101,7 @@ function BookDescription() {
       if (!response.ok) {
         throw new Error("Erro ao cancelar notificação");
       }
+      setNotificationExists(false);
       alert("Notificação deste livro foi cancelada.");
     } catch (error) {
       console.error("Erro ao cancelar notificação:", error);
@@ -114,13 +133,19 @@ function BookDescription() {
           <p><strong>Editora:</strong> {bookDetails.editora || "Não informado"}</p>
           <p><strong>Sinopse:</strong> {bookDetails.sinopse || "Sinopse não disponível"}</p>
           <p><strong>Reservado até:</strong> {bookDetails.proxima_data_devolucao || "Não informado"}</p>
-          
-          <button onClick={registerNotification} className="notify-button">
-            Registrar Notificação
-          </button>
-          <button onClick={cancelNotification} className="cancel-notification-button">
-            Cancelar Notificação
-          </button>
+
+          {notificationExists ? (
+            <>
+              <p className="error-message">Você já registrou uma notificação para este livro.</p>
+              <button onClick={cancelNotification} className="cancel-notification-button">
+                Cancelar Notificação
+              </button>
+            </>
+          ) : (
+            <button onClick={registerNotification} className="notify-button">
+              Registrar Notificação
+            </button>
+          )}
 
           {bookDetails.quantidade_disponivel_nao_alugada > 0 ? (
             <button onClick={() => navigate(`/bookStatus/${id}`)} className="reserve-button">

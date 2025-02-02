@@ -103,6 +103,18 @@ db.serialize(() => {
       FOREIGN KEY (book_id) REFERENCES livros(id)
     );
     `);
+
+  db.run(`  
+    CREATE TRIGGER IF NOT EXISTS set_data_devolucao
+      AFTER INSERT ON reservas
+      FOR EACH ROW
+      BEGIN
+        UPDATE reservas
+        SET data_devolucao = DATETIME(NEW.data_reserva, '+7 days')
+        WHERE id = NEW.id;
+      END;
+    `);
+
 });
 
 console.log("Tabelas criadas ou já existentes.");
@@ -278,20 +290,34 @@ app.post("/notifications", (req, res) => {
 });
 
 // Endpoint para buscar notificações de um usuário específico
+// Endpoint para buscar notificações de um usuário específico
 app.get("/notifications/:userId", (req, res) => {
   const { userId } = req.params;
-  db.all(
-    `SELECT * FROM notificacoes WHERE user_id = ?`,
-    [userId],
-    (err, rows) => {
-      if (err) {
-        console.error("Erro ao buscar notificações:", err); // Adicionando log de erro
-        return res.status(500).json({ message: "Erro ao buscar notificações" });
-      }
-      res.json(rows);
+  const query = `
+    SELECT 
+      notificacoes.id,
+      notificacoes.message,
+      notificacoes.timestamp,
+      livros.id AS book_id,
+      livros.nome_do_livro AS book_name,
+      livros.imagem,
+      livros.status AS book_status,
+      livros.autor
+    FROM notificacoes
+    JOIN livros ON notificacoes.book_id = livros.id
+    WHERE notificacoes.user_id = ?
+  `;
+  db.all(query, [userId], (err, rows) => {
+    if (err) {
+      console.error("Erro ao buscar notificações:", err);
+      return res.status(500).json({ message: "Erro ao buscar notificações" });
     }
-  );
+    res.json(rows);
+  });
 });
+
+
+
 
 // Endpoint de login sem bcrypt
 app.post("/login", (req, res) => {
@@ -500,7 +526,8 @@ app.get("/livros", (req, res) => {
       livros.ano_publicacao,
       livros.quantidade_disponivel,
       livros.imagem,
-      COUNT(reservas.id) AS quantidade_alugada
+      COUNT(reservas.id) AS quantidade_reservada,
+      (livros.quantidade_disponivel - COUNT(reservas.id)) AS quantidade_disponivel_nao_alugada
     FROM livros
     LEFT JOIN reservas ON livros.id = reservas.livro_id AND reservas.status = 'Reservado'
     GROUP BY livros.id
@@ -514,12 +541,13 @@ app.get("/livros", (req, res) => {
 
     const books = rows.map(row => ({
       ...row,
-      quantidade_disponivel_nao_alugada: row.quantidade_disponivel - row.quantidade_alugada
+      quantidade_disponivel_nao_alugada: row.quantidade_disponivel - row.quantidade_reservada
     }));
 
     res.status(200).json(books);
   });
 });
+
 
 
 
@@ -565,6 +593,33 @@ app.delete("/reservas/:livro_id", (req, res) => {
   });
 });
 
+
+// Rota para deletar uma reserva específica
+app.delete("/reservas/:livro_id/:usuario_id", (req, res) => {
+  const { livro_id, usuario_id } = req.params;
+
+  db.run(
+    "DELETE FROM reservas WHERE livro_id = ? AND usuario_id = ?",
+    [livro_id, usuario_id],
+    function (err) {
+      if (err) {
+        console.error("Erro ao remover reserva:", err);
+        return res.status(500).json({ message: "Erro ao remover reserva" });
+      }
+
+      if (this.changes === 0) {
+        return res.status(404).json({ message: "Reserva não encontrada" });
+      }
+
+      return res.json({ message: "Reserva removida com sucesso." });
+    }
+  );
+});
+
+
+
+
+
 // 🔹 Deletar um livro
 app.delete("/livros/:id", (req, res) => {
   db.run(`DELETE FROM livros WHERE id = ?`, [req.params.id], function (err) {
@@ -575,25 +630,25 @@ app.delete("/livros/:id", (req, res) => {
   });
 });
 
-/// Rota para buscar usuários com reservas de livros
 app.get("/usuarios", (req, res) => {
   const query = `
-  SELECT 
-    usuarios.id, 
-    usuarios.userName, 
-    usuarios.email, 
-    usuarios.telefone, 
-    livros.id AS livro_id,
-    livros.nome_do_livro, 
-    livros.imagem, 
-    livros.status,  -- 🔹 Adicionando status do livro
-    reservas.data_reserva,
-    reservas.data_devolucao,
-    reservas.multa
-  FROM usuarios
-  LEFT JOIN reservas ON usuarios.id = reservas.usuario_id
-  LEFT JOIN livros ON reservas.livro_id = livros.id
-`;
+    SELECT 
+      usuarios.id, 
+      usuarios.userName, 
+      usuarios.email, 
+      usuarios.telefone, 
+      livros.id AS livro_id,
+      livros.nome_do_livro, 
+      livros.imagem, 
+      livros.status,
+      reservas.id AS reserva_id, 
+      reservas.data_reserva,
+      reservas.data_devolucao,
+      reservas.multa
+    FROM usuarios
+    LEFT JOIN reservas ON usuarios.id = reservas.usuario_id
+    LEFT JOIN livros ON reservas.livro_id = livros.id
+  `;
 
   db.all(query, (err, rows) => {
     if (err) {
@@ -610,10 +665,11 @@ app.get("/usuarios", (req, res) => {
           id: row.livro_id,
           nome_do_livro: row.nome_do_livro,
           imagem: row.imagem,
-          status: row.status, // 🔹 Agora o status é retornado
+          status: row.status,
           data_reserva: row.data_reserva,
           data_devolucao: row.data_devolucao,
           multa: row.multa,
+          reservaId: row.reserva_id,
         });
       } else {
         acc.push({
@@ -627,10 +683,11 @@ app.get("/usuarios", (req, res) => {
                   id: row.livro_id,
                   nome_do_livro: row.nome_do_livro,
                   imagem: row.imagem,
-                  status: row.status, // 🔹 Agora o status é retornado
+                  status: row.status,
                   data_reserva: row.data_reserva,
                   data_devolucao: row.data_devolucao,
                   multa: row.multa,
+                  reservaId: row.reserva_id,
                 },
               ]
             : [],
@@ -642,6 +699,12 @@ app.get("/usuarios", (req, res) => {
     res.status(200).json(usuarios);
   });
 });
+
+
+
+
+
+
 
 // Endpoint para pegar os usuários com os livros reservados
 app.get("/usuarios", (req, res) => {
@@ -693,35 +756,42 @@ app.get("/usuarios", (req, res) => {
   });
 });
 
-// Rota de criação de reserva
-app.post("/reservas", (req, res) => {
-  const { livro_id, usuario_id, data_reserva, data_devolucao, status, multa } =
-    req.body;
 
-  // Log de depuração para verificar os dados recebidos
-  console.log("Dados da reserva recebidos:", req.body);
+// Modificar a tabela reservas para armazenar o número de dias em atraso e a multa
+db.run(`ALTER TABLE reservas ADD COLUMN dias_atraso INTEGER DEFAULT 0`, (err) => {
+  if (err && err.message.includes("duplicate column name")) {
+    console.log("A coluna dias_atraso já existe.");
+  } else if (err) {
+    console.error("Erro ao adicionar coluna dias_atraso:", err);
+  } else {
+    console.log("Coluna dias_atraso adicionada com sucesso.");
+  }
+});
+
+// Atualizar a lógica de multa ao criar uma reserva
+app.post("/reservas", (req, res) => {
+  const { livro_id, usuario_id, data_reserva, data_devolucao, status, multa } = req.body;
 
   if (!livro_id || !usuario_id || !data_reserva || !data_devolucao || !status) {
-    return res
-      .status(400)
-      .json({ error: "Todos os campos obrigatórios devem ser preenchidos." });
+    return res.status(400).json({ error: "Todos os campos obrigatórios devem ser preenchidos." });
   }
 
-  const query = `INSERT INTO reservas (livro_id, usuario_id, data_reserva, data_devolucao, status, multa) VALUES (?, ?, ?, ?, ?, ?)`;
-
-  // Atualizar o status do livro para "Reservado"
-  db.run(
-    `UPDATE livros SET status = "Reservado" WHERE id = ?`,
-    [livro_id],
-    function (err) {
+  // Verificar se o usuário já reservou este livro
+  db.get(
+    `SELECT * FROM reservas WHERE livro_id = ? AND usuario_id = ? AND status = 'Reservado'`,
+    [livro_id, usuario_id],
+    (err, row) => {
       if (err) {
-        console.error("Erro ao atualizar status do livro:", err);
-        return res
-          .status(500)
-          .json({ error: "Erro ao atualizar status do livro." });
+        console.error("Erro ao verificar reservas existentes:", err);
+        return res.status(500).json({ error: "Erro ao verificar reservas existentes." });
       }
 
-      // Criar a reserva após atualizar o status do livro
+      if (row) {
+        return res.status(400).json({ error: "Você já reservou este livro." });
+      }
+
+      const query = `INSERT INTO reservas (livro_id, usuario_id, data_reserva, data_devolucao, status, multa) VALUES (?, ?, ?, ?, ?, ?)`;
+
       db.run(
         query,
         [livro_id, usuario_id, data_reserva, data_devolucao, status, multa],
@@ -745,6 +815,45 @@ app.post("/reservas", (req, res) => {
     }
   );
 });
+
+
+
+
+
+
+// Rota para calcular e atualizar a multa
+app.post("/atualizar-multa/:reserva_id", (req, res) => {
+  const { reserva_id } = req.params;
+
+  db.get(`SELECT data_devolucao FROM reservas WHERE id = ?`, [reserva_id], (err, row) => {
+    if (err) {
+      console.error("Erro ao buscar reserva:", err);
+      return res.status(500).json({ error: "Erro ao buscar reserva." });
+    }
+
+    if (!row) {
+      return res.status(404).json({ error: "Reserva não encontrada." });
+    }
+
+    const data_devolucao = new Date(row.data_devolucao);
+    const hoje = new Date();
+    let dias_atraso = Math.ceil((hoje - data_devolucao) / (1000 * 60 * 60 * 24));
+    dias_atraso = dias_atraso > 0 ? dias_atraso : 0; // garantir que dias_atraso não seja negativo
+
+    const multa = 10 + dias_atraso * 2;
+
+    db.run(`UPDATE reservas SET multa = ?, dias_atraso = ? WHERE id = ?`, [multa, dias_atraso, reserva_id], function (err) {
+      if (err) {
+        console.error("Erro ao atualizar multa:", err);
+        return res.status(500).json({ error: "Erro ao atualizar multa." });
+      }
+
+      res.status(200).json({ message: "Multa atualizada com sucesso!", multa, dias_atraso });
+    });
+  });
+});
+
+
 
 // Endpoint para buscar livros com informações de reserva, status, multa e tempo de atraso
 app.get("/livros-com-reservas", (req, res) => {
@@ -792,19 +901,19 @@ app.get("/livro-detalhes/:id", (req, res) => {
       livros.sinopse,
       livros.status,
       livros.quantidade_disponivel,
+      COUNT(reservas.id) AS quantidade_reservada,
       (livros.quantidade_disponivel - COUNT(reservas.id)) AS quantidade_disponivel_nao_alugada,
       reservas.id AS reserva_id,
       reservas.status AS reserva_status,
       reservas.data_reserva,
       reservas.data_devolucao,
       reservas.multa,
-      reservas.livro_id,
       usuarios.userName AS nome_usuario,
       usuarios.email AS usuario_email,
       usuarios.cpf AS usuario_cpf,
       usuarios.telefone AS usuario_telefone
     FROM livros
-    LEFT JOIN reservas ON livros.id = reservas.livro_id
+    LEFT JOIN reservas ON livros.id = reservas.livro_id AND reservas.status = 'Reservado'
     LEFT JOIN usuarios ON reservas.usuario_id = usuarios.id
     WHERE livros.id = ?
     GROUP BY reservas.id
@@ -829,6 +938,7 @@ app.get("/livro-detalhes/:id", (req, res) => {
       sinopse: rows[0].sinopse,
       status: rows[0].status,
       quantidade_disponivel: rows[0].quantidade_disponivel,
+      quantidade_reservada: rows[0].quantidade_reservada,
       quantidade_disponivel_nao_alugada: rows[0].quantidade_disponivel_nao_alugada,
       reservas: rows.map(row => ({
         reserva_id: row.reserva_id,
@@ -839,14 +949,18 @@ app.get("/livro-detalhes/:id", (req, res) => {
         usuario_telefone: row.usuario_telefone,
         data_reserva: row.data_reserva,
         data_devolucao: row.data_devolucao,
-        multa: row.multa,
-        tempo_atraso: row.tempo_atraso
+        multa: row.multa
       }))
     };
 
     res.json(bookDetails);
   });
 });
+
+
+
+
+
 
 
 

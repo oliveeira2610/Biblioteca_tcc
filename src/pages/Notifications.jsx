@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
-import "../../src/styles/Notifications.css";
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import '../../src/styles/search-books.css'; // Usando o mesmo arquivo de estilos da tela SearchBooks
 
 function Notifications() {
   const [notifications, setNotifications] = useState([]);
   const [user, setUser] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserDetails = async () => {
@@ -83,23 +85,41 @@ function Notifications() {
   };
 
   return (
-    <div className="notifications-container">
+    <div className="search-books-container">
       <h1>Notificações</h1>
       <button onClick={clearAllNotifications} className="clear-all-button">
         Limpar Todas as Notificações
       </button>
       {notifications.length > 0 ? (
-        <ul>
+        <div className="books-list">
           {notifications.map((notification, index) => (
-            <li key={index}>
-              <p>{notification.message}</p>
+            <div
+              key={index}
+              className="book-card"
+              onClick={() => navigate(`/BookDescription/${notification.book_id}`)}
+            >
+              {notification.imagem ? (
+                <img
+                  src={notification.imagem}
+                  alt={notification.book_name}
+                  className="book-card-image"
+                />
+              ) : (
+                <div className="no-image-placeholder">Sem imagem</div>
+              )}
+              <h3 className="book-card-title">{notification.book_name}</h3>
+              <p className="book-card-author">{notification.autor}</p>
+              <p className={`book-availability ${notification.book_status === 'Disponível' ? 'available' : 'unavailable'}`}>
+                {notification.book_status === 'Disponível' ? 'Disponível' : 'Indisponível'}
+              </p>
+              <p className="notification-message">{notification.message}</p>
               <small>{new Date(notification.timestamp).toLocaleString()}</small>
-              <button onClick={() => cancelBookNotification(notification.book_id)} className="cancel-notification-button">
-                Cancelar Notificação
+              <button onClick={(e) => { e.stopPropagation(); cancelBookNotification(notification.book_id); }} className="cancel-notification-button">
+                Limpar Notificação
               </button>
-            </li>
+            </div>
           ))}
-        </ul>
+        </div>
       ) : (
         <p>Sem notificações no momento</p>
       )}
