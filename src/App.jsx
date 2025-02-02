@@ -13,6 +13,8 @@ import BookDescription from './pages/BookDescription';
 import BookStatus from './pages/BookStatus';
 import EditBook from './pages/EditBook';
 import PerfilUsuario from './pages/PerfilUsuario';
+import Dashboard from './pages/Dashboard';
+import HistoricoReservas from './pages/HistoricoReservas';
 import Notifications from './pages/Notifications';
 import Navbar from './components/Navbar';  
 import './styles/global.css';
@@ -45,8 +47,10 @@ function Layout() {
         <Route path="/search" element={<SearchBooks />} /> 
         <Route path="/addBooks" element={<AddBooks />} /> 
         <Route path="/BookDescription/:id" element={<BookDescription />} />
+        <Route path="/historicoReservas" element={<HistoricoReservas />} />
         <Route path="/notifications" element={<Notifications />} />
-        <Route path="/book/:id" element={<BookDetails />} />
+        <Route path="/book/:id" element={<BookDetails />} /> 
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/manage-database-books" element={<ManageDatabaseBooks />} />
         <Route path="/bookStatus/:id" element={<BookStatus />} />
         <Route path="/edit-book/:bookId" element={<EditBook />} />

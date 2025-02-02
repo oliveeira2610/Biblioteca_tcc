@@ -119,7 +119,7 @@ db.serialize(() => {
 
 console.log("Tabelas criadas ou já existentes.");
 
-// Função para criar notificações para todos os usuários interessados
+
 // Função para criar notificações para todos os usuários interessados
 const createNotification = (bookId, message) => {
   db.all(
@@ -149,6 +149,25 @@ const createNotification = (bookId, message) => {
     }
   );
 };
+
+
+// Endpoint para obter dados do dashboard
+app.get("/dashboard", async (req, res) => {
+  const db = await openDb();
+  const totalBooks = await db.get("SELECT COUNT(*) AS count FROM livros");
+  const totalUsers = await db.get("SELECT COUNT(*) AS count FROM usuarios");
+  const totalRented = await db.get("SELECT COUNT(*) AS count FROM reservas WHERE status = 'Reservado'");
+  const totalReturned = await db.get("SELECT COUNT(*) AS count FROM reservas WHERE status = 'Devolvido'");
+  const totalFines = await db.get("SELECT SUM(multa) AS total FROM reservas WHERE multa > 0");
+
+  res.json({
+    totalBooks: totalBooks.count,
+    totalUsers: totalUsers.count,
+    totalRented: totalRented.count,
+    totalReturned: totalReturned.count,
+    totalFines: totalFines.total,
+  });
+});
 
 // Endpoint para atualizar o status do livro e notificar os usuários
 app.put("/livros/:id", (req, res) => {
@@ -1203,6 +1222,47 @@ app.get("/book-status/:id", (req, res) => {
     }
   );
 });
+
+// Endpoint para atualizar o status da reserva quando o livro for devolvido
+app.put("/reservas/:id/devolver", async (req, res) => {
+  const reservaId = req.params.id;
+  const db = await openDb();
+
+  try {
+    // Atualiza a reserva para marcar como devolvida
+    await db.run(
+      `UPDATE reservas SET status = 'Devolvido', data_devolucao = CURRENT_TIMESTAMP WHERE id = ?`,
+      reservaId
+    );
+
+    res.json({ message: "Livro devolvido com sucesso!" });
+  } catch (error) {
+    console.error("Erro ao atualizar a reserva:", error);
+    res.status(500).json({ error: "Erro ao atualizar a reserva." });
+  }
+});
+
+// Endpoint para obter o histórico de reservas
+app.get("/reservas/historico", async (req, res) => {
+  const db = await openDb();
+
+  try {
+    const historico = await db.all(`
+      SELECT r.id, u.userName AS usuario, l.nome_do_livro AS livro, r.data_reserva, r.data_devolucao, r.status
+      FROM reservas r
+      JOIN usuarios u ON r.usuario_id = u.id
+      JOIN livros l ON r.livro_id = l.id
+      ORDER BY r.data_reserva DESC
+    `);
+
+    res.json(historico);
+  } catch (error) {
+    console.error("Erro ao buscar histórico de reservas:", error);
+    res.status(500).json({ error: "Erro ao buscar histórico de reservas." });
+  }
+});
+
+
 
 // Iniciar o servidor
 app.listen(PORT, () => {

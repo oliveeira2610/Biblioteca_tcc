@@ -30,6 +30,9 @@ const Navbar = () => {
             <Link to="/perfil-usuario">Perfil</Link>
           </li>
           <li>
+            <Link to="/dashboard">Dashboard</Link>
+          </li>
+          <li>
             <Link to="/search">Pesquisar Livros</Link>
           </li>{" "}
           {/* Novo link */}
