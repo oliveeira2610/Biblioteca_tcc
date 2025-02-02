@@ -38,9 +38,12 @@ melhorias das paginas
 
 // Feito // separar as reservas na bookdetails em cards grandes individuais 
 
-colocar segurança na senha de login e registro comb bcrypt
+
+PRECISA FAZER:
 
 arrumar as notificações se não estiverem chegando
+
+colocar segurança na senha de login e registro comb bcrypt
 
 criar tipo de usuario Ex: Admin e comum, e determinar as paginas que só o usuario comum pode ver e entrar na pagina
 
