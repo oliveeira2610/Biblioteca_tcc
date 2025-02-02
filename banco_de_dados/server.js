@@ -115,6 +115,17 @@ db.serialize(() => {
       END;
     `);
 
+    db.run(`
+      CREATE TABLE IF NOT EXISTS historico_devolucoes (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        usuario_id INTEGER NOT NULL,
+        livro_id INTEGER NOT NULL,
+        data_devolucao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (usuario_id) REFERENCES usuarios(id),
+        FOREIGN KEY (livro_id) REFERENCES livros(id)
+      );
+    `);
+
 });
 
 console.log("Tabelas criadas ou já existentes.");
@@ -157,7 +168,7 @@ app.get("/dashboard", async (req, res) => {
   const totalBooks = await db.get("SELECT COUNT(*) AS count FROM livros");
   const totalUsers = await db.get("SELECT COUNT(*) AS count FROM usuarios");
   const totalRented = await db.get("SELECT COUNT(*) AS count FROM reservas WHERE status = 'Reservado'");
-  const totalReturned = await db.get("SELECT COUNT(*) AS count FROM reservas WHERE status = 'Devolvido'");
+  const totalReturned = await db.get("SELECT COUNT(*) AS count FROM historico_devolucoes");
   const totalFines = await db.get("SELECT SUM(multa) AS total FROM reservas WHERE multa > 0");
 
   res.json({
@@ -165,9 +176,10 @@ app.get("/dashboard", async (req, res) => {
     totalUsers: totalUsers.count,
     totalRented: totalRented.count,
     totalReturned: totalReturned.count,
-    totalFines: totalFines.total,
+    totalFines: totalFines.total ? totalFines.total : 0,
   });
 });
+
 
 // Endpoint para atualizar o status do livro e notificar os usuários
 app.put("/livros/:id", (req, res) => {
@@ -892,9 +904,6 @@ app.get("/usuarios", (req, res) => {
 
 
 
-
-
-
 // Endpoint para pegar os usuários com os livros reservados
 app.get("/usuarios", (req, res) => {
   console.log("Requisição para /usuarios recebida");
@@ -1223,17 +1232,33 @@ app.get("/book-status/:id", (req, res) => {
   );
 });
 
-// Endpoint para atualizar o status da reserva quando o livro for devolvido
+
+// Endpoint para marcar devolução de um livro
 app.put("/reservas/:id/devolver", async (req, res) => {
   const reservaId = req.params.id;
   const db = await openDb();
 
   try {
+    console.log(`Iniciando a devolução para a reserva ID: ${reservaId}`);
+
+    // Verificar se a reserva existe
+    const reserva = await db.get(`SELECT * FROM reservas WHERE id = ?`, reservaId);
+    if (!reserva) {
+      console.error(`Nenhuma reserva encontrada com ID: ${reservaId}`);
+      return res.status(404).json({ error: "Reserva não encontrada." });
+    }
+
     // Atualiza a reserva para marcar como devolvida
-    await db.run(
+    const updateResult = await db.run(
       `UPDATE reservas SET status = 'Devolvido', data_devolucao = CURRENT_TIMESTAMP WHERE id = ?`,
       reservaId
     );
+    console.log(`Resultado da atualização: ${updateResult.changes} alterações.`);
+
+    // Registrar no histórico de devoluções
+    await db.run(`
+      INSERT INTO historico_devolucoes (usuario_id, livro_id) VALUES (?, ?)
+    `, reserva.usuario_id, reserva.livro_id);
 
     res.json({ message: "Livro devolvido com sucesso!" });
   } catch (error) {
@@ -1241,6 +1266,7 @@ app.put("/reservas/:id/devolver", async (req, res) => {
     res.status(500).json({ error: "Erro ao atualizar a reserva." });
   }
 });
+
 
 // Endpoint para obter o histórico de reservas
 app.get("/reservas/historico", async (req, res) => {
@@ -1262,6 +1288,30 @@ app.get("/reservas/historico", async (req, res) => {
   }
 });
 
+
+// Endpoint para obter o histórico de devoluções
+app.get("/historico-devolucoes", async (req, res) => {
+  const db = await openDb();
+
+  try {
+    const historico = await db.all(`
+      SELECT 
+        h.id,
+        u.userName AS usuario,
+        l.nome_do_livro AS livro,
+        h.data_devolucao
+      FROM historico_devolucoes h
+      JOIN usuarios u ON h.usuario_id = u.id
+      JOIN livros l ON h.livro_id = l.id
+      ORDER BY h.data_devolucao DESC
+    `);
+
+    res.json(historico);
+  } catch (error) {
+    console.error("Erro ao buscar histórico de devoluções:", error);
+    res.status(500).json({ error: "Erro ao buscar histórico de devoluções." });
+  }
+});
 
 
 // Iniciar o servidor

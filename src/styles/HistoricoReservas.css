@@ -3,13 +3,14 @@
     background-color: #f8f9fa;
   }
   
-  h1 {
+  h1, h2 {
     margin-bottom: 20px;
   }
   
   table {
     width: 100%;
     border-collapse: collapse;
+    margin-bottom: 20px;
   }
   
   thead {

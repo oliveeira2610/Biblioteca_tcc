@@ -4,6 +4,7 @@
 
 // const Users = () => {
 //   const [usuarios, setUsuarios] = useState([]);
+//   const [historicoDevolucoes, setHistoricoDevolucoes] = useState([]);
 //   const navigate = useNavigate();
 
 //   const fetchUsers = async () => {
@@ -17,42 +18,32 @@
 //     }
 //   };
 
-//   useEffect(() => {
-//     fetchUsers();
-//   }, []);
-
-//   // Função para deletar uma reserva
-//   const handleCancelReservation = async (livroId, usuarioId) => {
+//   const fetchHistoricoDevolucoes = async () => {
 //     try {
-//       const response = await fetch(`http://localhost:3001/reservas/${livroId}/${usuarioId}`, { method: "DELETE" });
-//       if (!response.ok) throw new Error("Erro ao cancelar reserva");
-//       alert("Reserva cancelada!");
-//       fetchUsers(); // Atualiza os dados
+//       const response = await fetch("http://localhost:3001/historico-devolucoes");
+//       if (!response.ok) throw new Error("Erro ao buscar histórico de devoluções");
+//       const data = await response.json();
+//       setHistoricoDevolucoes(data);
 //     } catch (error) {
-//       console.error("Erro ao cancelar reserva:", error);
+//       console.error("Erro ao buscar histórico de devoluções:", error);
 //     }
 //   };
 
-//   // Função para reservar um livro
-//   const handleReserveBook = async (livroId) => {
+//   useEffect(() => {
+//     fetchUsers();
+//     fetchHistoricoDevolucoes();
+//   }, []);
+
+//   // Função para marcar devolução de um livro
+//   const handleReturnBook = async (reservaId) => {
 //     try {
-//       const response = await fetch("http://localhost:3001/reservas", {
-//         method: "POST",
-//         headers: { "Content-Type": "application/json" },
-//         body: JSON.stringify({
-//           livro_id: livroId,
-//           usuario_id: localStorage.getItem("userId"),
-//           data_reserva: new Date().toISOString(),
-//           data_devolucao: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-//           status: "Reservado",
-//           multa: 0,
-//         }),
-//       });
-//       if (!response.ok) throw new Error("Erro ao reservar livro");
-//       alert("Livro reservado com sucesso!");
+//       const response = await fetch(`http://localhost:3001/reservas/${reservaId}/devolver`, { method: "PUT" });
+//       if (!response.ok) throw new Error("Erro ao marcar devolução");
+//       alert("Livro devolvido com sucesso!");
 //       fetchUsers();
+//       fetchHistoricoDevolucoes();
 //     } catch (error) {
-//       console.error("Erro ao reservar livro:", error);
+//       console.error("Erro ao marcar devolução:", error);
 //     }
 //   };
 
@@ -99,13 +90,49 @@
 //                       {book.atrasado && <p className="book-card-late">Atrasado por: {book.tempoAtraso} dias</p>}
 //                       {book.multas && book.multas > 0 && <p className="book-card-fine">Multa: R$ {book.multas.toFixed(2)}</p>}
 
-
-                  
-//                       <button onClick={(e) => { e.stopPropagation(); handleCancelReservation(book.id, usuario.id); }}>Liberar Reserva</button>
+//                       <button onClick={(e) => { e.stopPropagation(); handleReturnBook(book.reservaId); }}>Marcar como Devolvido</button>
 //                     </div>
 //                   ))
 //                 ) : (
 //                   <p>Sem livros reservados</p>
+//                 )}
+//               </div>
+//             </div>
+
+//             <div className="books-section">
+//               <h4>Livros Devolvidos:</h4>
+//               <div className="books-cards">
+//                 {historicoDevolucoes.filter(devolucao => devolucao.usuario === usuario.userName).length > 0 ? (
+//                   historicoDevolucoes.filter(devolucao => devolucao.usuario === usuario.userName).map((devolucao) => (
+//                     <div
+//                       key={devolucao.id}
+//                       className="book-card"
+//                       onClick={() => navigate(`/book/${devolucao.livro_id}`)}
+//                       style={{ cursor: "pointer" }}
+//                     >
+//                       {devolucao.imagem ? (
+//                         <img
+//                           src={devolucao.imagem.startsWith("http") ? devolucao.imagem : `http://localhost:3001/${devolucao.imagem}`}
+//                           alt={devolucao.livro}
+//                           className="book-card-image"
+//                           onError={(e) => (e.target.src = "/placeholder.jpg")} // Mostra uma imagem padrão se der erro
+//                         />
+//                       ) : (
+//                         <div className="no-image-placeholder">Sem imagem</div>
+//                       )}
+
+//                       <h3 className="book-card-title">{devolucao.livro}</h3>
+//                       <p className="book-card-author">{devolucao.autor}</p>
+
+//                       <p className="book-card-status" style={{ color: "green" }}>
+//                         Status: Devolvido
+//                       </p>
+
+//                       {devolucao.data_devolucao && <p className="book-card-return-date">Devolvido em: {new Date(devolucao.data_devolucao).toLocaleDateString()}</p>}
+//                     </div>
+//                   ))
+//                 ) : (
+//                   <p>Sem livros devolvidos</p>
 //                 )}
 //               </div>
 //             </div>
@@ -124,6 +151,7 @@ import { useNavigate } from "react-router-dom";
 
 const Users = () => {
   const [usuarios, setUsuarios] = useState([]);
+  const [historicoDevolucoes, setHistoricoDevolucoes] = useState([]);
   const navigate = useNavigate();
 
   const fetchUsers = async () => {
@@ -137,12 +165,19 @@ const Users = () => {
     }
   };
 
-  useEffect(() => {
-    fetchUsers();
-  }, []);
+  const fetchHistoricoDevolucoes = async () => {
+    try {
+      const response = await fetch("http://localhost:3001/historico-devolucoes");
+      if (!response.ok) throw new Error("Erro ao buscar histórico de devoluções");
+      const data = await response.json();
+      setHistoricoDevolucoes(data);
+    } catch (error) {
+      console.error("Erro ao buscar histórico de devoluções:", error);
+    }
+  };
 
-  // Função para deletar uma reserva
-  const handleCancelReservation = async (livroId, usuarioId) => {
+   // Função para deletar uma reserva
+   const handleCancelReservation = async (livroId, usuarioId) => {
     try {
       const response = await fetch(`http://localhost:3001/reservas/${livroId}/${usuarioId}`, { method: "DELETE" });
       if (!response.ok) throw new Error("Erro ao cancelar reserva");
@@ -153,28 +188,10 @@ const Users = () => {
     }
   };
 
-  // Função para reservar um livro
-  const handleReserveBook = async (livroId) => {
-    try {
-      const response = await fetch("http://localhost:3001/reservas", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          livro_id: livroId,
-          usuario_id: localStorage.getItem("userId"),
-          data_reserva: new Date().toISOString(),
-          data_devolucao: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-          status: "Reservado",
-          multa: 0,
-        }),
-      });
-      if (!response.ok) throw new Error("Erro ao reservar livro");
-      alert("Livro reservado com sucesso!");
-      fetchUsers();
-    } catch (error) {
-      console.error("Erro ao reservar livro:", error);
-    }
-  };
+  useEffect(() => {
+    fetchUsers();
+    fetchHistoricoDevolucoes();
+  }, []);
 
   // Função para marcar devolução de um livro
   const handleReturnBook = async (reservaId) => {
@@ -183,10 +200,12 @@ const Users = () => {
       if (!response.ok) throw new Error("Erro ao marcar devolução");
       alert("Livro devolvido com sucesso!");
       fetchUsers();
+      fetchHistoricoDevolucoes();
     } catch (error) {
       console.error("Erro ao marcar devolução:", error);
     }
   };
+  
 
   return (
     <div className="users-container">
@@ -230,15 +249,50 @@ const Users = () => {
 
                       {book.atrasado && <p className="book-card-late">Atrasado por: {book.tempoAtraso} dias</p>}
                       {book.multas && book.multas > 0 && <p className="book-card-fine">Multa: R$ {book.multas.toFixed(2)}</p>}
-
-                      <button onClick={(e) => { e.stopPropagation(); handleCancelReservation(book.id, usuario.id); }}>Liberar Reserva</button>
-                      {book.status === "Reservado" && (
-                        <button onClick={(e) => { e.stopPropagation(); handleReturnBook(book.reservaId); }}>Marcar como Devolvido</button>
-                      )}
+                      
+                      <button onClick={(e) => { e.stopPropagation(); handleReturnBook(book.reservaId); handleCancelReservation(book.id, usuario.id); }}>Marcar como Devolvido</button>
                     </div>
                   ))
                 ) : (
                   <p>Sem livros reservados</p>
+                )}
+              </div>
+            </div>
+
+            <div className="books-section">
+              <h4>Livros Devolvidos:</h4>
+              <div className="books-cards">
+                {historicoDevolucoes.filter(devolucao => devolucao.usuario === usuario.userName).length > 0 ? (
+                  historicoDevolucoes.filter(devolucao => devolucao.usuario === usuario.userName).map((devolucao) => (
+                    <div
+                      key={devolucao.id}
+                      className="book-card"
+                      onClick={() => navigate(`/book/${devolucao.livro_id}`)}
+                      style={{ cursor: "pointer" }}
+                    >
+                      {devolucao.imagem ? (
+                        <img
+                          src={devolucao.imagem.startsWith("http") ? devolucao.imagem : `http://localhost:3001/${devolucao.imagem}`}
+                          alt={devolucao.livro}
+                          className="book-card-image"
+                          onError={(e) => (e.target.src = "/placeholder.jpg")} // Mostra uma imagem padrão se der erro
+                        />
+                      ) : (
+                        <div className="no-image-placeholder">Sem imagem</div>
+                      )}
+
+                      <h3 className="book-card-title">{devolucao.livro}</h3>
+                      <p className="book-card-author">{devolucao.autor}</p>
+
+                      <p className="book-card-status" style={{ color: "green" }}>
+                        Status: Devolvido
+                      </p>
+                      
+                      {devolucao.data_devolucao && <p className="book-card-return-date">Devolvido em: {new Date(devolucao.data_devolucao).toLocaleDateString()}</p>}
+                    </div>
+                  ))
+                ) : (
+                  <p>Sem livros devolvidos</p>
                 )}
               </div>
             </div>
