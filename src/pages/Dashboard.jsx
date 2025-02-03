@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import "../../src/styles/Dashboard.css"; // Adicione um arquivo CSS para os estilos
+import "../../src/styles/dashboard.css"; // Adicione um arquivo CSS para os estilos
 
 const Dashboard = () => {
   const [data, setData] = useState({
