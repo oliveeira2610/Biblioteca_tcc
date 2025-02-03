@@ -15,6 +15,7 @@ import EditBook from './pages/EditBook';
 import PerfilUsuario from './pages/PerfilUsuario';
 import Dashboard from './pages/Dashboard';
 import HistoricoReservas from './pages/HistoricoReservas';
+import ReservedBooks from './pages/ReservedBooks';
 import Notifications from './pages/Notifications';
 import Navbar from './components/Navbar';  
 import './styles/global.css';
@@ -50,6 +51,7 @@ function Layout() {
         <Route path="/historicoReservas" element={<HistoricoReservas />} />
         <Route path="/notifications" element={<Notifications />} />
         <Route path="/book/:id" element={<BookDetails />} /> 
+        <Route path="/reservedBooks" element={<ReservedBooks />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/manage-database-books" element={<ManageDatabaseBooks />} />
         <Route path="/bookStatus/:id" element={<BookStatus />} />

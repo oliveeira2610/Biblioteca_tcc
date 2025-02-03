@@ -168,7 +168,7 @@ app.get("/dashboard", async (req, res) => {
   const totalBooks = await db.get("SELECT COUNT(*) AS count FROM livros");
   const totalUsers = await db.get("SELECT COUNT(*) AS count FROM usuarios");
   const totalRented = await db.get("SELECT COUNT(*) AS count FROM reservas WHERE status = 'Reservado'");
-  const totalReturned = await db.get("SELECT COUNT(*) AS count FROM reservas WHERE status = 'Devolvido'");
+  const totalReturned = await db.get("SELECT COUNT(*) AS count FROM historico_devolucoes");
   const totalFines = await db.get("SELECT SUM(multa) AS total FROM reservas WHERE multa > 0");
 
   res.json({
@@ -176,9 +176,10 @@ app.get("/dashboard", async (req, res) => {
     totalUsers: totalUsers.count,
     totalRented: totalRented.count,
     totalReturned: totalReturned.count,
-    totalFines: totalFines.total,
+    totalFines: totalFines.total ? totalFines.total : 0,
   });
 });
+
 
 // Endpoint para atualizar o status do livro e notificar os usuários
 app.put("/livros/:id", (req, res) => {
@@ -1238,16 +1239,21 @@ app.put("/reservas/:id/devolver", async (req, res) => {
   const db = await openDb();
 
   try {
+    console.log(`Iniciando a devolução para a reserva ID: ${reservaId}`);
+
+    // Verificar se a reserva existe
+    const reserva = await db.get(`SELECT * FROM reservas WHERE id = ?`, reservaId);
+    if (!reserva) {
+      console.error(`Nenhuma reserva encontrada com ID: ${reservaId}`);
+      return res.status(404).json({ error: "Reserva não encontrada." });
+    }
+
     // Atualiza a reserva para marcar como devolvida
-    await db.run(
+    const updateResult = await db.run(
       `UPDATE reservas SET status = 'Devolvido', data_devolucao = CURRENT_TIMESTAMP WHERE id = ?`,
       reservaId
     );
-
-    // Obter os dados do livro e do usuário para registrar no histórico
-    const reserva = await db.get(`
-      SELECT usuario_id, livro_id FROM reservas WHERE id = ?
-    `, reservaId);
+    console.log(`Resultado da atualização: ${updateResult.changes} alterações.`);
 
     // Registrar no histórico de devoluções
     await db.run(`
@@ -1260,7 +1266,6 @@ app.put("/reservas/:id/devolver", async (req, res) => {
     res.status(500).json({ error: "Erro ao atualizar a reserva." });
   }
 });
-
 
 
 // Endpoint para obter o histórico de reservas

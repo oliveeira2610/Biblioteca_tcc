@@ -21,6 +21,13 @@ const Dashboard = () => {
   return (
     <div className="dashboard">
       <h1>Dashboard da Biblioteca</h1>
+
+      <Link to="/addBooks" className="card">
+        <h2>Adicionar Livros</h2>
+  
+      </Link>
+
+
       <Link to="/manage-database-books" className="card">
         <h2>Total de Livros</h2>
         <p>{data.totalBooks}</p>
@@ -31,11 +38,11 @@ const Dashboard = () => {
         <p>{data.totalUsers}</p>
       </Link>
 
-      <div className="card">
+      <Link to="/reservedBooks" className="card">
         <h2>Total de Livros Alugados</h2>
         <p>{data.totalRented}</p>
-      </div>
-
+      </Link>
+      
       <Link to="/historicoReservas" className="card">
         <h2>Total de Livros Devolvidos</h2>
         <p>{data.totalReturned}</p>
@@ -45,6 +52,7 @@ const Dashboard = () => {
         <h2>Total de Multas Aplicadas</h2>
         <p>R$ {data.totalFines}</p>
       </div>
+      
     </div>
   );
 };

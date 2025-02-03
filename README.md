@@ -38,6 +38,8 @@ melhorias das paginas
 
 // Feito // separar as reservas na bookdetails em cards grandes individuais 
 
+// Feito // Colocar na navbar comprimento com o nome do usuario automaticamente Ex: Ola Japa!.
+
 
 PRECISA FAZER:
 
@@ -51,7 +53,6 @@ criar pagina acervo.
 
 livros aleatorios na home 
 
-Colocar na navbar comprimento com o nome do usuario automaticamente Ex: Ola Japa!.
 
 
 
