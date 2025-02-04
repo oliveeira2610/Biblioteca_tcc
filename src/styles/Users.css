@@ -1,61 +1,65 @@
-.users-container {
-    padding: 20px;
+/* Estilização principal do contêiner de usuários */
+.users-page-container {
     display: flex;
     flex-direction: column;
-    gap: 20px;
-}
-
-.user-card {
+    align-items: center;
+    padding: 20px;
     background-color: #f4f4f9;
+    min-height: 100vh;
+  }
+  
+  /* Estilização do card de usuário */
+  .user-profile-card {
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.user-card h3 {
-    margin: 0;
-    font-size: 24px;
+    margin: 20px;
+    width: 80%;
+    max-width: 500px;
+    text-align: center;
+  }
+  
+  .user-profile-card h3 {
     color: #333;
-}
-
-.user-card p {
-    font-size: 16px;
+    margin-bottom: 10px;
+  }
+  
+  .user-profile-card p {
     color: #666;
-}
-
-.books-section {
-    margin-top: 20px;
-}
-
-.books-cards {
-    display: flex;
-    gap: 15px;
-    flex-wrap: wrap;
-}
-
-.book-card {
-    background-color: #fff;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    width: 200px;
-    cursor: pointer;
-    transition: transform 0.2s ease-in-out;
-}
-
-.book-card:hover {
-    transform: scale(1.05);
-}
-
-.book-card h5 {
-    font-size: 18px;
-    color: #333;
-}
-
-.book-card p {
     font-size: 14px;
-    color: #555;
-}
+  }
+  
+  /* Seção de livros reservados e devolvidos */
+  .books-section {
+    margin-top: 20px;
+  }
+  
+  .books-section h4 {
+    color: #444;
+    margin-bottom: 10px;
+    text-decoration: underline;
+  }
+  
+  .books-cards {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+  }
+  
+  /* Botão de devolução */
+  .return-book-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .return-book-button:hover {
+    background-color: #45a049;
+  }

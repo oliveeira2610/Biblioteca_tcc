@@ -1,92 +1,82 @@
-/* Container principal */
+/* Estilização principal do contêiner de busca de livros */
 .search-books-container {
-    padding: 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
-    font-family: Arial, sans-serif;
-  }
-  
-  /* Título da página */
-  h4 {
-    text-align: center;
-    color: #4a90e2;
-    margin-bottom: 1rem;
-  }
-  
-  /* Formulário de busca */
-  .search-form {
-    display: flex;
-    justify-content: center;
-    margin-bottom: 2rem;
-  }
-  
-  .search-input {
-    width: 70%;
-    padding: 0.8rem;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  
-  .search-button {
-    padding: 0.8rem 1.5rem;
-    font-size: 1rem;
-    color: #fff;
-    background-color: #4a90e2;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-left: 0.5rem;
-  }
-  
-  .search-button:hover {
-    background-color: #357ab7;
-  }
-  
-  
-  .clear-button {
-    margin-top: 10px;
-    padding: 10px;
-    background-color: #f44336; /* Vermelho */
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-  }
-  
-  .clear-button:hover {
-    background-color: #d32f2f; /* Tom de vermelho mais escuro */
-  }
-  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10vh;
+  background-color: #f8f9fa;
+  min-height: 100vh;
+  justify-content: center;
+}
 
-  .status-message {
-    margin-top: 20px;
-    padding: 10px;
-    background-color: #f0f0f0;
-    border-radius: 5px;
-    text-align: center;
-    font-weight: bold;
-  }
-  
-  .status-message.success {
-    color: green;
-  }
-  
-  .status-message.error {
-    color: red;
-  }
-  .book-availability {
-    font-weight: bold;
-    font-size: 16px;
-    margin-top: 10px;
-  }
-  
-  .book-availability.available {
-    color: green;
-  }
-  
-  .book-availability.unavailable {
-    color: red;
-  }
-  
+.search-books-container h1 {
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* Estilização do formulário de busca */
+
+.search-input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  width: 250px;
+}
+
+.search-button {
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.search-button:hover {
+  background-color: #0056b3;
+}
+
+/* Mensagem de erro */
+.no-results {
+  color: #d9534f;
+  font-size: 16px;
+  margin-top: 10px;
+}
+
+/* Seção de gêneros */
+.genre-section {
+  width: 80%;
+  max-width: 1000px;
+  margin-bottom: 30px;
+}
+
+.genre-section h2 {
+  color: #444;
+  margin-bottom: 15px;
+  border-bottom: 2px solid #ccc;
+  padding-bottom: 5px;
+}
+
+/* .books-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: center;
+} */
+
+/* Estilização do status de disponibilidade */
+.book-availability {
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+.available {
+  color: green;
+}
+
+.unavailable {
+  color: red;
+}

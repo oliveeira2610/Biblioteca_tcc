@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import "../../src/styles/global.css";
+import "../../src/styles/navbar.css";
 
 const Navbar = () => {
   const [userName, setUserName] = useState("");

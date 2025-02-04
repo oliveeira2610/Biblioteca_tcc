@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { format } from "date-fns";
+import "../../src/styles/global.css";
 import "../../src/styles/BookDetails.css";
 
 function BookDetails() {

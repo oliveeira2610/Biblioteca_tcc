@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../../src/styles/search-books.css'; // Usando o mesmo arquivo de estilos da tela SearchBooks
+import "../../src/styles/global.css";
+import '../../src/styles/notifications.css'; // Usando o mesmo arquivo de estilos da tela SearchBooks
 
 function Notifications() {
   const [notifications, setNotifications] = useState([]);
@@ -85,7 +86,7 @@ function Notifications() {
   };
 
   return (
-    <div className="search-books-container">
+    <div className="notifications-page-container">
       <h1>Notificações</h1>
       <button onClick={clearAllNotifications} className="clear-all-button">
         Limpar Todas as Notificações

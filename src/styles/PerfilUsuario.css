@@ -1,83 +1,67 @@
-.search-books-container {
-  margin: 20px;
-}
-
-.dados-pessoais,
-.livros-reservados,
-.livros-para-notificacao {
-  margin-bottom: 20px;
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-li {
-  padding: 10px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  margin-bottom: 10px;
-}
-
-.books-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-}
-
-.book-card {
-  background-color: #f8f9fa;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  max-width: 300px;
-  width: 100%;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-
-.book-card:hover {
-  transform: translateY(-5px);
-}
-
-.book-card-image {
-  width: 100%;
-  height: auto;
-  border-radius: 8px;
-}
-
-.book-card-title {
-  margin: 10px 0;
-  font-size: 1.2em;
-  font-weight: bold;
-}
-
-.book-card-author {
-  margin-bottom: 10px;
-  font-style: italic;
-}
-
-.cancel-notification-button {
-  padding: 10px 15px;
-  background-color: #dc3545;
-  color: white;
-  border: none;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.cancel-notification-button:hover {
-  background-color: #c82333;
-}
-
-.no-image-placeholder {
-  width: 100%;
-  height: 200px;
-  background-color: #e0e0e0;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #757575;
-}
+/* Container principal do perfil do usuário */
+.perfil-usuario-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Seção de dados pessoais */
+  .dados-pessoais {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .dados-pessoais h2 {
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 5px;
+  }
+  
+  /* Seção de livros reservados */
+  .livros-reservados, .livros-para-notificacao {
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .livros-reservados ul, .livros-para-notificacao ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .livros-reservados li, .livros-para-notificacao li {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  /* Lista de notificações
+  .books-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+   */
+  /* Botão de cancelar notificação */
+  .cancel-notification-button {
+    background: red;
+    color: white;
+    border: none;
+    padding: 8px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+  }
+  
+  .cancel-notification-button:hover {
+    background: darkred;
+  }
+  

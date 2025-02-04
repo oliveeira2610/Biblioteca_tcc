@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import '../../src/styles/search-books.css';
+import '../../src/styles/addBooks.css';
+import '../../src/styles/button.css';
 
 function AddBooks() {
   const [query, setQuery] = useState('');
@@ -75,7 +76,7 @@ function AddBooks() {
   
 
   return (
-    <div className="search-books-container">
+    <div className="add-books-container">
       <h1>🔎 Pesquisa de Livros</h1>
       <form onSubmit={handleSearch} className="search-form">
         <input

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import '../../src/styles/search-books.css'; // Usando o mesmo arquivo de estilos da tela SearchBooks
+import "../../src/styles/global.css";
+import "../../src/styles/book-card.css";
+import "../../src/styles/perfilUsuario.css";
 
 function PerfilUsuario() {
   const userId = localStorage.getItem("userId"); // Obtendo o ID do usuário logado do localStorage
@@ -68,7 +70,7 @@ function PerfilUsuario() {
   if (!userInfo) return <p>Usuário não encontrado.</p>;
 
   return (
-    <div className="search-books-container"> {/* Utilizando a mesma classe contêiner da tela SearchBooks */}
+    <div className="perfil-usuario-container"> {/* Utilizando a mesma classe contêiner da tela SearchBooks */}
       <h1>Perfil do Usuário</h1>
       <div className="dados-pessoais">
         <h2>Dados Pessoais</h2>

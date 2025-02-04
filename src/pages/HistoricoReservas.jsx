@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import "../../src/styles/global.css";
 import "../../src/styles/historicoReservas.css";
 
 const HistoricoReservas = () => {

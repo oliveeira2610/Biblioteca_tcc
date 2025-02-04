@@ -11,7 +11,6 @@ import AddBooks from './pages/AddBooks';
 import ManageDatabaseBooks from './pages/ManageDatabaseBooks';
 import BookDescription from './pages/BookDescription';
 import BookStatus from './pages/BookStatus';
-import EditBook from './pages/EditBook';
 import PerfilUsuario from './pages/PerfilUsuario';
 import Dashboard from './pages/Dashboard';
 import HistoricoReservas from './pages/HistoricoReservas';
@@ -55,7 +54,6 @@ function Layout() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/manage-database-books" element={<ManageDatabaseBooks />} />
         <Route path="/bookStatus/:id" element={<BookStatus />} />
-        <Route path="/edit-book/:bookId" element={<EditBook />} />
         <Route path="/perfil-usuario" element={<PerfilUsuario />} />
       </Routes>
     </div>

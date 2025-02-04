@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "../../src/styles/manage-books.css";
+import "../../src/styles/global.css";
+import "../../src/styles/manageDatabaseBooks.css";
+import "../../src/styles/book-card.css";
 
 function ManageDatabaseBooks() {
   const [books, setBooks] = useState([]);
@@ -156,7 +158,7 @@ function ManageDatabaseBooks() {
             )}
             <h3 className="book-card-title">{book.nome_do_livro}</h3>
             <p className="book-card-author">{book.autor}</p>
-            <p><strong>Quantidade em estoque:</strong> {book.quantidade_disponivel}</p>
+            <p><strong>Quantidade estoque:</strong> {book.quantidade_disponivel}</p>
             <p><strong>Quantidade disponível:</strong> {book.quantidade_disponivel_nao_alugada}</p>
             <p className="book-card-status" style={{ color: book.quantidade_disponivel_nao_alugada > 0 ? 'green' : 'red' }}>
               Status: {book.quantidade_disponivel_nao_alugada > 0 ? 'Disponível' : 'Indisponível'} {book.atrasado && "(Em atraso)"}

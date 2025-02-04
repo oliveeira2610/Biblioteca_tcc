@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import "../../src/styles/global.css";
 import "../../src/styles/bookStatus.css";
 
 function BookStatus() {

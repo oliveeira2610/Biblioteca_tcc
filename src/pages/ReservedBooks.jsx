@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import "../../src/styles/manage-books.css";
+import "../../src/styles/global.css";
+import "../../src/styles/book-card.css";
+import "../../src/styles/reservedBooks.css";
 
 function ReservedBooks() {
   const [reservedBooks, setReservedBooks] = useState([]);
