@@ -6,7 +6,7 @@
 .manage-books-container {
     display: flex;
     flex-direction: column;
-    align-items: center;
+
     padding: 10vh;
     background-color: #f4f4f4;
     min-height: 100vh;

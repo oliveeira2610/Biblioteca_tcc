@@ -38,7 +38,7 @@ function ReservedBooks() {
   }, []);
 
   return (
-    <div className="manage-books-container">
+    <div className="reserved-books-page-container">
       <h1>📖 Livros Reservados</h1>
       {loading && <p>Carregando...</p>}
       <div className="books-list">
