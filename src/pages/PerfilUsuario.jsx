@@ -7,7 +7,8 @@ import "../../src/styles/perfilUsuario.css";
 function PerfilUsuario() {
   const userId = localStorage.getItem("userId"); // Obtendo o ID do usuário logado do localStorage
   const [userInfo, setUserInfo] = useState(null);
-  const [notifications, setNotifications] = useState([]);
+  const [notifications, setNotifications] = useState([]); // Notificações recebidas
+  const [watchlist, setWatchlist] = useState([]); // Livros que o usuário selecionou para receber notificações
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
@@ -21,6 +22,7 @@ function PerfilUsuario() {
         }
         const data = await response.json();
         setUserInfo(data);
+        setWatchlist(data.livrosParaNotificacao || []); // Livros que o usuário deseja ser notificado
       } catch (err) {
         setError(err.message);
       } finally {
@@ -53,8 +55,10 @@ function PerfilUsuario() {
       if (!response.ok) {
         throw new Error("Erro ao cancelar notificação.");
       }
-      setNotifications(notifications.filter(notification => notification.book_id !== bookId));
-      alert("Notificação cancelada com sucesso.");
+
+      // Removendo o livro da lista de livros para notificação
+      setWatchlist((prevWatchlist) => prevWatchlist.filter((book) => book.livroId !== bookId));
+      alert("Notificação removida com sucesso.");
     } catch (err) {
       setError(err.message);
     }
@@ -74,7 +78,7 @@ function PerfilUsuario() {
         <p><strong>Telefone:</strong> {userInfo.telefone}</p>
       </div>
 
-      {/* Lista de livros reservados (Sem chat) */}
+      {/* Lista de livros reservados */}
       <div className="livros-reservados">
         <h2>Livros Reservados</h2>
         {userInfo.reservas.length > 0 ? (
@@ -93,7 +97,25 @@ function PerfilUsuario() {
         )}
       </div>
 
-      <h2>Notificações</h2>
+      {/* Lista de livros para os quais o usuário deseja receber notificações */}
+      <h2>Livros que Você Está Acompanhando</h2>
+      {watchlist.length > 0 ? (
+        <div className="books-list">
+          {watchlist.map((book) => (
+            <div key={book.livroId} className="book-card">
+              <h3 className="book-card-title">{book.nome_do_livro}</h3>
+              <button onClick={() => cancelNotification(book.livroId)} className="cancel-notification-button">
+                Deixar de Receber Notificações
+              </button>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p>Você não está acompanhando nenhum livro.</p>
+      )}
+
+      {/* Notificações recebidas */}
+      <h2>Notificações Recebidas</h2>
       {notifications.length > 0 ? (
         <div className="books-list">
           {notifications.map((notification, index) => (
@@ -105,14 +127,11 @@ function PerfilUsuario() {
               </p>
               <p className="notification-message">{notification.message}</p>
               <small>{new Date(notification.timestamp).toLocaleString()}</small>
-              <button onClick={() => cancelNotification(notification.book_id)} className="cancel-notification-button">
-                Limpar Notificação
-              </button>
             </div>
           ))}
         </div>
       ) : (
-        <p>Não há notificações no momento.</p>
+        <p>Você ainda não recebeu notificações.</p>
       )}
     </div>
   );

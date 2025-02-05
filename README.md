@@ -68,24 +68,43 @@ livros aleatorios na home JapaJapaJapaJapaJapaJapaJapaJapaJapaJapaJapa
 
 SERVER.JS
 
-Conecta-se a um banco de dados SQLite chamado books.db.
+Estrutura do Servidor
+Framework Utilizado: Express
+Banco de Dados: SQLite
+Porta do Servidor: 3001
+Middleware: CORS e JSON
+Conexão com o Banco de Dados
+Conexão com o banco de dados books.db.
+Criação de tabelas se não existirem:
+usuarios
+livros
+reservas
+notificacoes
+livros_para_notificacao
+historico_devolucoes
+Endpoints Principais
+Notificações:
 
-Cria as tabelas usuarios, livros, reservas, notificacoes e livros_para_notificacao se elas ainda não existirem.
+Criar, deletar e buscar notificações.
+Registrar livros para notificação.
+Cancelar notificações.
+Livros:
 
-Cria um trigger para definir automaticamente a data de devolução dos livros após uma reserva ser feita.
+Adicionar, buscar, atualizar e deletar livros.
+Atualizar status do livro e notificar usuários.
+Reservas:
 
-Rotas de API:
+Criar, deletar e buscar reservas.
+Marcar devolução de um livro.
+Calcular e atualizar multas.
+Usuários:
 
-Manipulação de livros (/livros): Adicionar, buscar, atualizar status, deletar e buscar detalhes de livros.
+Registrar, buscar e gerenciar usuários.
+Login de usuários.
+Dashboard:
 
-Manipulação de usuários (/usuarios): Login, buscar dados do usuário, perfil do usuário, e usuários com reservas.
-
-Manipulação de reservas (/reservas): Adicionar, buscar, deletar reservas e pagar multas.
-
-Manipulação de notificações (/notifications): Adicionar, buscar e deletar notificações; registrar e cancelar notificações de livros específicos.
-
-Funções Auxiliares:
-
-createNotification: Cria notificações para um usuário sobre um livro específico.
-
-Middleware para lidar com CORS e JSON.
+Obter dados estatísticos sobre livros, usuários, reservas e multas.
+Histórico
+Registro de devoluções e histórico de reservas.
+Início do Servidor
+O servidor é iniciado na porta 3001.

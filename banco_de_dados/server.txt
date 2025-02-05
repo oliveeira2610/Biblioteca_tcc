@@ -722,22 +722,25 @@ app.put("/livros/:id", (req, res) => {
 });
 
 
-
-// Endpoint para buscar livros com informações de reserva, status, multa e tempo de atraso
+// Endpoint para buscar livros com informações de reservas, usuários, status e multa
 app.get("/livros-com-reservas", (req, res) => {
   const query = `
       SELECT 
-        livros.id,
+        livros.id AS livro_id,
         livros.nome_do_livro,
         livros.autor,
         livros.editora,
         livros.imagem,
         livros.status AS livro_status,
+        reservas.id AS reserva_id,
         reservas.status AS reserva_status,
         reservas.multa,
-        julianday(reservas.data_devolucao) - julianday(current_timestamp) AS tempo_atraso
+        reservas.data_devolucao,
+        usuarios.id AS usuario_id,
+        usuarios.userName AS usuario
       FROM livros
-      LEFT JOIN reservas ON livros.id = reservas.livro_id
+      LEFT JOIN reservas ON livros.id = reservas.livro_id AND reservas.status = 'Reservado'
+      LEFT JOIN usuarios ON reservas.usuario_id = usuarios.id
       WHERE livros.status != 'Removido'
     `;
 
@@ -751,6 +754,7 @@ app.get("/livros-com-reservas", (req, res) => {
     res.status(200).json(rows);
   });
 });
+
 
 app.get("/livro-detalhes/:id", (req, res) => {
   const { id } = req.params;
@@ -1044,32 +1048,57 @@ app.post("/reservas", (req, res) => {
 
 
 
-// Endpoint para marcar devolução de um livro
+// Função para notificar usuários quando um livro reservado ficar disponível
+const notifyUsersBookAvailable = (bookId) => {
+  const query = `
+    SELECT usuarios.id AS user_id, usuarios.userName, livros.nome_do_livro
+    FROM reservas
+    JOIN usuarios ON reservas.usuario_id = usuarios.id
+    JOIN livros ON reservas.livro_id = livros.id
+    WHERE livros.id = ? AND reservas.status = 'Reservado'
+  `;
+
+  db.all(query, [bookId], (err, rows) => {
+    if (err) {
+      console.error("Erro ao buscar usuários para notificação:", err);
+      return;
+    }
+
+    rows.forEach((row) => {
+      const message = `O livro "${row.nome_do_livro}" está agora disponível para retirada.`;
+      db.run(
+        `INSERT INTO notificacoes (user_id, book_id, message) VALUES (?, ?, ?)`,
+        [row.user_id, bookId, message],
+        function (err) {
+          if (err) {
+            console.error("Erro ao adicionar notificação:", err);
+          } else {
+            console.log(`Notificação enviada para ${row.userName}`);
+          }
+        }
+      );
+    });
+  });
+};
+
+// Modifique o endpoint de devolução para chamar esta função
 app.put("/reservas/:id/devolver", async (req, res) => {
   const reservaId = req.params.id;
   const db = await openDb();
 
   try {
-    console.log(`Iniciando a devolução para a reserva ID: ${reservaId}`);
-
-    // Verificar se a reserva existe
     const reserva = await db.get(`SELECT * FROM reservas WHERE id = ?`, reservaId);
     if (!reserva) {
-      console.error(`Nenhuma reserva encontrada com ID: ${reservaId}`);
       return res.status(404).json({ error: "Reserva não encontrada." });
     }
 
-    // Atualiza a reserva para marcar como devolvida
-    const updateResult = await db.run(
+    await db.run(
       `UPDATE reservas SET status = 'Devolvido', data_devolucao = CURRENT_TIMESTAMP WHERE id = ?`,
       reservaId
     );
-    console.log(`Resultado da atualização: ${updateResult.changes} alterações.`);
 
-    // Registrar no histórico de devoluções
-    await db.run(`
-      INSERT INTO historico_devolucoes (usuario_id, livro_id) VALUES (?, ?)
-    `, reserva.usuario_id, reserva.livro_id);
+    // Notifica os usuários interessados no livro devolvido
+    notifyUsersBookAvailable(reserva.livro_id);
 
     res.json({ message: "Livro devolvido com sucesso!" });
   } catch (error) {
@@ -1077,6 +1106,7 @@ app.put("/reservas/:id/devolver", async (req, res) => {
     res.status(500).json({ error: "Erro ao atualizar a reserva." });
   }
 });
+
 
 
 // Endpoint para obter o histórico de reservas
@@ -1368,6 +1398,59 @@ app.get("/perfil-usuario/:userId", (req, res) => {
 
 
 /////////////////////// MULTAS ///////////////////////
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Função para verificar multas vencidas e notificar usuários
+const checkOverdueFines = () => {
+  const query = `
+    SELECT usuarios.id AS user_id, usuarios.email, usuarios.userName, reservas.multa
+    FROM reservas
+    JOIN usuarios ON reservas.usuario_id = usuarios.id
+    WHERE reservas.multa > 0
+  `;
+
+  db.all(query, [], (err, rows) => {
+    if (err) {
+      console.error("Erro ao verificar multas:", err);
+      return;
+    }
+
+    rows.forEach((row) => {
+      const message = `Olá ${row.userName}, você possui uma multa pendente de R$ ${row.multa}. Por favor, regularize sua situação.`;
+      db.run(
+        `INSERT INTO notificacoes (user_id, book_id, message) VALUES (?, NULL, ?)`,
+        [row.user_id, message],
+        function (err) {
+          if (err) {
+            console.error("Erro ao adicionar notificação de multa:", err);
+          } else {
+            console.log(`Notificação de multa enviada para ${row.userName}`);
+          }
+        }
+      );
+    });
+  });
+};
+
+// Executar a função a cada 24 horas
+setInterval(checkOverdueFines, 24 * 60 * 60 * 1000);
+
+
+
+
+
+
 
 
 
