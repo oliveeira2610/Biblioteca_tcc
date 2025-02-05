@@ -51,9 +51,13 @@ const Register = () => {
   
 
   return (
-    <div className="auth-container">
+    <div className="body">
+      <header className="auth-header">
+        <img src="src/assets/img/Logo_lessie.png" className="Imglogo" />
+        <p className="texto_header">" Ninguém cresce sozinho "</p>
+      </header>
+
       <div className="auth-box">
-        <h1 className="logo">📚 Biblioteca Virtual</h1>
         <h2>Cadastre-se!</h2>
         <form onSubmit={handleRegister}>
           <input
@@ -105,6 +109,7 @@ const Register = () => {
           </p>
         </form>
       </div>
+
     </div>
   );
 };

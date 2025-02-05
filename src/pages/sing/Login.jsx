@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import './sing.css';
+import Logo from "/src/assets/img/Logo_lessie.png";
+
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -34,35 +36,46 @@ const Login = () => {
       setError("Erro ao conectar com o servidor.");
     }
   };
+
+ 
   
 
   return (
+    <div className="body">
+      <header className="auth-header">
+        <img src="src/assets/img/Logo_lessie.png" className="Imglogo" />
+        <p className="texto_header">" Ninguém cresce sozinho "</p>
+      </header>
     <div className="auth-container">
       <div className="auth-box">
-        <h1 className="logo">📚 Biblioteca Virtual</h1>
-        <h2>Faça seu Login!</h2>
+        <h2 className="Façalogin">Faça seu Login!</h2>
         <form onSubmit={handleLogin}>
+          <label className="Label-login" htmlFor="Email">EMAIL</label>
           <input
             type="email"
-            placeholder="Digite seu email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
+          <label className="Label-login" htmlFor="Password">SENHA</label>
           <input
             type="password"
-            placeholder="Digite sua senha"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
           />
+          <div className="checkboxlogin">
+            <input type="checkbox" />
+            <label htmlFor="checkbox" className="permanecer" >Permanecer conectado</label>
+          </div>
           {error && <p className="error">{error}</p>}
-          <button type="submit">Entrar</button>
+          <button type="submit">Login</button>
           <p>
             Não tem uma conta? <a href="/register">Cadastre-se</a>
           </p>
         </form>
       </div>
+    </div>
     </div>
   );
 };
