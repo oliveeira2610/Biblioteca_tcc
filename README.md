@@ -45,17 +45,23 @@ melhorias das paginas
 
 PRECISA FAZER:
 
-fazer uma aba no perfil para multas aplicadas e se tiver multas o usuario não consiga reservar um livro, e o adm tmb consiga bloquear o usuario de reservar manualmente
+
+
+se tiver multas o usuario não consiga reservar um livro, e o adm tmb consiga bloquear o usuario de reservar manualmente 
 
 arrumar as notificações se não estiverem chegando
 
-colocar segurança na senha de login e registro comb bcrypt
+colocar segurança na senha de login e registro comb bcrypt 
 
 criar tipo de usuario Ex: Admin e comum, e determinar as paginas que só o usuario comum pode ver e entrar na pagina
 
-criar pagina acervo.
+                        JapaJapaJapaJapaJapaJapaJapa
 
-livros aleatorios na home 
+fazer uma aba no perfil para multas aplicadas JapaJapaJapaJapaJapaJapaJapa
+
+criar pagina acervo. JapaJapaJapaJapaJapaJapaJapaJapaJapaJapaJapa
+
+livros aleatorios na home JapaJapaJapaJapaJapaJapaJapaJapaJapaJapaJapa
 
 
 
