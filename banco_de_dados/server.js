@@ -722,22 +722,25 @@ app.put("/livros/:id", (req, res) => {
 });
 
 
-
-// Endpoint para buscar livros com informações de reserva, status, multa e tempo de atraso
+// Endpoint para buscar livros com informações de reservas, usuários, status e multa
 app.get("/livros-com-reservas", (req, res) => {
   const query = `
       SELECT 
-        livros.id,
+        livros.id AS livro_id,
         livros.nome_do_livro,
         livros.autor,
         livros.editora,
         livros.imagem,
         livros.status AS livro_status,
+        reservas.id AS reserva_id,
         reservas.status AS reserva_status,
         reservas.multa,
-        julianday(reservas.data_devolucao) - julianday(current_timestamp) AS tempo_atraso
+        reservas.data_devolucao,
+        usuarios.id AS usuario_id,
+        usuarios.userName AS usuario
       FROM livros
-      LEFT JOIN reservas ON livros.id = reservas.livro_id
+      LEFT JOIN reservas ON livros.id = reservas.livro_id AND reservas.status = 'Reservado'
+      LEFT JOIN usuarios ON reservas.usuario_id = usuarios.id
       WHERE livros.status != 'Removido'
     `;
 
@@ -751,6 +754,7 @@ app.get("/livros-com-reservas", (req, res) => {
     res.status(200).json(rows);
   });
 });
+
 
 app.get("/livro-detalhes/:id", (req, res) => {
   const { id } = req.params;
@@ -1431,6 +1435,51 @@ app.post("/pagar-multa/:id", (req, res) => {
 
       // Confirmar pagamento da multa
       res.status(200).json({ message: "Multa paga com sucesso" });
+    }
+  );
+});
+
+
+app.get("/multas", async (req, res) => {
+  const db = await openDb();
+
+  try {
+    const multas = await db.all(`
+      SELECT 
+        u.id AS usuario_id, 
+        u.userName AS usuario, 
+        SUM(r.multa) AS total_multa
+      FROM reservas r
+      JOIN usuarios u ON r.usuario_id = u.id
+      WHERE r.multa > 0
+      GROUP BY u.id
+      ORDER BY total_multa DESC
+    `);
+
+    res.json(multas);
+  } catch (error) {
+    console.error("Erro ao buscar multas:", error);
+    res.status(500).json({ error: "Erro ao buscar multas." });
+  }
+});
+
+
+app.post("/adicionar-multa", (req, res) => {
+  const { reserva_id, valor_multa } = req.body;
+
+  if (!reserva_id || valor_multa === undefined) {
+    return res.status(400).json({ error: "Reserva ID e valor da multa são obrigatórios." });
+  }
+
+  db.run(
+    `UPDATE reservas SET multa = ? WHERE id = ?`,
+    [valor_multa, reserva_id],
+    function (err) {
+      if (err) {
+        console.error("Erro ao adicionar multa:", err);
+        return res.status(500).json({ error: "Erro ao adicionar multa." });
+      }
+      res.status(200).json({ message: "Multa adicionada com sucesso!" });
     }
   );
 });

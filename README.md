@@ -41,7 +41,11 @@ melhorias das paginas
 // Feito // Colocar na navbar comprimento com o nome do usuario automaticamente Ex: Ola Japa!.
 
 
+
+
 PRECISA FAZER:
+
+fazer uma aba no perfil para multas aplicadas e se tiver multas o usuario não consiga reservar um livro, e o adm tmb consiga bloquear o usuario de reservar manualmente
 
 arrumar as notificações se não estiverem chegando
 

@@ -49,10 +49,10 @@ const Dashboard = () => {
         <p>{data.totalReturned}</p>
       </Link>
 
-      <div className="card">
+      <Link to="/multasUsuarios" className="card">
         <h2>Total de Multas Aplicadas</h2>
         <p>R$ {data.totalFines}</p>
-      </div>
+      </Link>
       
     </div>
   );
