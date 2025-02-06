@@ -43,6 +43,11 @@ melhorias das paginas
 // Feito // arrumar as notificações se não estiverem chegando
 
 
+// Feito // colocar segurança na senha de login e registro comb bcrypt 
+
+// Feito // criar tipo de usuario Ex: Admin e comum, e determinar as paginas que só o usuario comum pode ver e entrar na pagina
+
+
 PRECISA FAZER:
 
 
@@ -51,9 +56,6 @@ deixar o formulario de registro com verificações melhores
 
 se tiver multas o usuario não consiga reservar um livro, e o adm tmb consiga bloquear o usuario de reservar manualmente 
 
-colocar segurança na senha de login e registro comb bcrypt 
-
-criar tipo de usuario Ex: Admin e comum, e determinar as paginas que só o usuario comum pode ver e entrar na pagina
 
                         JapaJapaJapaJapaJapaJapaJapa
 
