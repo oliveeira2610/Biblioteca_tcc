@@ -1,7 +1,6 @@
 /* Container principal da página */
 .add-books-container {
     font-family: 'Roboto', sans-serif;
-    background-color: #f9f9f9;
     color: #333;
     max-width: 1200px;
     margin: 2rem auto;

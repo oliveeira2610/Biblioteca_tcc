@@ -3,6 +3,64 @@ import { useNavigate } from "react-router-dom";
 import "../../src/styles/global.css";
 import "../../src/styles/book-card.css";
 import "../../src/styles/reservedBooks.css";
+import '../../src/styles/FloatingBackground.css';
+
+function FloatingLetters() {
+  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".split("");
+  const [letterElements, setLetterElements] = useState([]);
+
+  useEffect(() => {
+    const generateInitialLetters = () => {
+      return Array.from({ length: 20 }).map((_, index) => ({
+        id: index,
+        char: letters[Math.floor(Math.random() * letters.length)],
+        left: Math.random() * 100,
+        top: Math.random() * 100,
+        speedX: (Math.random() - 0.5) * 0.2,
+        speedY: (Math.random() - 0.5) * 0.2,
+        fontSize: Math.random() * 3 + 2,
+        opacity: Math.random() * 0.5 + 0.5,
+      }));
+    };
+
+    setLetterElements(generateInitialLetters());
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setLetterElements((prevLetters) =>
+        prevLetters.map((letter) => ({
+          ...letter,
+          left: (letter.left + letter.speedX + 100) % 100,
+          top: (letter.top + letter.speedY + 100) % 100,
+        }))
+      );
+    }, 50);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="floating-letters-container">
+      {letterElements.map((letter) => (
+        <span
+          key={letter.id}
+          className="floating-letter"
+          style={{
+            left: `${letter.left}vw`,
+            top: `${letter.top}vh`,
+            fontSize: `${letter.fontSize}rem`,
+            opacity: letter.opacity,
+          }}
+        >
+          {letter.char}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+
 
 function ReservedBooks() {
   const [reservedBooks, setReservedBooks] = useState([]);
@@ -38,7 +96,8 @@ function ReservedBooks() {
   }, []);
 
   return (
-    <div className="reserved-books-page-container">
+    <div className="reserved-books-page-container floating-background">
+      <FloatingLetters />
       <h1>📖 Livros Reservados</h1>
       {loading && <p>Carregando...</p>}
       <div className="books-list">
