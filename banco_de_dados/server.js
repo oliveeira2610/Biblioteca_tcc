@@ -1114,29 +1114,6 @@ app.put("/reservas/:id/devolver", async (req, res) => {
   }
 });
 
-// Endpoint para obter o histórico de devoluções
-app.get("/historico-devolucoes", async (req, res) => {
-  const db = await openDb();
-
-  try {
-    const historico = await db.all(`
-      SELECT 
-        h.id,
-        u.userName AS usuario,
-        l.nome_do_livro AS livro,
-        h.data_devolucao
-      FROM historico_devolucoes h
-      JOIN usuarios u ON h.usuario_id = u.id
-      JOIN livros l ON h.livro_id = l.id
-      ORDER BY h.data_devolucao DESC
-    `);
-
-    res.json(historico);
-  } catch (error) {
-    console.error("Erro ao buscar histórico de devoluções:", error);
-    res.status(500).json({ error: "Erro ao buscar histórico de devoluções." });
-  }
-});
 
 
 // Endpoint para obter o histórico de reservas
@@ -1599,7 +1576,10 @@ app.get("/historico-devolucoes", async (req, res) => {
       SELECT 
         h.id,
         u.userName AS usuario,
+        l.id AS livro_id,
         l.nome_do_livro AS livro,
+        l.autor,
+        l.imagem,
         h.data_devolucao
       FROM historico_devolucoes h
       JOIN usuarios u ON h.usuario_id = u.id
@@ -1613,6 +1593,7 @@ app.get("/historico-devolucoes", async (req, res) => {
     res.status(500).json({ error: "Erro ao buscar histórico de devoluções." });
   }
 });
+
 
 /////////////////////// INICIAR SERVIDOR ///////////////////////
 

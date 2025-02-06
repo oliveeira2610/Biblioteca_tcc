@@ -146,82 +146,55 @@ const Users = () => {
             </div>
 
             {/* Ajuste na exibição dos livros devolvidos */}
-            <div className="books-section">
-              <h4>Livros Devolvidos:</h4>
-              <div className="books-cards">
-                {historicoDevolucoes.filter(
-                  (devolucao) => devolucao.usuario === usuario.userName
-                ).length > 0 ? (
-                  historicoDevolucoes
-                    .filter(
-                      (devolucao) => devolucao.usuario === usuario.userName
-                    )
-                    .map((devolucao) => {
-                      // Encontrar o livro correspondente no histórico para puxar os dados corretamente
-                      const livroInfo = usuarios
-                        .flatMap((user) => user.livrosReservados)
-                        .find((book) => book.id === devolucao.livro_id);
+            {/* Seção de Livros Devolvidos */}
+<div className="books-section">
+  <h4>Livros Devolvidos:</h4>
+  <div className="books-cards">
+    {historicoDevolucoes.filter(devolucao => devolucao.usuario === usuario.userName).length > 0 ? (
+      historicoDevolucoes
+        .filter(devolucao => devolucao.usuario === usuario.userName)
+        .map(devolucao => (
+          <div
+            key={devolucao.id}
+            className="book-card"
+            onClick={() => navigate(`/book/${devolucao.livro_id}`)}
+            style={{ cursor: "pointer" }}
+          >
+            {devolucao.imagem ? (
+              <img
+                src={
+                  devolucao.imagem.startsWith("http")
+                    ? devolucao.imagem
+                    : `http://localhost:3001/${devolucao.imagem}`
+                }
+                alt={devolucao.livro}
+                className="book-card-image"
+                onError={(e) => (e.target.src = "/placeholder.jpg")}
+              />
+            ) : (
+              <div className="no-image-placeholder">Sem imagem</div>
+            )}
 
-                      return (
-                        <div
-                          key={devolucao.id}
-                          className="book-card"
-                          onClick={() =>
-                            navigate(`/book/${devolucao.livro_id}`)
-                          }
-                          style={{ cursor: "pointer" }}
-                        >
-                          {livroInfo && livroInfo.imagem ? (
-                            <img
-                              src={
-                                livroInfo.imagem.startsWith("http")
-                                  ? livroInfo.imagem
-                                  : `http://localhost:3001/${livroInfo.imagem}`
-                              }
-                              alt={livroInfo.nome_do_livro}
-                              className="book-card-image"
-                              onError={(e) =>
-                                (e.target.src = "/placeholder.jpg")
-                              } // Mostra uma imagem padrão se der erro
-                            />
-                          ) : (
-                            <div className="no-image-placeholder">
-                              Sem imagem
-                            </div>
-                          )}
+            <h3 className="book-card-title">{devolucao.livro || "Título Desconhecido"}</h3>
+            <p className="book-card-author">{devolucao.autor || "Autor Desconhecido"}</p>
 
-                          <h3 className="book-card-title">
-                            {livroInfo
-                              ? livroInfo.nome_do_livro
-                              : "Título Desconhecido"}
-                          </h3>
-                          <p className="book-card-author">
-                            {livroInfo ? livroInfo.autor : "Autor Desconhecido"}
-                          </p>
+            <p className="book-card-status" style={{ color: "green" }}>
+              Status: Devolvido
+            </p>
 
-                          <p
-                            className="book-card-status"
-                            style={{ color: "green" }}
-                          >
-                            Status: Devolvido
-                          </p>
+            {devolucao.data_devolucao && (
+              <p className="book-card-return-date">
+                Devolvido em: {new Date(devolucao.data_devolucao).toLocaleDateString()}
+              </p>
+            )}
+          </div>
+        ))
+    ) : (
+      <p>Sem livros devolvidos</p>
+    )}
+  </div>
+</div>
 
-                          {devolucao.data_devolucao && (
-                            <p className="book-card-return-date">
-                              Devolvido em:{" "}
-                              {new Date(
-                                devolucao.data_devolucao
-                              ).toLocaleDateString()}
-                            </p>
-                          )}
-                        </div>
-                      );
-                    })
-                ) : (
-                  <p>Sem livros devolvidos</p>
-                )}
-              </div>
-            </div>
           </div>
         ))
       )}
