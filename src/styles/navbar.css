@@ -1,5 +1,5 @@
 .navbar {
-    background-color: #4a90e2;
+    background-color: #826049;
     color: white;
     padding: 1rem 2rem;
     display: flex;
@@ -11,6 +11,11 @@
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
   
+  .navbar-container img{
+    height: 58px;
+    width: 104px;
+  }
+
   .navbar-container {
     display: flex;
     justify-content: space-between;
@@ -22,6 +27,15 @@
     font-size: 1.5rem;
     font-weight: bold;
     margin: 0;
+  }
+
+  .Imglogo{
+    margin-right: 20px;
+  }
+
+  .logo_ola{
+    display: flex;
+    align-items: center;
   }
   
   .nav-links {
@@ -46,6 +60,10 @@
   
   .nav-links a:hover {
     color: #ffdd57;
+  }
+
+  .user-greeting {
+    font-size: 27px;
   }
   
   /* Responsivo */
