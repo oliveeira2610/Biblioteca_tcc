@@ -40,16 +40,16 @@ melhorias das paginas
 
 // Feito // Colocar na navbar comprimento com o nome do usuario automaticamente Ex: Ola Japa!.
 
-
+// Feito // arrumar as notificações se não estiverem chegando
 
 
 PRECISA FAZER:
 
 
 
-se tiver multas o usuario não consiga reservar um livro, e o adm tmb consiga bloquear o usuario de reservar manualmente 
+deixar o formulario de registro com verificações melhores
 
-arrumar as notificações se não estiverem chegando
+se tiver multas o usuario não consiga reservar um livro, e o adm tmb consiga bloquear o usuario de reservar manualmente 
 
 colocar segurança na senha de login e registro comb bcrypt 
 

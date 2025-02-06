@@ -921,7 +921,7 @@ app.post("/login", (req, res) => {
 
   const query = `SELECT * FROM usuarios WHERE email = ?`;
 
-  db.get(query, [email], (err, user) => {
+  db.get(query, [email], async (err, user) => {
     if (err) {
       console.error("Erro ao buscar usuário:", err.message);
       return res.status(500).json({ error: "Erro ao buscar usuário." });
@@ -931,8 +931,9 @@ app.post("/login", (req, res) => {
       return res.status(401).json({ error: "Usuário não encontrado." });
     }
 
-    // Comparação direta da senha (sem bcrypt)
-    if (user.password !== password) {
+    // Comparação da senha com o hash armazenado
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) {
       return res.status(401).json({ error: "Senha incorreta." });
     }
 
@@ -945,6 +946,38 @@ app.post("/login", (req, res) => {
       telefone: user.telefone,
     });
   });
+});
+
+
+const bcrypt = require("bcrypt");
+const saltRounds = 10; // Número de rounds de hashing
+
+app.post("/register", async (req, res) => {
+  const { userName, email, password, cpf, telefone } = req.body;
+
+  if (!userName || !email || !password || !cpf) {
+    return res.status(400).json({ error: "Todos os campos são obrigatórios" });
+  }
+
+  try {
+    // Hash da senha antes de salvar no banco
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    db.run(
+      `INSERT INTO usuarios (userName, email, password, cpf, telefone) VALUES (?, ?, ?, ?, ?)`,
+      [userName, email, hashedPassword, cpf, telefone],
+      function (err) {
+        if (err) {
+          console.error("Erro ao registrar usuário:", err);
+          return res.status(500).json({ error: "Erro ao registrar usuário" });
+        }
+        res.status(201).json({ message: "Usuário registrado com sucesso!" });
+      }
+    );
+  } catch (error) {
+    console.error("Erro ao registrar usuário:", error);
+    res.status(500).json({ error: "Erro ao registrar usuário" });
+  }
 });
 
 

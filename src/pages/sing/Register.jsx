@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import './sing.css';
+import Logo from "/src/assets/img/Logo_lessie.png";
 
 const Register = () => {
   const [userName, setUserName] = useState("");
@@ -14,30 +15,29 @@ const Register = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-  
+
     if (password !== confirmPassword) {
       setError("As senhas não coincidem!");
       return;
     }
-  
+
     try {
       const user = {
         userName,
         email,
-        password,
-        confirmPassword, // Adicionando confirmPassword
+        password, // Removendo confirmPassword
         cpf,
         telefone
       };
-  
-      const response = await fetch("http://localhost:3001/usuarios", {
+
+      const response = await fetch("http://localhost:3001/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify(user)
       });
-  
+
       const data = await response.json();
       if (response.status === 201) {
         navigate("/");
@@ -45,16 +45,15 @@ const Register = () => {
         setError(data.error || "Erro ao salvar no banco de dados.");
       }
     } catch (err) {
-      setError("Erro ao cadastrar. Tente novamente.");
+      setError("Erro ao conectar com o servidor. Tente novamente.");
     }
   };
-  
 
   return (
     <div className="body">
       <header className="auth-header">
-        <img src="src/assets/img/Logo_lessie.png" className="Imglogo" />
-        <p className="texto_header">" Ninguém cresce sozinho "</p>
+        <img src={Logo} className="Imglogo" alt="Logo Lessie" />
+        <p className="texto_header">"Ninguém cresce sozinho"</p>
       </header>
 
       <div className="auth-box">
@@ -109,7 +108,6 @@ const Register = () => {
           </p>
         </form>
       </div>
-
     </div>
   );
 };
