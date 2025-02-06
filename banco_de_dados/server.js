@@ -1073,6 +1073,7 @@ app.post("/reservas", (req, res) => {
 
 
 // Endpoint para marcar devolução de um livro
+// Endpoint para marcar devolução de um livro
 app.put("/reservas/:id/devolver", async (req, res) => {
   const reservaId = req.params.id;
   const db = await openDb();
@@ -1084,7 +1085,7 @@ app.put("/reservas/:id/devolver", async (req, res) => {
       return res.status(404).json({ error: "Reserva não encontrada." });
     }
 
-    const bookId = reserva.livro_id; // Pegando corretamente o ID do livro
+    const bookId = reserva.livro_id;
     if (!bookId) {
       console.error(`Erro: livro_id não encontrado para reserva ID ${reservaId}`);
       return res.status(500).json({ error: "Erro ao obter ID do livro." });
@@ -1097,6 +1098,12 @@ app.put("/reservas/:id/devolver", async (req, res) => {
 
     await db.run(`UPDATE livros SET status = 'Disponível' WHERE id = ?`, bookId);
 
+    // Adicionar ao histórico de devoluções
+    await db.run(`INSERT INTO historico_devolucoes (usuario_id, livro_id) VALUES (?, ?)`, [
+      reserva.usuario_id,
+      bookId,
+    ]);
+
     console.log(`Livro ID ${bookId} agora está disponível. Criando notificações...`);
     createNotification(bookId, "O livro agora está disponível para reserva!");
 
@@ -1104,6 +1111,30 @@ app.put("/reservas/:id/devolver", async (req, res) => {
   } catch (error) {
     console.error("Erro ao atualizar a reserva:", error);
     res.status(500).json({ error: "Erro ao atualizar a reserva." });
+  }
+});
+
+// Endpoint para obter o histórico de devoluções
+app.get("/historico-devolucoes", async (req, res) => {
+  const db = await openDb();
+
+  try {
+    const historico = await db.all(`
+      SELECT 
+        h.id,
+        u.userName AS usuario,
+        l.nome_do_livro AS livro,
+        h.data_devolucao
+      FROM historico_devolucoes h
+      JOIN usuarios u ON h.usuario_id = u.id
+      JOIN livros l ON h.livro_id = l.id
+      ORDER BY h.data_devolucao DESC
+    `);
+
+    res.json(historico);
+  } catch (error) {
+    console.error("Erro ao buscar histórico de devoluções:", error);
+    res.status(500).json({ error: "Erro ao buscar histórico de devoluções." });
   }
 });
 

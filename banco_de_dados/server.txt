@@ -170,46 +170,55 @@ const createNotification = (bookId, message) => {
     [bookId],
     (err, rows) => {
       if (err) {
-        console.error("Erro ao buscar registros de notificação:", err);
+        console.error("Erro ao buscar usuários para notificação:", err);
         return;
       }
-      if (rows.length > 0) {
-        rows.forEach((row) => {
-          const userId = row.user_id;
-          db.run(
-            `INSERT INTO notificacoes (user_id, book_id, message) VALUES (?, ?, ?)`,
-            [userId, bookId, message],
-            function (err) {
-              if (err) {
-                console.error("Erro ao adicionar notificação:", err);
-              } else {
-                console.log(`Notificação adicionada para o usuário ${userId}: ${message}`);
-              }
-            }
-          );
-        });
+
+      if (rows.length === 0) {
+        console.log(`Nenhum usuário registrado para receber notificações do livro ${bookId}`);
+        return;
       }
+
+      rows.forEach((row) => {
+        const userId = row.user_id;
+
+        console.log(`Criando notificação para userId: ${userId}, bookId: ${bookId}`);
+
+        db.run(
+          `INSERT INTO notificacoes (user_id, book_id, message) VALUES (?, ?, ?)`,
+          [userId, bookId, message],
+          function (err) {
+            if (err) {
+              console.error(`Erro ao adicionar notificação para userId ${userId}:`, err);
+            } else {
+              console.log(`Notificação adicionada para userId ${userId}`);
+            }
+          }
+        );
+      });
     }
   );
 };
 
+
+
 // Endpoint para deletar todas as notificações de um usuário específico
 app.delete("/notifications/:userId", (req, res) => {
   const { userId } = req.params;
+
   db.run(
     `DELETE FROM notificacoes WHERE user_id = ?`,
     [userId],
     function (err) {
       if (err) {
         console.error("Erro ao deletar notificações:", err);
-        return res
-          .status(500)
-          .json({ message: "Erro ao deletar notificações" });
+        return res.status(500).json({ message: "Erro ao deletar notificações" });
       }
       res.status(200).json({ message: "Notificações deletadas com sucesso." });
     }
   );
 });
+
 
 // Endpoint para deletar notificações de um livro específico para um usuário específico
 app.delete("/notifications/:userId/:bookId", (req, res) => {
@@ -236,7 +245,6 @@ app.delete("/notifications/:userId/:bookId", (req, res) => {
 app.post("/register-notification", (req, res) => {
   const { userId, bookId } = req.body;
 
-  // Verificar se já existe uma notificação para este livro e usuário
   db.get(
     `SELECT * FROM livros_para_notificacao WHERE user_id = ? AND book_id = ?`,
     [userId, bookId],
@@ -247,25 +255,44 @@ app.post("/register-notification", (req, res) => {
       }
 
       if (row) {
-        // Notificação já existe, retorne um status adequado
-        return res.status(400).json({ message: "Você já registrou uma notificação para este livro." });
+        console.log(`Usuário ${userId} já está registrado para receber notificações do livro ${bookId}`);
+        return res.status(400).json({ message: "Você já está registrado para receber notificações deste livro." });
       }
 
-      // Inserir nova notificação
       db.run(
         `INSERT INTO livros_para_notificacao (user_id, book_id) VALUES (?, ?)`,
         [userId, bookId],
         function (err) {
           if (err) {
-            console.error("Erro ao registrar livro para notificação:", err);
-            return res.status(500).json({ message: "Erro ao registrar livro para notificação" });
+            console.error("Erro ao registrar notificação:", err);
+            return res.status(500).json({ message: "Erro ao registrar notificação" });
           }
-          res.status(201).json({ message: "Livro registrado para notificação com sucesso." });
+          console.log(`Usuário ${userId} agora receberá notificações do livro ${bookId}`);
+          res.status(201).json({ message: "Notificação registrada com sucesso." });
         }
       );
     }
   );
 });
+
+
+
+app.get("/check-notification/:userId/:bookId", (req, res) => {
+  const { userId, bookId } = req.params;
+
+  db.get(
+    `SELECT * FROM livros_para_notificacao WHERE user_id = ? AND book_id = ?`,
+    [userId, bookId],
+    (err, row) => {
+      if (err) {
+        console.error("Erro ao verificar notificação:", err);
+        return res.status(500).json({ message: "Erro ao verificar notificação" });
+      }
+      res.status(200).json({ exists: !!row });
+    }
+  );
+});
+
 
 
 // Endpoint para cancelar notificação de um livro específico
@@ -278,16 +305,13 @@ app.delete("/register-notification/:userId/:bookId", (req, res) => {
     function (err) {
       if (err) {
         console.error("Erro ao cancelar registro de notificação:", err);
-        return res
-          .status(500)
-          .json({ message: "Erro ao cancelar registro de notificação" });
+        return res.status(500).json({ message: "Erro ao cancelar registro de notificação" });
       }
-      res
-        .status(200)
-        .json({ message: "Registro de notificação cancelado com sucesso." });
+      res.status(200).json({ message: "Registro de notificação cancelado com sucesso." });
     }
   );
 });
+
 
 // Endpoint para verificar se o usuário já registrou notificação para um livro específico
 app.get("/check-notification/:userId/:bookId", (req, res) => {
@@ -1048,40 +1072,8 @@ app.post("/reservas", (req, res) => {
 
 
 
-// Função para notificar usuários quando um livro reservado ficar disponível
-const notifyUsersBookAvailable = (bookId) => {
-  const query = `
-    SELECT usuarios.id AS user_id, usuarios.userName, livros.nome_do_livro
-    FROM reservas
-    JOIN usuarios ON reservas.usuario_id = usuarios.id
-    JOIN livros ON reservas.livro_id = livros.id
-    WHERE livros.id = ? AND reservas.status = 'Reservado'
-  `;
-
-  db.all(query, [bookId], (err, rows) => {
-    if (err) {
-      console.error("Erro ao buscar usuários para notificação:", err);
-      return;
-    }
-
-    rows.forEach((row) => {
-      const message = `O livro "${row.nome_do_livro}" está agora disponível para retirada.`;
-      db.run(
-        `INSERT INTO notificacoes (user_id, book_id, message) VALUES (?, ?, ?)`,
-        [row.user_id, bookId, message],
-        function (err) {
-          if (err) {
-            console.error("Erro ao adicionar notificação:", err);
-          } else {
-            console.log(`Notificação enviada para ${row.userName}`);
-          }
-        }
-      );
-    });
-  });
-};
-
-// Modifique o endpoint de devolução para chamar esta função
+// Endpoint para marcar devolução de um livro
+// Endpoint para marcar devolução de um livro
 app.put("/reservas/:id/devolver", async (req, res) => {
   const reservaId = req.params.id;
   const db = await openDb();
@@ -1089,7 +1081,14 @@ app.put("/reservas/:id/devolver", async (req, res) => {
   try {
     const reserva = await db.get(`SELECT * FROM reservas WHERE id = ?`, reservaId);
     if (!reserva) {
+      console.error(`Erro: Reserva ${reservaId} não encontrada.`);
       return res.status(404).json({ error: "Reserva não encontrada." });
+    }
+
+    const bookId = reserva.livro_id;
+    if (!bookId) {
+      console.error(`Erro: livro_id não encontrado para reserva ID ${reservaId}`);
+      return res.status(500).json({ error: "Erro ao obter ID do livro." });
     }
 
     await db.run(
@@ -1097,8 +1096,16 @@ app.put("/reservas/:id/devolver", async (req, res) => {
       reservaId
     );
 
-    // Notifica os usuários interessados no livro devolvido
-    notifyUsersBookAvailable(reserva.livro_id);
+    await db.run(`UPDATE livros SET status = 'Disponível' WHERE id = ?`, bookId);
+
+    // Adicionar ao histórico de devoluções
+    await db.run(`INSERT INTO historico_devolucoes (usuario_id, livro_id) VALUES (?, ?)`, [
+      reserva.usuario_id,
+      bookId,
+    ]);
+
+    console.log(`Livro ID ${bookId} agora está disponível. Criando notificações...`);
+    createNotification(bookId, "O livro agora está disponível para reserva!");
 
     res.json({ message: "Livro devolvido com sucesso!" });
   } catch (error) {
@@ -1107,6 +1114,29 @@ app.put("/reservas/:id/devolver", async (req, res) => {
   }
 });
 
+// Endpoint para obter o histórico de devoluções
+app.get("/historico-devolucoes", async (req, res) => {
+  const db = await openDb();
+
+  try {
+    const historico = await db.all(`
+      SELECT 
+        h.id,
+        u.userName AS usuario,
+        l.nome_do_livro AS livro,
+        h.data_devolucao
+      FROM historico_devolucoes h
+      JOIN usuarios u ON h.usuario_id = u.id
+      JOIN livros l ON h.livro_id = l.id
+      ORDER BY h.data_devolucao DESC
+    `);
+
+    res.json(historico);
+  } catch (error) {
+    console.error("Erro ao buscar histórico de devoluções:", error);
+    res.status(500).json({ error: "Erro ao buscar histórico de devoluções." });
+  }
+});
 
 
 // Endpoint para obter o histórico de reservas
@@ -1398,59 +1428,6 @@ app.get("/perfil-usuario/:userId", (req, res) => {
 
 
 /////////////////////// MULTAS ///////////////////////
-
-
-
-
-
-
-
-
-
-
-
-
-
-// Função para verificar multas vencidas e notificar usuários
-const checkOverdueFines = () => {
-  const query = `
-    SELECT usuarios.id AS user_id, usuarios.email, usuarios.userName, reservas.multa
-    FROM reservas
-    JOIN usuarios ON reservas.usuario_id = usuarios.id
-    WHERE reservas.multa > 0
-  `;
-
-  db.all(query, [], (err, rows) => {
-    if (err) {
-      console.error("Erro ao verificar multas:", err);
-      return;
-    }
-
-    rows.forEach((row) => {
-      const message = `Olá ${row.userName}, você possui uma multa pendente de R$ ${row.multa}. Por favor, regularize sua situação.`;
-      db.run(
-        `INSERT INTO notificacoes (user_id, book_id, message) VALUES (?, NULL, ?)`,
-        [row.user_id, message],
-        function (err) {
-          if (err) {
-            console.error("Erro ao adicionar notificação de multa:", err);
-          } else {
-            console.log(`Notificação de multa enviada para ${row.userName}`);
-          }
-        }
-      );
-    });
-  });
-};
-
-// Executar a função a cada 24 horas
-setInterval(checkOverdueFines, 24 * 60 * 60 * 1000);
-
-
-
-
-
-
 
 
 
