@@ -40,6 +40,17 @@ db.serialize(() => {
         telefone TEXT
       );
     `);
+    db.run(`
+      ALTER TABLE usuarios ADD COLUMN role TEXT DEFAULT 'user'
+    `, (err) => {
+      if (err && err.message.includes("duplicate column name")) {
+        console.log("A coluna 'role' já existe.");
+      } else if (err) {
+        console.error("Erro ao adicionar coluna 'role':", err);
+      } else {
+        console.log("Coluna 'role' adicionada com sucesso.");
+      }
+    });
 
   db.run(`
       CREATE TABLE IF NOT EXISTS livros (
@@ -919,9 +930,7 @@ app.post("/login", (req, res) => {
     return res.status(400).json({ error: "Email e senha são obrigatórios." });
   }
 
-  const query = `SELECT * FROM usuarios WHERE email = ?`;
-
-  db.get(query, [email], async (err, user) => {
+  db.get(`SELECT * FROM usuarios WHERE email = ?`, [email], async (err, user) => {
     if (err) {
       console.error("Erro ao buscar usuário:", err.message);
       return res.status(500).json({ error: "Erro ao buscar usuário." });
@@ -931,41 +940,41 @@ app.post("/login", (req, res) => {
       return res.status(401).json({ error: "Usuário não encontrado." });
     }
 
-    // Comparação da senha com o hash armazenado
     const match = await bcrypt.compare(password, user.password);
     if (!match) {
       return res.status(401).json({ error: "Senha incorreta." });
     }
 
-    // Retornar os dados do usuário (sem a senha)
     res.status(200).json({
       id: user.id,
       userName: user.userName,
       email: user.email,
-      cpf: user.cpf,
-      telefone: user.telefone,
+      role: user.role, // Retorna a função do usuário
     });
   });
 });
+
 
 
 const bcrypt = require("bcrypt");
 const saltRounds = 10; // Número de rounds de hashing
 
 app.post("/register", async (req, res) => {
-  const { userName, email, password, cpf, telefone } = req.body;
+  const { userName, email, password, cpf, telefone, role } = req.body;
 
   if (!userName || !email || !password || !cpf) {
     return res.status(400).json({ error: "Todos os campos são obrigatórios" });
   }
 
   try {
-    // Hash da senha antes de salvar no banco
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Definir "role" apenas se for um admin criando um novo admin
+    const userRole = role === "admin" ? "admin" : "user";
 
     db.run(
-      `INSERT INTO usuarios (userName, email, password, cpf, telefone) VALUES (?, ?, ?, ?, ?)`,
-      [userName, email, hashedPassword, cpf, telefone],
+      `INSERT INTO usuarios (userName, email, password, cpf, telefone, role) VALUES (?, ?, ?, ?, ?, ?)`,
+      [userName, email, hashedPassword, cpf, telefone, userRole],
       function (err) {
         if (err) {
           console.error("Erro ao registrar usuário:", err);
@@ -979,6 +988,7 @@ app.post("/register", async (req, res) => {
     res.status(500).json({ error: "Erro ao registrar usuário" });
   }
 });
+
 
 
 
@@ -1324,7 +1334,7 @@ app.get("/usuario-logado", (req, res) => {
     return res.status(400).json({ error: "ID do usuário não fornecido." });
   }
 
-  const query = `SELECT id, userName, email, telefone FROM usuarios WHERE id = ?`;
+  const query = `SELECT id, userName, email, telefone, role FROM usuarios WHERE id = ?`;
   db.get(query, [id], (err, row) => {
     if (err) {
       return res.status(500).json({ error: "Erro ao buscar usuário." });
@@ -1335,6 +1345,7 @@ app.get("/usuario-logado", (req, res) => {
     res.json(row);
   });
 });
+
 
 app.get("/perfil-usuario/:userId", (req, res) => {
   const { userId } = req.params;

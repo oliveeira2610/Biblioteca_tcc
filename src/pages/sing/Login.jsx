@@ -11,29 +11,35 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError(""); // Limpa erros anteriores
-
+    setError("");
+  
     try {
       const response = await fetch("http://localhost:3001/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
-
+  
       const data = await response.json();
-
+  
       if (response.ok) {
         localStorage.setItem("userId", data.id);
-        navigate("/home"); // Redireciona após login bem-sucedido
+        localStorage.setItem("userRole", data.role); // Salva a função do usuário
+  
+        if (data.role === "admin") {
+          navigate("/Dashboard"); // Página do admin
+        } else {
+          navigate("/home"); // Página do usuário comum
+        }
       } else {
-        setError(data.error || "Erro ao fazer login. Verifique suas credenciais.");
+        setError(data.error || "Erro ao fazer login.");
       }
     } catch (err) {
-      setError("Erro ao conectar com o servidor. Certifique-se de que a API está rodando.");
+      setError("Erro ao conectar com o servidor.");
     }
   };
+  
+  
 
   return (
     <div className="body">

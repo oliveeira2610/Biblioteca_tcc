@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 import Login from "./pages/sing/Login";
 import Register from "./pages/sing/Register";
 import Home from './pages/Home';
-import Books from './pages/Books';
 import Users from './pages/Users';
 import SearchBooks from './pages/SearchBooks';
 import BookDetails from './pages/BookDetails';
@@ -17,7 +16,8 @@ import HistoricoReservas from './pages/HistoricoReservas';
 import MultasUsuarios from './pages/MultasUsuarios';
 import ReservedBooks from './pages/ReservedBooks';
 import Notifications from './pages/Notifications';
-import Navbar from './components/Navbar';  
+import Navbar from './components/Navbar'; 
+import AdminRoute from "./components/AdminRoute"; 
 import './styles/global.css';
 
 function App() {
@@ -43,7 +43,6 @@ function Layout() {
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/home" element={<Home />} />
-        <Route path="/books" element={<Books />} />
         <Route path="/users" element={<Users />} />
         <Route path="/search" element={<SearchBooks />} /> 
         <Route path="/addBooks" element={<AddBooks />} /> 
@@ -53,7 +52,9 @@ function Layout() {
         <Route path="/book/:id" element={<BookDetails />} /> 
         <Route path="/reservedBooks" element={<ReservedBooks />} />
         <Route path="/multasUsuarios" element={<MultasUsuarios />} />
-        <Route path="/dashboard" element={<Dashboard />} />
+        <Route
+          path="/dashboard"
+          element={ <AdminRoute> <Dashboard /> </AdminRoute>} />
         <Route path="/manage-database-books" element={<ManageDatabaseBooks />} />
         <Route path="/bookStatus/:id" element={<BookStatus />} />
         <Route path="/perfil-usuario" element={<PerfilUsuario />} />

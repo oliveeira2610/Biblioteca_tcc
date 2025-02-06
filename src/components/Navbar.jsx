@@ -4,6 +4,7 @@ import "../../src/styles/navbar.css";
 
 const Navbar = () => {
   const [userName, setUserName] = useState("");
+  const [role, setRole] = useState(""); // Estado para armazenar o tipo de usuário
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -16,6 +17,7 @@ const Navbar = () => {
           }
           const data = await response.json();
           setUserName(data.userName || "Usuário");
+          setRole(data.role || "user"); // Define a role (admin ou user)
         } catch (error) {
           console.error("Erro ao buscar usuário:", error);
         }
@@ -30,24 +32,13 @@ const Navbar = () => {
         <h1 className="logo">📚 Biblioteca Virtual</h1>
         <div className="user-greeting">Olá, {userName}!</div>
         <ul className="nav-links">
-          <li>
-            <Link to="/home">Home</Link>
-          </li>
-          <li>
-            <Link to="/books">Livros</Link>
-          </li>
-          <li>
-            <Link to="/notifications">Notificações</Link>
-          </li>
-          <li>
-            <Link to="/perfil-usuario">Perfil</Link>
-          </li>
-          <li>
-            <Link to="/dashboard">Dashboard</Link>
-          </li>
-          <li>
-            <Link to="/search">Pesquisar Livros</Link>
-          </li>
+          <li><Link to="/home">Home</Link></li>
+          <li><Link to="/notifications">Notificações</Link></li>
+          <li><Link to="/perfil-usuario">Perfil</Link></li>
+          {role === "admin" && ( // Exibe o Dashboard apenas para admins
+            <li><Link to="/dashboard">Dashboard</Link></li>
+          )}
+          <li><Link to="/search">Pesquisar Livros</Link></li>
         </ul>
       </div>
     </nav>
