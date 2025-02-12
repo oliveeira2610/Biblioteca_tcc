@@ -1,21 +1,57 @@
-body{
+body {
   background-color: #FFF6D3;
 }
 
-.home-container{
+.home-container {
   height: 90.5vh;
 }
 
-.img-home {
-  height: 30vh;
-  width: 100%; /* Garante que a div ocupe toda a largura */
+.img-wrapper {
+  position: relative; /* Para posicionar o texto corretamente */
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.img-home {
+  height: 50vh;
+  width: 100%;
   background-image: url("src/assets/img/Fundo_biblioteca_home.png");
   background-repeat: no-repeat;
-  background-size: cover; /* Faz a imagem cobrir toda a div */
+  background-size: cover;
   background-position: center;
-  margin-top: 20px;
   filter: blur(15px);
+}
+
+.text-overlay {
+  position: absolute;
+  color: white;
+  font-size: 38px;
+  font-weight: bold;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.Lessie-logo{
+  color: #5C3D27;
+  font-size: 60px;
+}
+
+.putaqpariu{
+  font-size: 26px;
+  width: 500px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.segundaparte-home{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
 }
