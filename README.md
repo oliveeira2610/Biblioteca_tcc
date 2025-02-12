@@ -52,9 +52,13 @@ melhorias das paginas
 
 PRECISA FAZER:
 
+Colocar local do livro Ex: Prateleira, Numero do livro 
+
+Criar uma tela para adicionar livro na mão com imagem por link
 
 deixar o formulario de registro com verificações melhores
 
+na tela reserved books, quando clicar no card ser redirecionado para tela de detalhed de reserva
 
                         JapaJapaJapaJapaJapaJapaJapa
 
