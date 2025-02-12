@@ -12,7 +12,7 @@ function FloatingLetters() {
 
   useEffect(() => {
     const generateInitialLetters = () => {
-      return Array.from({ length: 20 }).map((_, index) => ({
+      return Array.from({ length: 40 }).map((_, index) => ({
         id: index,
         char: letters[Math.floor(Math.random() * letters.length)],
         left: Math.random() * 100,

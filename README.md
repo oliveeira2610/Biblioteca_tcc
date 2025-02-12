@@ -4,11 +4,11 @@ trabalho teste
 
 projetos futuros:
 
-// FEITO // estoque de livros.
+Sistema de pagamento para liberar multas -- na pagina perfil  -> cards
 
 melhorias das paginas
 
-// NÂO DA // componentizar os cards para melhora das telas e organização 
+// FEITO // estoque de livros.
 
 // FEITO //  aviso em baixo: reservado até x dia - Bookdetails.
 
@@ -42,22 +42,22 @@ melhorias das paginas
 
 // Feito // arrumar as notificações se não estiverem chegando
 
-
 // Feito // colocar segurança na senha de login e registro comb bcrypt 
 
 // Feito // criar tipo de usuario Ex: Admin e comum, e determinar as paginas que só o usuario comum pode ver e entrar na pagina
+
+// Feitor // se tiver multas o usuario não consiga reservar um livro, e o adm tmb consiga bloquear o usuario de reservar manualmente 
+
 
 
 PRECISA FAZER:
 
 
-
 deixar o formulario de registro com verificações melhores
-
-se tiver multas o usuario não consiga reservar um livro, e o adm tmb consiga bloquear o usuario de reservar manualmente 
 
 
                         JapaJapaJapaJapaJapaJapaJapa
+
 
 fazer uma aba no perfil para multas aplicadas JapaJapaJapaJapaJapaJapaJapa
 
