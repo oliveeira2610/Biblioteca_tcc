@@ -1,12 +1,49 @@
-trabalho teste
+LESSIE
 
-.\sqlite3 ecommerce.db
+PROJETOS FUTUROS:
 
-projetos futuros:
 
 Sistema de pagamento para liberar multas -- na pagina perfil  -> cards
 
-melhorias das paginas
+
+
+PRECISA FAZER:
+
+
+Sistema para o adm bloquear usuarios de reservar livros na pagina "Users" 
+
+Criar tela para o adm ver o perfil do Usuario e poder ver as observações 
+
+Criar sistema de escrever observações para reservas e devoluções por reserva e aparecer nos detalhes da reserva e no perfil do usuario apenas para os adms na pagina "Historico" e "Users"
+
+Criar botao para deslogar na pagina de "perfil usuario"
+
+Fazer os cards da pagina addbooks redirecionar para uma tela para cadastrar os livros, puxando as informações automaticamente pela api mas tendo a possibilidade de editar,colocando local do livro Ex: Prateleira, Numero do livro alem das outras informações
+
+Aparecer mais informações do livro na pagina BookDetails
+
+Criar uma tela para adicionar livro na mão com imagem por link 
+
+Deixar o formulario de registro com verificações melhores
+
+Na tela reserved books, quando clicar no card ser redirecionado para tela de detalhed de reserva
+
+
+                        JapaJapaJapaJapaJapaJapaJapa
+
+
+fazer uma aba no perfil para multas aplicadas JapaJapaJapaJapaJapaJapaJapa
+
+criar pagina acervo. JapaJapaJapaJapaJapaJapaJapaJapaJapaJapaJapa
+
+livros aleatorios na home JapaJapaJapaJapaJapaJapaJapaJapaJapaJapaJapa
+
+
+
+
+
+
+MELHORIAS FEITAS NO PROJETO:
 
 // FEITO // estoque de livros.
 
@@ -50,26 +87,10 @@ melhorias das paginas
 
 
 
-PRECISA FAZER:
 
-Colocar local do livro Ex: Prateleira, Numero do livro 
+/////////////////////////////////////////
 
-Criar uma tela para adicionar livro na mão com imagem por link
-
-deixar o formulario de registro com verificações melhores
-
-na tela reserved books, quando clicar no card ser redirecionado para tela de detalhed de reserva
-
-                        JapaJapaJapaJapaJapaJapaJapa
-
-
-fazer uma aba no perfil para multas aplicadas JapaJapaJapaJapaJapaJapaJapa
-
-criar pagina acervo. JapaJapaJapaJapaJapaJapaJapaJapaJapaJapaJapa
-
-livros aleatorios na home JapaJapaJapaJapaJapaJapaJapaJapaJapaJapaJapa
-
-
+Breve explicação das telas:
 
 
 SERVER.JS
