@@ -16,6 +16,7 @@ import HistoricoReservas from './pages/HistoricoReservas';
 import MultasUsuarios from './pages/MultasUsuarios';
 import ReservedBooks from './pages/ReservedBooks';
 import Notifications from './pages/Notifications';
+import PerfilUsuarioAdm from './pages/PerfilUsuarioAdm';
 import Navbar from './components/Navbar'; 
 import AdminRoute from "./components/AdminRoute"; 
 import './styles/global.css';
@@ -57,6 +58,7 @@ function Layout() {
           element={ <AdminRoute> <Dashboard /> </AdminRoute>} />
         <Route path="/manage-database-books" element={<ManageDatabaseBooks />} />
         <Route path="/bookStatus/:id" element={<BookStatus />} />
+        <Route path="/perfil-usuario-adm/:userId" element={<PerfilUsuarioAdm />} />
         <Route path="/perfil-usuario" element={<PerfilUsuario />} />
       </Routes>
     </div>

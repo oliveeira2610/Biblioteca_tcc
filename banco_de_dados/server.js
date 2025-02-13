@@ -1235,6 +1235,20 @@ app.get("/reservas/historico", async (req, res) => {
 
 
 
+app.delete("/usuarios/:id", (req, res) => {
+  const { id } = req.params;
+
+  db.run("DELETE FROM usuarios WHERE id = ?", [id], function (err) {
+    if (err) {
+      console.error("Erro ao deletar usuário:", err);
+      return res.status(500).json({ error: "Erro ao deletar usuário." });
+    }
+    if (this.changes === 0) {
+      return res.status(404).json({ error: "Usuário não encontrado." });
+    }
+    res.status(200).json({ message: "Usuário excluído com sucesso!" });
+  });
+});
 
 
 
