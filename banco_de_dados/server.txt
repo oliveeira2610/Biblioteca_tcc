@@ -287,25 +287,6 @@ app.post("/register-notification", (req, res) => {
 });
 
 
-
-app.get("/check-notification/:userId/:bookId", (req, res) => {
-  const { userId, bookId } = req.params;
-
-  db.get(
-    `SELECT * FROM livros_para_notificacao WHERE user_id = ? AND book_id = ?`,
-    [userId, bookId],
-    (err, row) => {
-      if (err) {
-        console.error("Erro ao verificar notificação:", err);
-        return res.status(500).json({ message: "Erro ao verificar notificação" });
-      }
-      res.status(200).json({ exists: !!row });
-    }
-  );
-});
-
-
-
 // Endpoint para cancelar notificação de um livro específico
 app.delete("/register-notification/:userId/:bookId", (req, res) => {
   const { userId, bookId } = req.params;
@@ -469,135 +450,39 @@ app.get("/dashboard", async (req, res) => {
 
 // Endpoint para atualizar o status do livro e notificar os usuários
 app.put("/livros/:id", (req, res) => {
-  const { status } = req.body;
-
-  db.get(
-    `SELECT status FROM livros WHERE id = ?`,
-    [req.params.id],
-    (err, row) => {
-      if (err)
-        return res
-          .status(500)
-          .json({ error: "Erro ao buscar status atual do livro." });
-
-      const currentStatus = row.status;
-
-      db.run(
-        `UPDATE livros SET status = ? WHERE id = ?`,
-        [status, req.params.id],
-        function (err) {
-          if (err)
-            return res.status(500).json({ error: "Erro ao atualizar status." });
-
-          if (currentStatus !== status) {
-            const bookId = req.params.id;
-            let message;
-
-            if (status === "Disponível") {
-              message = `O livro com ID ${bookId} está disponível.`;
-            } else if (status === "Indisponível") {
-              message = `O livro com ID ${bookId} está indisponível.`;
-            }
-
-            if (message) {
-              createNotification(bookId, message);
-            }
-          }
-
-          res.status(200).json({ message: "Status atualizado com sucesso!" });
-        }
-      );
-    }
-  );
-});
-
-
-app.put("/livros/:id", (req, res) => {
-  const { status } = req.body;
-
-  db.get(
-    `SELECT status FROM livros WHERE id = ?`,
-    [req.params.id],
-    (err, row) => {
-      if (err)
-        return res
-          .status(500)
-          .json({ error: "Erro ao buscar status atual do livro." });
-
-      const currentStatus = row.status;
-
-      db.run(
-        `UPDATE livros SET status = ? WHERE id = ?`,
-        [status, req.params.id],
-        function (err) {
-          if (err)
-            return res.status(500).json({ error: "Erro ao atualizar status." });
-
-          if (currentStatus !== status) {
-            const bookId = req.params.id;
-            let message;
-
-            if (status === "Disponível") {
-              message = `O livro com ID ${bookId} está disponível.`;
-            } else if (status === "Indisponível") {
-              message = `O livro com ID ${bookId} está indisponível.`;
-            }
-
-            if (message) {
-              createNotification(bookId, message);
-            }
-          }
-
-          res.status(200).json({ message: "Status atualizado com sucesso!" });
-        }
-      );
-    }
-  );
-});
-
-
-app.put("/livros/:id", (req, res) => {
   const { status, userId } = req.body;
 
-  db.get(
-    `SELECT status FROM livros WHERE id = ?`,
-    [req.params.id],
-    (err, row) => {
-      if (err)
-        return res
-          .status(500)
-          .json({ error: "Erro ao buscar status atual do livro." });
-
-      const currentStatus = row.status;
-
-      db.run(
-        `UPDATE livros SET status = ? WHERE id = ?`,
-        [status, req.params.id],
-        function (err) {
-          if (err)
-            return res.status(500).json({ error: "Erro ao atualizar status." });
-
-          if (currentStatus !== status) {
-            const bookId = req.params.id;
-            let message;
-
-            if (status === "Disponível") {
-              message = `O livro com ID ${bookId} está disponível.`;
-            } else if (status === "Indisponível") {
-              message = `O livro com ID ${bookId} está indisponível.`;
-            }
-
-            if (message) {
-              createNotification(userId, bookId, message);
-            }
-          }
-
-          res.status(200).json({ message: "Status atualizado com sucesso!" });
-        }
-      );
+  db.get(`SELECT status FROM livros WHERE id = ?`, [req.params.id], (err, row) => {
+    if (err) {
+      return res.status(500).json({ error: "Erro ao buscar status atual do livro." });
     }
-  );
+
+    const currentStatus = row?.status;
+    db.run(`UPDATE livros SET status = ? WHERE id = ?`, [status, req.params.id], function (err) {
+      if (err) {
+        return res.status(500).json({ error: "Erro ao atualizar status." });
+      }
+
+      if (currentStatus !== status) {
+        const bookId = req.params.id;
+        let message;
+
+        if (status === "Disponível") {
+          message = `O livro com ID ${bookId} está disponível.`;
+        } else if (status === "Indisponível") {
+          message = `O livro com ID ${bookId} está indisponível.`;
+        }
+
+        if (message) {
+          createNotification(userId || bookId, message);
+        }
+      }
+
+      res.status(200).json({ message: "Status atualizado com sucesso!" });
+    });
+  });
 });
+
 
 
 // 🔹 Deletar um livro
@@ -1334,7 +1219,15 @@ app.get("/usuario-logado", (req, res) => {
     return res.status(400).json({ error: "ID do usuário não fornecido." });
   }
 
-  const query = `SELECT id, userName, email, telefone, role FROM usuarios WHERE id = ?`;
+  const query = `
+    SELECT u.id, u.userName, u.email, u.telefone, u.role, 
+           COALESCE(SUM(r.multa), 0) AS multa 
+    FROM usuarios u
+    LEFT JOIN reservas r ON u.id = r.usuario_id
+    WHERE u.id = ?
+    GROUP BY u.id
+  `;
+
   db.get(query, [id], (err, row) => {
     if (err) {
       return res.status(500).json({ error: "Erro ao buscar usuário." });
@@ -1345,6 +1238,7 @@ app.get("/usuario-logado", (req, res) => {
     res.json(row);
   });
 });
+
 
 
 app.get("/perfil-usuario/:userId", (req, res) => {
@@ -1645,3 +1539,4 @@ app.get("/historico-devolucoes", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
+
