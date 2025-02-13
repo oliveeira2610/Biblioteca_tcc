@@ -39,15 +39,12 @@ const Navbar = () => {
             <Link to="/home" className="linksnavbar">Home</Link>
           </li>
           <li>
-            <Link to="/books" className="linksnavbar" >Livros</Link>
-          </li>
-          <li>
             <Link to="/notifications" className="linksnavbar" >Notificações</Link>
           </li>
           <li>
             <Link to="/perfil-usuario" className="linksnavbar" >Perfil</Link>
           </li>
-          
+
           {role === "admin" && ( // Exibe o Dashboard apenas para admins
             <li><Link to="/dashboard" className="linksnavbar" >Dashboard</Link></li>
           )}

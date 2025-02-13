@@ -60,102 +60,80 @@ function FloatingLetters() {
 }
 
 function PerfilUsuarioAdm() {
-  const { userId } = useParams();
-  const [userInfo, setUserInfo] = useState(null);
-  const [historicoDevolucoes, setHistoricoDevolucoes] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchUserInfo = async () => {
+    const { userId } = useParams();
+    const [userInfo, setUserInfo] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [isBlocked, setIsBlocked] = useState(false);
+    const navigate = useNavigate();
+  
+    useEffect(() => {
+      const fetchUserInfo = async () => {
+        try {
+          const response = await fetch(`http://localhost:3001/perfil-usuario/${userId}`);
+          if (!response.ok) throw new Error("Erro ao buscar informações do usuário.");
+          const data = await response.json();
+          setUserInfo(data);
+          setIsBlocked(data.bloqueado);
+        } catch (err) {
+          setError(err.message);
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchUserInfo();
+    }, [userId]);
+  
+    const toggleBlockUser = async () => {
       try {
-        const response = await fetch(`http://localhost:3001/perfil-usuario/${userId}`);
-        if (!response.ok) throw new Error("Erro ao buscar informações do usuário.");
-        const data = await response.json();
-        setUserInfo(data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    const fetchHistoricoDevolucoes = async () => {
-      try {
-        const response = await fetch(`http://localhost:3001/historico-devolucoes`);
-        if (!response.ok) throw new Error("Erro ao buscar histórico de devoluções.");
-        const data = await response.json();
-        setHistoricoDevolucoes(data.filter(item => item.usuario === userInfo?.userName));
-      } catch (err) {
-        setError(err.message);
-      }
-    };
-
-    fetchUserInfo();
-    fetchHistoricoDevolucoes();
-  }, [userId, userInfo?.userName]);
-
-  const deleteUser = async () => {
-    if (window.confirm("Tem certeza que deseja excluir este usuário?")) {
-      try {
-        const response = await fetch(`http://localhost:3001/usuarios/${userId}`, {
-          method: "DELETE",
+        const response = await fetch(`http://localhost:3001/usuarios/${userId}/bloquear`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ bloqueado: !isBlocked }),
         });
+        if (!response.ok) throw new Error("Erro ao atualizar status de bloqueio.");
+        setIsBlocked(!isBlocked);
+      } catch (err) {
+        setError(err.message);
+      }
+    };
+  
+    const deleteUser = async () => {
+      if (!window.confirm("Tem certeza que deseja excluir este usuário?")) return;
+      try {
+        const response = await fetch(`http://localhost:3001/usuarios/${userId}`, { method: "DELETE" });
         if (!response.ok) throw new Error("Erro ao excluir usuário.");
         alert("Usuário excluído com sucesso!");
-        navigate("/users");
+        navigate("/usuarios");
       } catch (err) {
         setError(err.message);
       }
-    }
-  };
-
-  if (loading) return <p>Carregando...</p>;
-  if (error) return <p>Erro: {error}</p>;
-  if (!userInfo) return <p>Usuário não encontrado.</p>;
-
-  return (
-    <div className="perfil-usuario-container floating-background">
-      <FloatingLetters />
-      <h1>Perfil do Usuário</h1>
-      <div className="dados-pessoais">
-        <h2>Dados Pessoais</h2>
-        <p><strong>Nome:</strong> {userInfo.userName}</p>
-        <p><strong>Email:</strong> {userInfo.email}</p>
-        <p><strong>Telefone:</strong> {userInfo.telefone}</p>
+    };
+  
+    if (loading) return <p>Carregando...</p>;
+    if (error) return <p>Erro: {error}</p>;
+    if (!userInfo) return <p>Usuário não encontrado.</p>;
+  
+    return (
+      <div className="perfil-usuario-container floating-background">
+        <h1>Perfil do Usuário</h1>
+        <div className="dados-pessoais">
+          <h2>Dados Pessoais</h2>
+          <p><strong>Nome:</strong> {userInfo.userName}</p>
+          <p><strong>Email:</strong> {userInfo.email}</p>
+          <p><strong>Telefone:</strong> {userInfo.telefone}</p>
+        </div>
+  
+        <button onClick={toggleBlockUser} className="block-user-button" style={{ backgroundColor: isBlocked ? 'red' : 'green' }}>
+          {isBlocked ? "Desbloquear Reservas" : "Bloquear Reservas"}
+        </button>
+  
+        <button onClick={deleteUser} className="delete-user-button" style={{ backgroundColor: 'red' }}>
+          Excluir Usuário
+        </button>
       </div>
-
-      <div className="livros-reservados">
-        <h2>Livros Reservados</h2>
-        {userInfo.reservas.length > 0 ? (
-          <ul>
-            {userInfo.reservas.map((reserva) => (
-              <li key={reserva.livroId}>{reserva.nome_do_livro} - Devolução: {new Date(reserva.data_devolucao).toLocaleDateString()}</li>
-            ))}
-          </ul>
-        ) : (
-          <p>Não há livros reservados.</p>
-        )}
-      </div>
-
-      <div className="historico-devolucoes">
-        <h2>Histórico de Devoluções</h2>
-        {historicoDevolucoes.length > 0 ? (
-          <ul>
-            {historicoDevolucoes.map((historico) => (
-              <li key={historico.id}>{historico.livro} - Devolvido em {new Date(historico.data_devolucao).toLocaleDateString()}</li>
-            ))}
-          </ul>
-        ) : (
-          <p>Sem histórico de devoluções.</p>
-        )}
-      </div>
-
-      <button onClick={deleteUser} className="delete-user-button">Excluir Usuário</button>
-    </div>
-  );
-}
-
-export default PerfilUsuarioAdm;
-    
+    );
+  }
+  
+  export default PerfilUsuarioAdm;
+  
