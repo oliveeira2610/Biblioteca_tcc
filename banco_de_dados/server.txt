@@ -40,6 +40,17 @@ db.serialize(() => {
         telefone TEXT
       );
     `);
+    db.run(`
+      ALTER TABLE usuarios ADD COLUMN role TEXT DEFAULT 'user'
+    `, (err) => {
+      if (err && err.message.includes("duplicate column name")) {
+        console.log("A coluna 'role' já existe.");
+      } else if (err) {
+        console.error("Erro ao adicionar coluna 'role':", err);
+      } else {
+        console.log("Coluna 'role' adicionada com sucesso.");
+      }
+    });
 
   db.run(`
       CREATE TABLE IF NOT EXISTS livros (
@@ -276,25 +287,6 @@ app.post("/register-notification", (req, res) => {
 });
 
 
-
-app.get("/check-notification/:userId/:bookId", (req, res) => {
-  const { userId, bookId } = req.params;
-
-  db.get(
-    `SELECT * FROM livros_para_notificacao WHERE user_id = ? AND book_id = ?`,
-    [userId, bookId],
-    (err, row) => {
-      if (err) {
-        console.error("Erro ao verificar notificação:", err);
-        return res.status(500).json({ message: "Erro ao verificar notificação" });
-      }
-      res.status(200).json({ exists: !!row });
-    }
-  );
-});
-
-
-
 // Endpoint para cancelar notificação de um livro específico
 app.delete("/register-notification/:userId/:bookId", (req, res) => {
   const { userId, bookId } = req.params;
@@ -458,135 +450,39 @@ app.get("/dashboard", async (req, res) => {
 
 // Endpoint para atualizar o status do livro e notificar os usuários
 app.put("/livros/:id", (req, res) => {
-  const { status } = req.body;
-
-  db.get(
-    `SELECT status FROM livros WHERE id = ?`,
-    [req.params.id],
-    (err, row) => {
-      if (err)
-        return res
-          .status(500)
-          .json({ error: "Erro ao buscar status atual do livro." });
-
-      const currentStatus = row.status;
-
-      db.run(
-        `UPDATE livros SET status = ? WHERE id = ?`,
-        [status, req.params.id],
-        function (err) {
-          if (err)
-            return res.status(500).json({ error: "Erro ao atualizar status." });
-
-          if (currentStatus !== status) {
-            const bookId = req.params.id;
-            let message;
-
-            if (status === "Disponível") {
-              message = `O livro com ID ${bookId} está disponível.`;
-            } else if (status === "Indisponível") {
-              message = `O livro com ID ${bookId} está indisponível.`;
-            }
-
-            if (message) {
-              createNotification(bookId, message);
-            }
-          }
-
-          res.status(200).json({ message: "Status atualizado com sucesso!" });
-        }
-      );
-    }
-  );
-});
-
-
-app.put("/livros/:id", (req, res) => {
-  const { status } = req.body;
-
-  db.get(
-    `SELECT status FROM livros WHERE id = ?`,
-    [req.params.id],
-    (err, row) => {
-      if (err)
-        return res
-          .status(500)
-          .json({ error: "Erro ao buscar status atual do livro." });
-
-      const currentStatus = row.status;
-
-      db.run(
-        `UPDATE livros SET status = ? WHERE id = ?`,
-        [status, req.params.id],
-        function (err) {
-          if (err)
-            return res.status(500).json({ error: "Erro ao atualizar status." });
-
-          if (currentStatus !== status) {
-            const bookId = req.params.id;
-            let message;
-
-            if (status === "Disponível") {
-              message = `O livro com ID ${bookId} está disponível.`;
-            } else if (status === "Indisponível") {
-              message = `O livro com ID ${bookId} está indisponível.`;
-            }
-
-            if (message) {
-              createNotification(bookId, message);
-            }
-          }
-
-          res.status(200).json({ message: "Status atualizado com sucesso!" });
-        }
-      );
-    }
-  );
-});
-
-
-app.put("/livros/:id", (req, res) => {
   const { status, userId } = req.body;
 
-  db.get(
-    `SELECT status FROM livros WHERE id = ?`,
-    [req.params.id],
-    (err, row) => {
-      if (err)
-        return res
-          .status(500)
-          .json({ error: "Erro ao buscar status atual do livro." });
-
-      const currentStatus = row.status;
-
-      db.run(
-        `UPDATE livros SET status = ? WHERE id = ?`,
-        [status, req.params.id],
-        function (err) {
-          if (err)
-            return res.status(500).json({ error: "Erro ao atualizar status." });
-
-          if (currentStatus !== status) {
-            const bookId = req.params.id;
-            let message;
-
-            if (status === "Disponível") {
-              message = `O livro com ID ${bookId} está disponível.`;
-            } else if (status === "Indisponível") {
-              message = `O livro com ID ${bookId} está indisponível.`;
-            }
-
-            if (message) {
-              createNotification(userId, bookId, message);
-            }
-          }
-
-          res.status(200).json({ message: "Status atualizado com sucesso!" });
-        }
-      );
+  db.get(`SELECT status FROM livros WHERE id = ?`, [req.params.id], (err, row) => {
+    if (err) {
+      return res.status(500).json({ error: "Erro ao buscar status atual do livro." });
     }
-  );
+
+    const currentStatus = row?.status;
+    db.run(`UPDATE livros SET status = ? WHERE id = ?`, [status, req.params.id], function (err) {
+      if (err) {
+        return res.status(500).json({ error: "Erro ao atualizar status." });
+      }
+
+      if (currentStatus !== status) {
+        const bookId = req.params.id;
+        let message;
+
+        if (status === "Disponível") {
+          message = `O livro com ID ${bookId} está disponível.`;
+        } else if (status === "Indisponível") {
+          message = `O livro com ID ${bookId} está indisponível.`;
+        }
+
+        if (message) {
+          createNotification(userId || bookId, message);
+        }
+      }
+
+      res.status(200).json({ message: "Status atualizado com sucesso!" });
+    });
+  });
 });
+
 
 
 // 🔹 Deletar um livro
@@ -919,9 +815,7 @@ app.post("/login", (req, res) => {
     return res.status(400).json({ error: "Email e senha são obrigatórios." });
   }
 
-  const query = `SELECT * FROM usuarios WHERE email = ?`;
-
-  db.get(query, [email], (err, user) => {
+  db.get(`SELECT * FROM usuarios WHERE email = ?`, [email], async (err, user) => {
     if (err) {
       console.error("Erro ao buscar usuário:", err.message);
       return res.status(500).json({ error: "Erro ao buscar usuário." });
@@ -931,21 +825,55 @@ app.post("/login", (req, res) => {
       return res.status(401).json({ error: "Usuário não encontrado." });
     }
 
-    // Comparação direta da senha (sem bcrypt)
-    if (user.password !== password) {
+    const match = await bcrypt.compare(password, user.password);
+    if (!match) {
       return res.status(401).json({ error: "Senha incorreta." });
     }
 
-    // Retornar os dados do usuário (sem a senha)
     res.status(200).json({
       id: user.id,
       userName: user.userName,
       email: user.email,
-      cpf: user.cpf,
-      telefone: user.telefone,
+      role: user.role, // Retorna a função do usuário
     });
   });
 });
+
+
+
+const bcrypt = require("bcrypt");
+const saltRounds = 10; // Número de rounds de hashing
+
+app.post("/register", async (req, res) => {
+  const { userName, email, password, cpf, telefone, role } = req.body;
+
+  if (!userName || !email || !password || !cpf) {
+    return res.status(400).json({ error: "Todos os campos são obrigatórios" });
+  }
+
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    // Definir "role" apenas se for um admin criando um novo admin
+    const userRole = role === "admin" ? "admin" : "user";
+
+    db.run(
+      `INSERT INTO usuarios (userName, email, password, cpf, telefone, role) VALUES (?, ?, ?, ?, ?, ?)`,
+      [userName, email, hashedPassword, cpf, telefone, userRole],
+      function (err) {
+        if (err) {
+          console.error("Erro ao registrar usuário:", err);
+          return res.status(500).json({ error: "Erro ao registrar usuário" });
+        }
+        res.status(201).json({ message: "Usuário registrado com sucesso!" });
+      }
+    );
+  } catch (error) {
+    console.error("Erro ao registrar usuário:", error);
+    res.status(500).json({ error: "Erro ao registrar usuário" });
+  }
+});
+
 
 
 
@@ -1114,29 +1042,6 @@ app.put("/reservas/:id/devolver", async (req, res) => {
   }
 });
 
-// Endpoint para obter o histórico de devoluções
-app.get("/historico-devolucoes", async (req, res) => {
-  const db = await openDb();
-
-  try {
-    const historico = await db.all(`
-      SELECT 
-        h.id,
-        u.userName AS usuario,
-        l.nome_do_livro AS livro,
-        h.data_devolucao
-      FROM historico_devolucoes h
-      JOIN usuarios u ON h.usuario_id = u.id
-      JOIN livros l ON h.livro_id = l.id
-      ORDER BY h.data_devolucao DESC
-    `);
-
-    res.json(historico);
-  } catch (error) {
-    console.error("Erro ao buscar histórico de devoluções:", error);
-    res.status(500).json({ error: "Erro ao buscar histórico de devoluções." });
-  }
-});
 
 
 // Endpoint para obter o histórico de reservas
@@ -1314,7 +1219,15 @@ app.get("/usuario-logado", (req, res) => {
     return res.status(400).json({ error: "ID do usuário não fornecido." });
   }
 
-  const query = `SELECT id, userName, email, telefone FROM usuarios WHERE id = ?`;
+  const query = `
+    SELECT u.id, u.userName, u.email, u.telefone, u.role, 
+           COALESCE(SUM(r.multa), 0) AS multa 
+    FROM usuarios u
+    LEFT JOIN reservas r ON u.id = r.usuario_id
+    WHERE u.id = ?
+    GROUP BY u.id
+  `;
+
   db.get(query, [id], (err, row) => {
     if (err) {
       return res.status(500).json({ error: "Erro ao buscar usuário." });
@@ -1325,6 +1238,8 @@ app.get("/usuario-logado", (req, res) => {
     res.json(row);
   });
 });
+
+
 
 app.get("/perfil-usuario/:userId", (req, res) => {
   const { userId } = req.params;
@@ -1599,7 +1514,10 @@ app.get("/historico-devolucoes", async (req, res) => {
       SELECT 
         h.id,
         u.userName AS usuario,
+        l.id AS livro_id,
         l.nome_do_livro AS livro,
+        l.autor,
+        l.imagem,
         h.data_devolucao
       FROM historico_devolucoes h
       JOIN usuarios u ON h.usuario_id = u.id
@@ -1614,9 +1532,11 @@ app.get("/historico-devolucoes", async (req, res) => {
   }
 });
 
+
 /////////////////////// INICIAR SERVIDOR ///////////////////////
 
 // Iniciar o servidor
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
+

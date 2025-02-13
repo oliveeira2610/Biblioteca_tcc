@@ -96,7 +96,11 @@
       font-size: 16px;
       color: #333;
       transition: all 0.3s ease;
+<<<<<<< HEAD
       background-color: white;
+=======
+      background-color: #fff8de;
+>>>>>>> e80b3eb8c5a7c08316f5a4d7a7814a8b62d1ceac
     }
 
     .auth-box input:focus {

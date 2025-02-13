@@ -12,14 +12,16 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+<<<<<<< HEAD
     setError(""); // Limpa erros anteriores
+
+    setError("");
+>>>>>>> e80b3eb8c5a7c08316f5a4d7a7814a8b62d1ceac
   
     try {
       const response = await fetch("http://localhost:3001/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       });
   
@@ -28,7 +30,13 @@ const Login = () => {
       if (response.ok) {
         // Salvar apenas o ID do usuário no localStorage
         localStorage.setItem("userId", data.id);
-        navigate("/home"); // Redireciona após login bem-sucedido
+        localStorage.setItem("userRole", data.role); // Salva a função do usuário
+  
+        if (data.role === "admin") {
+          navigate("/Dashboard"); // Página do admin
+        } else {
+          navigate("/home"); // Página do usuário comum
+        }
       } else {
         setError(data.error || "Erro ao fazer login.");
       }
@@ -36,6 +44,8 @@ const Login = () => {
       setError("Erro ao conectar com o servidor.");
     }
   };
+  
+  
 
  
   

@@ -8,6 +8,7 @@
     text-align: center;
     cursor: pointer;
     transition: transform 0.2s;
+    align-items: center;
   }
   
   .book-card:hover {

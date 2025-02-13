@@ -55,16 +55,19 @@ function BookStatus() {
   if (!book) return <p>Livro não encontrado.</p>;
 
   const handleReserve = async () => {
+    if (user?.multa > 0) {
+      alert("Você possui multas pendentes e não pode reservar livros.");
+      return;
+    }
+  
     const currentDate = new Date();
     const returnDate = new Date(currentDate);
     returnDate.setDate(currentDate.getDate() + 7);
-
+  
     try {
       const response = await fetch("http://localhost:3001/reservas", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           livro_id: id,
           usuario_id: user?.id,
@@ -74,18 +77,19 @@ function BookStatus() {
           multa: 0,
         }),
       });
-
+  
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.error || "Erro ao reservar o livro.");
       }
-
+  
       alert("Reserva realizada com sucesso!");
       navigate("/search");
     } catch (err) {
       alert(err.message);
     }
   };
+  
 
   return (
     <div className="book-status-container">
