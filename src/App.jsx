@@ -53,9 +53,7 @@ function Layout() {
         <Route path="/book/:id" element={<BookDetails />} /> 
         <Route path="/reservedBooks" element={<ReservedBooks />} />
         <Route path="/multasUsuarios" element={<MultasUsuarios />} />
-        <Route
-          path="/dashboard"
-          element={ <AdminRoute> <Dashboard /> </AdminRoute>} />
+        <Route path="/dashboard" element={ <AdminRoute> <Dashboard /> </AdminRoute>} />
         <Route path="/manage-database-books" element={<ManageDatabaseBooks />} />
         <Route path="/bookStatus/:id" element={<BookStatus />} />
         <Route path="/perfil-usuario-adm/:userId" element={<PerfilUsuarioAdm />} />
