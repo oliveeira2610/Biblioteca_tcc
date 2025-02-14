@@ -12,11 +12,9 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-<<<<<<< HEAD
     setError(""); // Limpa erros anteriores
 
     setError("");
->>>>>>> e80b3eb8c5a7c08316f5a4d7a7814a8b62d1ceac
   
     try {
       const response = await fetch("http://localhost:3001/login", {

@@ -35,7 +35,6 @@ const Navbar = () => {
           <div className="user-greeting">Olá, {userName}!</div>
         </div>
         <ul className="nav-links">
-<<<<<<< HEAD
           <li>
             <Link to="/home" className="linksnavbar">Home</Link>
           </li>
@@ -54,15 +53,7 @@ const Navbar = () => {
           <li>
             <Link to="/search" className="linksnavbar" >Pesquisar Livros</Link>
           </li>
-=======
-          <li><Link to="/home">Home</Link></li>
-          <li><Link to="/notifications">Notificações</Link></li>
-          <li><Link to="/perfil-usuario">Perfil</Link></li>
-          {role === "admin" && ( // Exibe o Dashboard apenas para admins
-            <li><Link to="/dashboard">Dashboard</Link></li>
-          )}
-          <li><Link to="/search">Pesquisar Livros</Link></li>
->>>>>>> e80b3eb8c5a7c08316f5a4d7a7814a8b62d1ceac
+          
         </ul>
       </div>
     </nav>
