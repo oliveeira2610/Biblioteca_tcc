@@ -9,6 +9,7 @@ Sistema de pagamento para liberar multas -- na pagina perfil  -> cards
 
 PRECISA FAZER:
 
+preciso resolver o user bloqueado
 
 Sistema para o adm bloquear usuarios de reservar livros na pagina "Users" 
 

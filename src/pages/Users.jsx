@@ -3,7 +3,7 @@ import "../../src/styles/global.css";
 import "../../src/styles/Users.css";
 import "../../src/styles/book-card.css";
 import { useNavigate } from "react-router-dom";
-import '../../src/styles/FloatingBackground.css';
+import "../../src/styles/FloatingBackground.css";
 
 function FloatingLetters() {
   const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".split("");
@@ -59,8 +59,6 @@ function FloatingLetters() {
     </div>
   );
 }
-
-
 
 const Users = () => {
   const [usuarios, setUsuarios] = useState([]);
@@ -133,7 +131,12 @@ const Users = () => {
         <p>Carregando usuários...</p>
       ) : (
         usuarios.map((usuario) => (
-          <div key={usuario.id} className="user-card">
+          <div
+            key={usuario.id}
+            className="user-card"
+            onClick={() => navigate(`/perfil-usuario-adm/${usuario.id}`)}
+            style={{ cursor: "pointer" }} // Garante que o cursor mude ao passar por cima
+          >
             <h3>{usuario.userName}</h3>
             <p>Email: {usuario.email}</p>
             <p>Telefone: {usuario.telefone}</p>
@@ -206,54 +209,67 @@ const Users = () => {
 
             {/* Ajuste na exibição dos livros devolvidos */}
             {/* Seção de Livros Devolvidos */}
-<div className="books-section">
-  <h4>Livros Devolvidos:</h4>
-  <div className="books-cards">
-    {historicoDevolucoes.filter(devolucao => devolucao.usuario === usuario.userName).length > 0 ? (
-      historicoDevolucoes
-        .filter(devolucao => devolucao.usuario === usuario.userName)
-        .map(devolucao => (
-          <div
-            key={devolucao.id}
-            className="book-card"
-            onClick={() => navigate(`/book/${devolucao.livro_id}`)}
-            style={{ cursor: "pointer" }}
-          >
-            {devolucao.imagem ? (
-              <img
-                src={
-                  devolucao.imagem.startsWith("http")
-                    ? devolucao.imagem
-                    : `http://localhost:3001/${devolucao.imagem}`
-                }
-                alt={devolucao.livro}
-                className="book-card-image"
-                onError={(e) => (e.target.src = "/placeholder.jpg")}
-              />
-            ) : (
-              <div className="no-image-placeholder">Sem imagem</div>
-            )}
+            <div className="books-section">
+              <h4>Livros Devolvidos:</h4>
+              <div className="books-cards">
+                {historicoDevolucoes.filter(
+                  (devolucao) => devolucao.usuario === usuario.userName
+                ).length > 0 ? (
+                  historicoDevolucoes
+                    .filter(
+                      (devolucao) => devolucao.usuario === usuario.userName
+                    )
+                    .map((devolucao) => (
+                      <div
+                        key={devolucao.id}
+                        className="book-card"
+                        onClick={() => navigate(`/book/${devolucao.livro_id}`)}
+                        style={{ cursor: "pointer" }}
+                      >
+                        {devolucao.imagem ? (
+                          <img
+                            src={
+                              devolucao.imagem.startsWith("http")
+                                ? devolucao.imagem
+                                : `http://localhost:3001/${devolucao.imagem}`
+                            }
+                            alt={devolucao.livro}
+                            className="book-card-image"
+                            onError={(e) => (e.target.src = "/placeholder.jpg")}
+                          />
+                        ) : (
+                          <div className="no-image-placeholder">Sem imagem</div>
+                        )}
 
-            <h3 className="book-card-title">{devolucao.livro || "Título Desconhecido"}</h3>
-            <p className="book-card-author">{devolucao.autor || "Autor Desconhecido"}</p>
+                        <h3 className="book-card-title">
+                          {devolucao.livro || "Título Desconhecido"}
+                        </h3>
+                        <p className="book-card-author">
+                          {devolucao.autor || "Autor Desconhecido"}
+                        </p>
 
-            <p className="book-card-status" style={{ color: "green" }}>
-              Status: Devolvido
-            </p>
+                        <p
+                          className="book-card-status"
+                          style={{ color: "green" }}
+                        >
+                          Status: Devolvido
+                        </p>
 
-            {devolucao.data_devolucao && (
-              <p className="book-card-return-date">
-                Devolvido em: {new Date(devolucao.data_devolucao).toLocaleDateString()}
-              </p>
-            )}
-          </div>
-        ))
-    ) : (
-      <p>Sem livros devolvidos</p>
-    )}
-  </div>
-</div>
-
+                        {devolucao.data_devolucao && (
+                          <p className="book-card-return-date">
+                            Devolvido em:{" "}
+                            {new Date(
+                              devolucao.data_devolucao
+                            ).toLocaleDateString()}
+                          </p>
+                        )}
+                      </div>
+                    ))
+                ) : (
+                  <p>Sem livros devolvidos</p>
+                )}
+              </div>
+            </div>
           </div>
         ))
       )}

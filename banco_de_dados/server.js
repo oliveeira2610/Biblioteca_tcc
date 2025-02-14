@@ -37,7 +37,8 @@ db.serialize(() => {
         email TEXT NOT NULL UNIQUE,
         password TEXT NOT NULL,
         cpf TEXT NOT NULL UNIQUE,
-        telefone TEXT
+        telefone TEXT,
+        bloqueado INTEGER DEFAULT 0
       );
     `);
     db.run(`
@@ -1235,8 +1236,38 @@ app.get("/reservas/historico", async (req, res) => {
 
 
 
+app.delete("/usuarios/:id", (req, res) => {
+  const { id } = req.params;
+
+  db.run("DELETE FROM usuarios WHERE id = ?", [id], function (err) {
+    if (err) {
+      console.error("Erro ao deletar usuário:", err);
+      return res.status(500).json({ error: "Erro ao deletar usuário." });
+    }
+    if (this.changes === 0) {
+      return res.status(404).json({ error: "Usuário não encontrado." });
+    }
+    res.status(200).json({ message: "Usuário excluído com sucesso!" });
+  });
+});
 
 
+app.put("/usuarios/:id/bloquear", (req, res) => {
+  const { id } = req.params;
+  const { bloqueado } = req.body;
+
+  db.run(
+    `UPDATE usuarios SET bloqueado = ? WHERE id = ?`,
+    [bloqueado ? 1 : 0, id],
+    function (err) {
+      if (err) {
+        console.error("Erro ao atualizar status de bloqueio:", err);
+        return res.status(500).json({ error: "Erro ao atualizar status de bloqueio." });
+      }
+      res.status(200).json({ message: "Status de bloqueio atualizado com sucesso!" });
+    }
+  );
+});
 
 
 
