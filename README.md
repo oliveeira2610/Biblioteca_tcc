@@ -9,9 +9,14 @@ Sistema de pagamento para liberar multas -- na pagina perfil  -> cards
 
 PRECISA FAZER:
 
+ajustar multas altomaticas q nao estao funcionando
+
 preciso resolver o user bloqueado
 
-Sistema para o adm bloquear usuarios de reservar livros na pagina "Users" 
+Sistema para o adm bloquear usuarios de reservar livros na pagina "Users"
+
+
+
 
 Criar tela para o adm ver o perfil do Usuario e poder ver as observações 
 

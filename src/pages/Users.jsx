@@ -131,15 +131,18 @@ const Users = () => {
         <p>Carregando usuários...</p>
       ) : (
         usuarios.map((usuario) => (
-          <div
-            key={usuario.id}
-            className="user-card"
-            onClick={() => navigate(`/perfil-usuario-adm/${usuario.id}`)}
-            style={{ cursor: "pointer" }} // Garante que o cursor mude ao passar por cima
-          >
-            <h3>{usuario.userName}</h3>
-            <p>Email: {usuario.email}</p>
-            <p>Telefone: {usuario.telefone}</p>
+          <div key={usuario.id} className="user-card">
+            <div
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate(`/perfil-usuario-adm/${usuario.id}`);
+              }}
+              style={{ cursor: "pointer" }}
+            >
+              <h3>{usuario.userName}</h3>
+              <p>Email: {usuario.email}</p>
+              <p>Telefone: {usuario.telefone}</p>
+            </div>
 
             <div className="books-section">
               <h4>Livros Reservados:</h4>
@@ -149,7 +152,10 @@ const Users = () => {
                     <div
                       key={book.id}
                       className="book-card"
-                      onClick={() => navigate(`/book/${book.id}`)}
+                      onClick={(e) => {
+                        e.stopPropagation(); // Evita a navegação para o perfil do usuário
+                        navigate(`/book/${book.id}`);
+                      }}
                       style={{ cursor: "pointer" }}
                     >
                       {book.imagem ? (
@@ -192,7 +198,7 @@ const Users = () => {
 
                       <button
                         onClick={(e) => {
-                          e.stopPropagation();
+                          e.stopPropagation(); // Evita a navegação para o perfil do usuário
                           handleReturnBook(book.reservaId);
                           handleCancelReservation(book.id, usuario.id);
                         }}

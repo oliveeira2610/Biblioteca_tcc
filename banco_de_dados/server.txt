@@ -37,7 +37,8 @@ db.serialize(() => {
         email TEXT NOT NULL UNIQUE,
         password TEXT NOT NULL,
         cpf TEXT NOT NULL UNIQUE,
-        telefone TEXT
+        telefone TEXT,
+        bloqueado INTEGER DEFAULT 0
       );
     `);
     db.run(`
@@ -287,6 +288,25 @@ app.post("/register-notification", (req, res) => {
 });
 
 
+// VOU EXCLUIR
+// app.get("/check-notification/:userId/:bookId", (req, res) => {
+//   const { userId, bookId } = req.params;
+
+//   db.get(
+//     `SELECT * FROM livros_para_notificacao WHERE user_id = ? AND book_id = ?`,
+//     [userId, bookId],
+//     (err, row) => {
+//       if (err) {
+//         console.error("Erro ao verificar notificação:", err);
+//         return res.status(500).json({ message: "Erro ao verificar notificação" });
+//       }
+//       res.status(200).json({ exists: !!row });
+//     }
+//   );
+// });
+
+
+
 // Endpoint para cancelar notificação de um livro específico
 app.delete("/register-notification/:userId/:bookId", (req, res) => {
   const { userId, bookId } = req.params;
@@ -482,6 +502,143 @@ app.put("/livros/:id", (req, res) => {
     });
   });
 });
+
+
+
+
+
+// VOU EXCLUIR
+// app.put("/livros/:id", (req, res) => {
+//   const { status } = req.body;
+
+//   db.get(
+//     `SELECT status FROM livros WHERE id = ?`,
+//     [req.params.id],
+//     (err, row) => {
+//       if (err)
+//         return res
+//           .status(500)
+//           .json({ error: "Erro ao buscar status atual do livro." });
+
+//       const currentStatus = row.status;
+
+//       db.run(
+//         `UPDATE livros SET status = ? WHERE id = ?`,
+//         [status, req.params.id],
+//         function (err) {
+//           if (err)
+//             return res.status(500).json({ error: "Erro ao atualizar status." });
+
+//           if (currentStatus !== status) {
+//             const bookId = req.params.id;
+//             let message;
+
+//             if (status === "Disponível") {
+//               message = `O livro com ID ${bookId} está disponível.`;
+//             } else if (status === "Indisponível") {
+//               message = `O livro com ID ${bookId} está indisponível.`;
+//             }
+
+//             if (message) {
+//               createNotification(bookId, message);
+//             }
+//           }
+
+//           res.status(200).json({ message: "Status atualizado com sucesso!" });
+//         }
+//       );
+//     }
+//   );
+// });
+
+
+// app.put("/livros/:id", (req, res) => {
+//   const { status } = req.body;
+
+//   db.get(
+//     `SELECT status FROM livros WHERE id = ?`,
+//     [req.params.id],
+//     (err, row) => {
+//       if (err)
+//         return res
+//           .status(500)
+//           .json({ error: "Erro ao buscar status atual do livro." });
+
+//       const currentStatus = row.status;
+
+//       db.run(
+//         `UPDATE livros SET status = ? WHERE id = ?`,
+//         [status, req.params.id],
+//         function (err) {
+//           if (err)
+//             return res.status(500).json({ error: "Erro ao atualizar status." });
+
+//           if (currentStatus !== status) {
+//             const bookId = req.params.id;
+//             let message;
+
+//             if (status === "Disponível") {
+//               message = `O livro com ID ${bookId} está disponível.`;
+//             } else if (status === "Indisponível") {
+//               message = `O livro com ID ${bookId} está indisponível.`;
+//             }
+
+//             if (message) {
+//               createNotification(bookId, message);
+//             }
+//           }
+
+//           res.status(200).json({ message: "Status atualizado com sucesso!" });
+//         }
+//       );
+//     }
+//   );
+// });
+
+
+// app.put("/livros/:id", (req, res) => {
+//   const { status, userId } = req.body;
+
+//   db.get(
+//     `SELECT status FROM livros WHERE id = ?`,
+//     [req.params.id],
+//     (err, row) => {
+//       if (err)
+//         return res
+//           .status(500)
+//           .json({ error: "Erro ao buscar status atual do livro." });
+
+//       const currentStatus = row.status;
+
+//       db.run(
+//         `UPDATE livros SET status = ? WHERE id = ?`,
+//         [status, req.params.id],
+//         function (err) {
+//           if (err)
+//             return res.status(500).json({ error: "Erro ao atualizar status." });
+
+//           if (currentStatus !== status) {
+//             const bookId = req.params.id;
+//             let message;
+
+//             if (status === "Disponível") {
+//               message = `O livro com ID ${bookId} está disponível.`;
+//             } else if (status === "Indisponível") {
+//               message = `O livro com ID ${bookId} está indisponível.`;
+//             }
+
+//             if (message) {
+//               createNotification(userId, bookId, message);
+//             }
+//           }
+
+//           res.status(200).json({ message: "Status atualizado com sucesso!" });
+//         }
+//       );
+//     }
+//   );
+// });
+
 
 
 
@@ -1079,8 +1236,38 @@ app.get("/reservas/historico", async (req, res) => {
 
 
 
+app.delete("/usuarios/:id", (req, res) => {
+  const { id } = req.params;
+
+  db.run("DELETE FROM usuarios WHERE id = ?", [id], function (err) {
+    if (err) {
+      console.error("Erro ao deletar usuário:", err);
+      return res.status(500).json({ error: "Erro ao deletar usuário." });
+    }
+    if (this.changes === 0) {
+      return res.status(404).json({ error: "Usuário não encontrado." });
+    }
+    res.status(200).json({ message: "Usuário excluído com sucesso!" });
+  });
+});
 
 
+app.put("/usuarios/:id/bloquear", (req, res) => {
+  const { id } = req.params;
+  const { bloqueado } = req.body;
+
+  db.run(
+    `UPDATE usuarios SET bloqueado = ? WHERE id = ?`,
+    [bloqueado ? 1 : 0, id],
+    function (err) {
+      if (err) {
+        console.error("Erro ao atualizar status de bloqueio:", err);
+        return res.status(500).json({ error: "Erro ao atualizar status de bloqueio." });
+      }
+      res.status(200).json({ message: "Status de bloqueio atualizado com sucesso!" });
+    }
+  );
+});
 
 
 
@@ -1539,4 +1726,3 @@ app.get("/historico-devolucoes", async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
-
