@@ -9,11 +9,8 @@ Sistema de pagamento para liberar multas -- na pagina perfil  -> cards
 
 PRECISA FAZER:
 
-ajustar multas altomaticas q nao estao funcionando
 
-preciso resolver o user bloqueado
-
-Sistema para o adm bloquear usuarios de reservar livros na pagina "Users"
+Ver com grupo se tira a pagina de reserved books e apenas mostre a quantidade ou repaginar o historico
 
 
 
@@ -32,15 +29,15 @@ Criar uma tela para adicionar livro na mão com imagem por link
 
 Deixar o formulario de registro com verificações melhores
 
-Na tela reserved books, quando clicar no card ser redirecionado para tela de detalhed de reserva
+
 
 
                         JapaJapaJapaJapaJapaJapaJapa
 
 
-fazer uma aba no perfil para multas aplicadas JapaJapaJapaJapaJapaJapaJapa
+fazer o status de multa ficar vermelho e evitdente na aba perfil JapaJapaJapaJapaJapaJapaJapa
 
-criar pagina acervo. JapaJapaJapaJapaJapaJapaJapaJapaJapaJapaJapa
+
 
 
 
@@ -51,9 +48,19 @@ criar pagina acervo. JapaJapaJapaJapaJapaJapaJapaJapaJapaJapaJapa
 
 MELHORIAS FEITAS NO PROJETO:
 
+// FEITO // Na tela reserved books, quando clicar no card ser redirecionado para tela de detalhed de reserva
+
+// FEITO // ajustar multas altomaticas q nao estao funcionando
+
+// FEITO // preciso resolver o user bloqueado
+
+// FEITO // Sistema para o adm bloquear usuarios de reservar livros na pagina "Users"
+
 // FEITO // estoque de livros.
 
 // FEITO //  aviso em baixo: reservado até x dia - Bookdetails.
+
+// FEITO //  criar pagina acervo. JapaJapaJapaJapaJapaJapaJapaJapaJapaJapaJapa
 
 // FEITO // criar pagina de notificações, e colocar um botao novo no BookDetails "indisponivel" que quando o usuario ativar, enviar uma notificação na aba nofificações quando o livro se tornar disponivel novamente.
 

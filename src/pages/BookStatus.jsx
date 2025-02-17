@@ -60,6 +60,11 @@ function BookStatus() {
       return;
     }
   
+    if (user?.bloqueado) {
+      alert("Você está bloqueado e não pode reservar livros.");
+      return;
+    }
+  
     const currentDate = new Date();
     const returnDate = new Date(currentDate);
     returnDate.setDate(currentDate.getDate() + 7);
@@ -90,7 +95,6 @@ function BookStatus() {
     }
   };
   
-
   return (
     <div className="book-status-container">
       <div className="user-info">

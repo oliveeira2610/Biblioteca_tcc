@@ -60,8 +60,6 @@ function FloatingLetters() {
   );
 }
 
-
-
 function ReservedBooks() {
   const [reservedBooks, setReservedBooks] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -106,9 +104,9 @@ function ReservedBooks() {
         ) : (
           reservedBooks.map((book) => (
             <div
-              key={book.id}
+              key={book.livro_id}
               className="book-card"
-              onClick={() => handleCardClick(book.id)}
+              onClick={() => handleCardClick(book.livro_id)}
             >
               {book.imagem ? (
                 <img src={book.imagem} alt={book.nome_do_livro} className="book-card-image" />
