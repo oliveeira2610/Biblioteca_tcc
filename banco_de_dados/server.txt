@@ -1,6 +1,7 @@
 const express = require("express");
 const sqlite3 = require("sqlite3").verbose();
 const cors = require("cors");
+const cron = require("node-cron");
 
 const app = express();
 const PORT = 3001;
@@ -28,6 +29,33 @@ const db = new sqlite3.Database("./books.db", (err) => {
   }
 });
 
+// Função para calcular e aplicar multas automaticamente
+const aplicarMultasAutomaticamente = async () => {
+  const db = await openDb();
+  
+  const reservas = await db.all(`SELECT id, data_devolucao FROM reservas WHERE status = 'Reservado'`);
+
+  const hoje = new Date();
+
+  for (const reserva of reservas) {
+    const dataDevolucao = new Date(reserva.data_devolucao);
+    let diasAtraso = Math.ceil((hoje - dataDevolucao) / (1000 * 60 * 60 * 24));
+
+    if (diasAtraso > 0) {
+      const multa = 10 + diasAtraso * 2;
+      await db.run(`UPDATE reservas SET multa = ?, dias_atraso = ? WHERE id = ?`, [multa, diasAtraso, reserva.id]);
+    }
+  }
+
+  console.log("Multas aplicadas automaticamente");
+};
+
+// Agendar a execução da função aplicarMultasAutomaticamente todos os dias à meia-noite
+cron.schedule('0 0 * * *', () => {
+  aplicarMultasAutomaticamente();
+  console.log("Verificação de multas executada.");
+});
+
 // Criar tabelas caso não existam
 db.serialize(() => {
   db.run(`
@@ -52,6 +80,19 @@ db.serialize(() => {
         console.log("Coluna 'role' adicionada com sucesso.");
       }
     });
+  
+
+    
+  db.run(`
+    CREATE TABLE IF NOT EXISTS admin_comments (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER NOT NULL,
+      comment TEXT NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (user_id) REFERENCES usuarios(id) ON DELETE CASCADE
+    );
+  `);
+    
 
   db.run(`
       CREATE TABLE IF NOT EXISTS livros (
@@ -148,7 +189,16 @@ console.log("Tabelas criadas ou já existentes.");
 
 
 
-
+// PARA TESTE APENAS
+app.get("/testar-aplicacao-multas", async (req, res) => {
+  try {
+    await aplicarMultasAutomaticamente();
+    res.status(200).json({ message: "Multas aplicadas com sucesso." });
+  } catch (error) {
+    console.error("Erro ao aplicar multas manualmente:", error);
+    res.status(500).json({ error: "Erro ao aplicar multas manualmente." });
+  }
+});
 
 
 
@@ -504,140 +554,6 @@ app.put("/livros/:id", (req, res) => {
 });
 
 
-
-
-
-// VOU EXCLUIR
-// app.put("/livros/:id", (req, res) => {
-//   const { status } = req.body;
-
-//   db.get(
-//     `SELECT status FROM livros WHERE id = ?`,
-//     [req.params.id],
-//     (err, row) => {
-//       if (err)
-//         return res
-//           .status(500)
-//           .json({ error: "Erro ao buscar status atual do livro." });
-
-//       const currentStatus = row.status;
-
-//       db.run(
-//         `UPDATE livros SET status = ? WHERE id = ?`,
-//         [status, req.params.id],
-//         function (err) {
-//           if (err)
-//             return res.status(500).json({ error: "Erro ao atualizar status." });
-
-//           if (currentStatus !== status) {
-//             const bookId = req.params.id;
-//             let message;
-
-//             if (status === "Disponível") {
-//               message = `O livro com ID ${bookId} está disponível.`;
-//             } else if (status === "Indisponível") {
-//               message = `O livro com ID ${bookId} está indisponível.`;
-//             }
-
-//             if (message) {
-//               createNotification(bookId, message);
-//             }
-//           }
-
-//           res.status(200).json({ message: "Status atualizado com sucesso!" });
-//         }
-//       );
-//     }
-//   );
-// });
-
-
-// app.put("/livros/:id", (req, res) => {
-//   const { status } = req.body;
-
-//   db.get(
-//     `SELECT status FROM livros WHERE id = ?`,
-//     [req.params.id],
-//     (err, row) => {
-//       if (err)
-//         return res
-//           .status(500)
-//           .json({ error: "Erro ao buscar status atual do livro." });
-
-//       const currentStatus = row.status;
-
-//       db.run(
-//         `UPDATE livros SET status = ? WHERE id = ?`,
-//         [status, req.params.id],
-//         function (err) {
-//           if (err)
-//             return res.status(500).json({ error: "Erro ao atualizar status." });
-
-//           if (currentStatus !== status) {
-//             const bookId = req.params.id;
-//             let message;
-
-//             if (status === "Disponível") {
-//               message = `O livro com ID ${bookId} está disponível.`;
-//             } else if (status === "Indisponível") {
-//               message = `O livro com ID ${bookId} está indisponível.`;
-//             }
-
-//             if (message) {
-//               createNotification(bookId, message);
-//             }
-//           }
-
-//           res.status(200).json({ message: "Status atualizado com sucesso!" });
-//         }
-//       );
-//     }
-//   );
-// });
-
-
-// app.put("/livros/:id", (req, res) => {
-//   const { status, userId } = req.body;
-
-//   db.get(
-//     `SELECT status FROM livros WHERE id = ?`,
-//     [req.params.id],
-//     (err, row) => {
-//       if (err)
-//         return res
-//           .status(500)
-//           .json({ error: "Erro ao buscar status atual do livro." });
-
-//       const currentStatus = row.status;
-
-//       db.run(
-//         `UPDATE livros SET status = ? WHERE id = ?`,
-//         [status, req.params.id],
-//         function (err) {
-//           if (err)
-//             return res.status(500).json({ error: "Erro ao atualizar status." });
-
-//           if (currentStatus !== status) {
-//             const bookId = req.params.id;
-//             let message;
-
-//             if (status === "Disponível") {
-//               message = `O livro com ID ${bookId} está disponível.`;
-//             } else if (status === "Indisponível") {
-//               message = `O livro com ID ${bookId} está indisponível.`;
-//             }
-
-//             if (message) {
-//               createNotification(userId, bookId, message);
-//             }
-//           }
-
-//           res.status(200).json({ message: "Status atualizado com sucesso!" });
-//         }
-//       );
-//     }
-//   );
-// });
 
 
 
@@ -1115,45 +1031,58 @@ app.post("/reservas", (req, res) => {
     return res.status(400).json({ error: "Todos os campos obrigatórios devem ser preenchidos." });
   }
 
-  // Verificar se o usuário já reservou este livro
-  db.get(
-    `SELECT * FROM reservas WHERE livro_id = ? AND usuario_id = ? AND status = 'Reservado'`,
-    [livro_id, usuario_id],
-    (err, row) => {
-      if (err) {
-        console.error("Erro ao verificar reservas existentes:", err);
-        return res.status(500).json({ error: "Erro ao verificar reservas existentes." });
-      }
-
-      if (row) {
-        return res.status(400).json({ error: "Você já reservou este livro." });
-      }
-
-      const query = `INSERT INTO reservas (livro_id, usuario_id, data_reserva, data_devolucao, status, multa) VALUES (?, ?, ?, ?, ?, ?)`;
-
-      db.run(
-        query,
-        [livro_id, usuario_id, data_reserva, data_devolucao, status, multa],
-        function (err) {
-          if (err) {
-            console.error("Erro ao criar reserva:", err);
-            return res.status(500).json({ error: "Erro ao criar reserva." });
-          }
-
-          res.status(201).json({
-            id: this.lastID,
-            livro_id,
-            usuario_id,
-            data_reserva,
-            data_devolucao,
-            status,
-            multa,
-          });
-        }
-      );
+  // Verificar se o usuário está bloqueado
+  db.get(`SELECT bloqueado FROM usuarios WHERE id = ?`, [usuario_id], (err, row) => {
+    if (err) {
+      console.error("Erro ao verificar bloqueio do usuário:", err);
+      return res.status(500).json({ error: "Erro ao verificar bloqueio do usuário." });
     }
-  );
+
+    if (row.bloqueado) {
+      return res.status(403).json({ error: "Usuário bloqueado. Não é possível reservar livros." });
+    }
+
+    // Verificar se o usuário já reservou este livro
+    db.get(
+      `SELECT * FROM reservas WHERE livro_id = ? AND usuario_id = ? AND status = 'Reservado'`,
+      [livro_id, usuario_id],
+      (err, row) => {
+        if (err) {
+          console.error("Erro ao verificar reservas existentes:", err);
+          return res.status(500).json({ error: "Erro ao verificar reservas existentes." });
+        }
+
+        if (row) {
+          return res.status(400).json({ error: "Você já reservou este livro." });
+        }
+
+        const query = `INSERT INTO reservas (livro_id, usuario_id, data_reserva, data_devolucao, status, multa) VALUES (?, ?, ?, ?, ?, ?)`;
+
+        db.run(
+          query,
+          [livro_id, usuario_id, data_reserva, data_devolucao, status, multa],
+          function (err) {
+            if (err) {
+              console.error("Erro ao criar reserva:", err);
+              return res.status(500).json({ error: "Erro ao criar reserva." });
+            }
+
+            res.status(201).json({
+              id: this.lastID,
+              livro_id,
+              usuario_id,
+              data_reserva,
+              data_devolucao,
+              status,
+              multa,
+            });
+          }
+        );
+      }
+    );
+  });
 });
+
 
 
 
@@ -1220,6 +1149,96 @@ app.get("/reservas/historico", async (req, res) => {
     res.status(500).json({ error: "Erro ao buscar histórico de reservas." });
   }
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+///////////////comentários dos administradores/////////////////////////////
+
+
+
+
+
+
+
+// Endpoint para adicionar um comentário de administrador
+app.post("/usuarios/:id/comentario", (req, res) => {
+  const { id } = req.params;
+  const { comment } = req.body;
+
+  db.run(
+    `INSERT INTO admin_comments (user_id, comment) VALUES (?, ?)`,
+    [id, comment],
+    function (err) {
+      if (err) {
+        console.error("Erro ao adicionar comentário de administrador:", err);
+        return res.status(500).json({ error: "Erro ao adicionar comentário de administrador." });
+      }
+      res.status(201).json({ message: "Comentário adicionado com sucesso!", id: this.lastID });
+    }
+  );
+});
+
+// Endpoint para buscar comentários de administrador
+app.get("/usuarios/:id/comentarios", (req, res) => {
+  const { id } = req.params;
+
+  db.all(
+    `SELECT * FROM admin_comments WHERE user_id = ? ORDER BY created_at DESC`,
+    [id],
+    (err, rows) => {
+      if (err) {
+        console.error("Erro ao buscar comentários de administrador:", err);
+        return res.status(500).json({ error: "Erro ao buscar comentários de administrador." });
+      }
+      res.status(200).json(rows);
+    }
+  );
+});
+
+// Endpoint para deletar um comentário de administrador
+app.delete("/usuarios/comentario/:commentId", (req, res) => {
+  const { commentId } = req.params;
+
+  db.run(
+    `DELETE FROM admin_comments WHERE id = ?`,
+    [commentId],
+    function (err) {
+      if (err) {
+        console.error("Erro ao deletar comentário de administrador:", err);
+        return res.status(500).json({ error: "Erro ao deletar comentário de administrador." });
+      }
+      res.status(200).json({ message: "Comentário deletado com sucesso!" });
+    }
+  );
+});
+
+
+
+
+
 
 
 
@@ -1436,7 +1455,8 @@ app.get("/perfil-usuario/:userId", (req, res) => {
       usuarios.id, 
       usuarios.userName, 
       usuarios.email, 
-      usuarios.telefone
+      usuarios.telefone,
+      usuarios.bloqueado
     FROM usuarios
     WHERE usuarios.id = ?
   `;
@@ -1466,38 +1486,34 @@ app.get("/perfil-usuario/:userId", (req, res) => {
     db.get(queryUsuario, [userId], (err, usuario) => {
       if (err) {
         console.error("Erro ao buscar dados do usuário:", err);
-        return res
-          .status(500)
-          .json({ error: "Erro ao buscar dados do usuário." });
+        return res.status(500).json({ error: "Erro ao buscar dados do usuário." });
       }
 
       if (!usuario) {
-        return res
-          .status(404)
-          .json({ error: "Usuário não encontrado." });
+        return res.status(404).json({ error: "Usuário não encontrado." });
       }
 
       db.all(queryReservas, [userId], (err, reservas) => {
         if (err) {
           console.error("Erro ao buscar reservas:", err);
-          return res
-            .status(500)
-            .json({ error: "Erro ao buscar reservas." });
+          return res.status(500).json({ error: "Erro ao buscar reservas." });
         }
 
         db.all(queryLivrosParaNotificacao, [userId], (err, livrosParaNotificacao) => {
           if (err) {
             console.error("Erro ao buscar livros para notificação:", err);
-            return res
-              .status(500)
-              .json({ error: "Erro ao buscar livros para notificação." });
+            return res.status(500).json({ error: "Erro ao buscar livros para notificação." });
           }
+
+          const multasPendentes = reservas.reduce((acc, reserva) => acc + reserva.multa, 0);
 
           const userInfo = {
             id: usuario.id,
             userName: usuario.userName,
             email: usuario.email,
             telefone: usuario.telefone,
+            bloqueado: usuario.bloqueado,
+            multa: multasPendentes,
             reservas: reservas.map(row => ({
               livroId: row.livro_id,
               nome_do_livro: row.nome_do_livro,
@@ -1517,6 +1533,7 @@ app.get("/perfil-usuario/:userId", (req, res) => {
     });
   });
 });
+
 
 
 

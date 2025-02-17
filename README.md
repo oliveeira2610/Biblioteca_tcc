@@ -1,5 +1,12 @@
 LESSIE
 
+ATUALIZAÇÕES:
+
+tela nova DevolucoaoUsuario.jsx = tela que mostra as informações da devolução do livro e o usuario que devolveu e a data de devolução
+
+
+
+
 PROJETOS FUTUROS:
 
 
@@ -17,7 +24,7 @@ Ver com grupo se tira a pagina de reserved books e apenas mostre a quantidade ou
 
 Criar tela para o adm ver o perfil do Usuario e poder ver as observações 
 
-Criar sistema de escrever observações para reservas e devoluções por reserva e aparecer nos detalhes da reserva e no perfil do usuario apenas para os adms na pagina "Historico" e "Users"
+Criar sistema de escrever observações para devolução e aparecer nos detalhes da Devolução e no perfil do usuario apenas para os adms na pagina "Historico" e "Users"
 
 Criar botao para deslogar na pagina de "perfil usuario"
 

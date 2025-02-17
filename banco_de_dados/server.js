@@ -80,6 +80,19 @@ db.serialize(() => {
         console.log("Coluna 'role' adicionada com sucesso.");
       }
     });
+  
+
+
+  db.run(`
+    CREATE TABLE IF NOT EXISTS admin_comments (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER NOT NULL,
+      comment TEXT NOT NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (user_id) REFERENCES usuarios(id) ON DELETE CASCADE
+    );
+  `);
+    
 
   db.run(`
       CREATE TABLE IF NOT EXISTS livros (
@@ -495,7 +508,78 @@ app.get("/dashboard", async (req, res) => {
 
 
 
+app.get("/livro-detalhes/:livroId/:usuarioId", (req, res) => {
+  const { livroId, usuarioId } = req.params;
 
+  if (!livroId || !usuarioId) {
+    return res.status(400).json({ error: "ID do livro ou usuário não fornecido" });
+  }
+
+  const query = `
+    SELECT 
+      livros.id AS livro_id,
+      livros.nome_do_livro,
+      livros.autor,
+      livros.editora,
+      livros.imagem,
+      livros.sinopse,
+      livros.status,
+      livros.quantidade_disponivel,
+      reservas.id AS reserva_id,
+      reservas.status AS reserva_status,
+      reservas.data_reserva,
+      reservas.data_devolucao,
+      historico_devolucoes.data_devolucao AS devolvido_em,
+      reservas.multa,
+      usuarios.userName AS nome_usuario,
+      usuarios.email AS usuario_email,
+      usuarios.cpf AS usuario_cpf,
+      usuarios.telefone AS usuario_telefone
+    FROM livros
+    LEFT JOIN reservas ON livros.id = reservas.livro_id AND reservas.usuario_id = ?
+    LEFT JOIN historico_devolucoes ON livros.id = historico_devolucoes.livro_id AND historico_devolucoes.usuario_id = ?
+    LEFT JOIN usuarios ON reservas.usuario_id = usuarios.id
+    WHERE livros.id = ?
+  `;
+
+  db.get(query, [usuarioId, usuarioId, livroId], (err, row) => {
+    if (err) {
+      console.error("Erro na consulta:", err);
+      return res.status(500).json({ error: "Erro interno no servidor" });
+    }
+
+    if (!row) {
+      return res.status(404).json({ error: "Livro não encontrado" });
+    }
+
+    const bookDetails = {
+      id: row.livro_id,
+      nome_do_livro: row.nome_do_livro,
+      autor: row.autor,
+      editora: row.editora,
+      imagem: row.imagem,
+      sinopse: row.sinopse,
+      status: row.status,
+      quantidade_disponivel: row.quantidade_disponivel,
+      reserva: {
+        reserva_id: row.reserva_id,
+        reserva_status: row.reserva_status,
+        data_reserva: row.data_reserva,
+        data_devolucao: row.data_devolucao,
+        devolvido_em: row.devolvido_em,
+        multa: row.multa,
+      },
+      usuario: {
+        nome_usuario: row.nome_usuario,
+        usuario_email: row.usuario_email,
+        usuario_cpf: row.usuario_cpf,
+        usuario_telefone: row.usuario_telefone,
+      }
+    };
+
+    res.json(bookDetails);
+  });
+});
 
 
 
@@ -541,140 +625,6 @@ app.put("/livros/:id", (req, res) => {
 });
 
 
-
-
-
-// VOU EXCLUIR
-// app.put("/livros/:id", (req, res) => {
-//   const { status } = req.body;
-
-//   db.get(
-//     `SELECT status FROM livros WHERE id = ?`,
-//     [req.params.id],
-//     (err, row) => {
-//       if (err)
-//         return res
-//           .status(500)
-//           .json({ error: "Erro ao buscar status atual do livro." });
-
-//       const currentStatus = row.status;
-
-//       db.run(
-//         `UPDATE livros SET status = ? WHERE id = ?`,
-//         [status, req.params.id],
-//         function (err) {
-//           if (err)
-//             return res.status(500).json({ error: "Erro ao atualizar status." });
-
-//           if (currentStatus !== status) {
-//             const bookId = req.params.id;
-//             let message;
-
-//             if (status === "Disponível") {
-//               message = `O livro com ID ${bookId} está disponível.`;
-//             } else if (status === "Indisponível") {
-//               message = `O livro com ID ${bookId} está indisponível.`;
-//             }
-
-//             if (message) {
-//               createNotification(bookId, message);
-//             }
-//           }
-
-//           res.status(200).json({ message: "Status atualizado com sucesso!" });
-//         }
-//       );
-//     }
-//   );
-// });
-
-
-// app.put("/livros/:id", (req, res) => {
-//   const { status } = req.body;
-
-//   db.get(
-//     `SELECT status FROM livros WHERE id = ?`,
-//     [req.params.id],
-//     (err, row) => {
-//       if (err)
-//         return res
-//           .status(500)
-//           .json({ error: "Erro ao buscar status atual do livro." });
-
-//       const currentStatus = row.status;
-
-//       db.run(
-//         `UPDATE livros SET status = ? WHERE id = ?`,
-//         [status, req.params.id],
-//         function (err) {
-//           if (err)
-//             return res.status(500).json({ error: "Erro ao atualizar status." });
-
-//           if (currentStatus !== status) {
-//             const bookId = req.params.id;
-//             let message;
-
-//             if (status === "Disponível") {
-//               message = `O livro com ID ${bookId} está disponível.`;
-//             } else if (status === "Indisponível") {
-//               message = `O livro com ID ${bookId} está indisponível.`;
-//             }
-
-//             if (message) {
-//               createNotification(bookId, message);
-//             }
-//           }
-
-//           res.status(200).json({ message: "Status atualizado com sucesso!" });
-//         }
-//       );
-//     }
-//   );
-// });
-
-
-// app.put("/livros/:id", (req, res) => {
-//   const { status, userId } = req.body;
-
-//   db.get(
-//     `SELECT status FROM livros WHERE id = ?`,
-//     [req.params.id],
-//     (err, row) => {
-//       if (err)
-//         return res
-//           .status(500)
-//           .json({ error: "Erro ao buscar status atual do livro." });
-
-//       const currentStatus = row.status;
-
-//       db.run(
-//         `UPDATE livros SET status = ? WHERE id = ?`,
-//         [status, req.params.id],
-//         function (err) {
-//           if (err)
-//             return res.status(500).json({ error: "Erro ao atualizar status." });
-
-//           if (currentStatus !== status) {
-//             const bookId = req.params.id;
-//             let message;
-
-//             if (status === "Disponível") {
-//               message = `O livro com ID ${bookId} está disponível.`;
-//             } else if (status === "Indisponível") {
-//               message = `O livro com ID ${bookId} está indisponível.`;
-//             }
-
-//             if (message) {
-//               createNotification(userId, bookId, message);
-//             }
-//           }
-
-//           res.status(200).json({ message: "Status atualizado com sucesso!" });
-//         }
-//       );
-//     }
-//   );
-// });
 
 
 
@@ -1280,6 +1230,96 @@ app.get("/reservas/historico", async (req, res) => {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+///////////////comentários dos administradores/////////////////////////////
+
+
+
+
+
+
+
+// Endpoint para adicionar um comentário de administrador
+app.post("/usuarios/:id/comentario", (req, res) => {
+  const { id } = req.params;
+  const { comment } = req.body;
+
+  db.run(
+    `INSERT INTO admin_comments (user_id, comment) VALUES (?, ?)`,
+    [id, comment],
+    function (err) {
+      if (err) {
+        console.error("Erro ao adicionar comentário de administrador:", err);
+        return res.status(500).json({ error: "Erro ao adicionar comentário de administrador." });
+      }
+      res.status(201).json({ message: "Comentário adicionado com sucesso!", id: this.lastID });
+    }
+  );
+});
+
+// Endpoint para buscar comentários de administrador
+app.get("/usuarios/:id/comentarios", (req, res) => {
+  const { id } = req.params;
+
+  db.all(
+    `SELECT * FROM admin_comments WHERE user_id = ? ORDER BY created_at DESC`,
+    [id],
+    (err, rows) => {
+      if (err) {
+        console.error("Erro ao buscar comentários de administrador:", err);
+        return res.status(500).json({ error: "Erro ao buscar comentários de administrador." });
+      }
+      res.status(200).json(rows);
+    }
+  );
+});
+
+// Endpoint para deletar um comentário de administrador
+app.delete("/usuarios/comentario/:commentId", (req, res) => {
+  const { commentId } = req.params;
+
+  db.run(
+    `DELETE FROM admin_comments WHERE id = ?`,
+    [commentId],
+    function (err) {
+      if (err) {
+        console.error("Erro ao deletar comentário de administrador:", err);
+        return res.status(500).json({ error: "Erro ao deletar comentário de administrador." });
+      }
+      res.status(200).json({ message: "Comentário deletado com sucesso!" });
+    }
+  );
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /////////////////////// USUARIOS ///////////////////////
 
 
@@ -1748,6 +1788,7 @@ app.get("/historico-devolucoes", async (req, res) => {
     const historico = await db.all(`
       SELECT 
         h.id,
+        u.id AS usuario_id,
         u.userName AS usuario,
         l.id AS livro_id,
         l.nome_do_livro AS livro,
@@ -1766,6 +1807,7 @@ app.get("/historico-devolucoes", async (req, res) => {
     res.status(500).json({ error: "Erro ao buscar histórico de devoluções." });
   }
 });
+
 
 
 /////////////////////// INICIAR SERVIDOR ///////////////////////

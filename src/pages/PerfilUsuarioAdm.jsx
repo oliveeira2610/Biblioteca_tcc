@@ -65,6 +65,8 @@ function PerfilUsuarioAdm() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isBlocked, setIsBlocked] = useState(false);
+  const [adminComment, setAdminComment] = useState("");
+  const [adminComments, setAdminComments] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -75,12 +77,25 @@ function PerfilUsuarioAdm() {
         const data = await response.json();
         setUserInfo(data);
         setIsBlocked(data.bloqueado);
+        fetchAdminComments();
       } catch (err) {
         setError(err.message);
       } finally {
         setLoading(false);
       }
     };
+
+    const fetchAdminComments = async () => {
+      try {
+        const response = await fetch(`http://localhost:3001/usuarios/${userId}/comentarios`);
+        if (!response.ok) throw new Error("Erro ao buscar comentários.");
+        const data = await response.json();
+        setAdminComments(data);
+      } catch (err) {
+        setError(err.message);
+      }
+    };
+
     fetchUserInfo();
   }, [userId]);
 
@@ -110,12 +125,55 @@ function PerfilUsuarioAdm() {
     }
   };
 
+  const handleCommentChange = (e) => {
+    setAdminComment(e.target.value);
+  };
+
+  const saveAdminComment = async () => {
+    try {
+      const response = await fetch(`http://localhost:3001/usuarios/${userId}/comentario`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ comment: adminComment }),
+      });
+      if (!response.ok) throw new Error("Erro ao salvar comentário.");
+      const newComment = await response.json();
+      setAdminComments([newComment, ...adminComments]);
+      setAdminComment("");
+      alert("Comentário salvo com sucesso!");
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 100);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      fetchAdminComments();
+    }
+  };
+
+  const deleteAdminComment = async (commentId) => {
+    try {
+      const response = await fetch(`http://localhost:3001/usuarios/comentario/${commentId}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) throw new Error("Erro ao deletar comentário.");
+      setAdminComments(adminComments.filter(comment => comment.id !== commentId));
+      alert("Comentário deletado com sucesso!");
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      fetchAdminComments();
+    }
+  };
+
   if (loading) return <p>Carregando...</p>;
   if (error) return <p>Erro: {error}</p>;
   if (!userInfo) return <p>Usuário não encontrado.</p>;
 
   return (
     <div className="perfil-usuario-container floating-background">
+      <FloatingLetters />
       <h1>Perfil do Usuário</h1>
       <div className="dados-pessoais">
         <h2>Dados Pessoais</h2>
@@ -142,6 +200,24 @@ function PerfilUsuarioAdm() {
         ) : (
           <p>Nenhuma reserva encontrada.</p>
         )}
+      </div>
+
+      <div className="admin-comment-section">
+        <h2>Comentários do Administrador</h2>
+        <ul className="admin-comments-list">
+          {adminComments.map(comment => (
+            <li key={comment.id} className="admin-comment-item">
+              <p>{comment.comment}</p>
+              <button onClick={() => deleteAdminComment(comment.id)} className="delete-comment-button">Apagar</button>
+            </li>
+          ))}
+        </ul>
+        <textarea
+          value={adminComment}
+          onChange={handleCommentChange}
+          placeholder="Adicione um comentário sobre este usuário"
+        />
+        <button onClick={saveAdminComment}>Salvar Comentário</button>
       </div>
 
       <button onClick={toggleBlockUser} className="block-user-button" style={{ backgroundColor: isBlocked ? 'red' : 'green' }}>
