@@ -19,8 +19,7 @@ PRECISA FAZER:
 
 Ver com grupo se tira a pagina de reserved books e apenas mostre a quantidade ou repaginar o historico
 
-
-
+fazer a pesquisa funcionar junto a digitação em tempo real
 
 Criar tela para o adm ver o perfil do Usuario e poder ver as observações 
 

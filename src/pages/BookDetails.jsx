@@ -8,7 +8,25 @@ function BookDetails() {
   const { id } = useParams();
   const [bookDetails, setBookDetails] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [newQuantity, setNewQuantity] = useState("");
+  const [editMode, setEditMode] = useState(false);
+  const [editedBook, setEditedBook] = useState({});
+
+  useEffect(() => {
+    fetchBookDetails();
+  }, [id]);
+  
+  useEffect(() => {
+    if (bookDetails) {
+      console.log("Atualizando campos com:", bookDetails); // Verifique se os dados estão corretos
+      setEditedBook({ ...bookDetails });
+    }
+  }, [bookDetails]);
+  
+  useEffect(() => {
+    if (bookDetails) {
+      setEditedBook({ ...bookDetails });
+    }
+  }, [bookDetails]);
 
   const fetchBookDetails = async () => {
     try {
@@ -16,115 +34,103 @@ function BookDetails() {
       if (!response.ok) {
         throw new Error("Erro ao buscar os detalhes do livro");
       }
-
       const data = await response.json();
+      console.log("Dados recebidos:", data);
       setBookDetails(data);
-      setNewQuantity(data.quantidade_disponivel);
     } catch (error) {
-      console.error(error);
+      console.error("Erro ao buscar os detalhes do livro:", error);
     } finally {
       setLoading(false);
     }
   };
 
-  const updateQuantity = async () => {
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+  
+    setEditedBook((prev) => ({
+      ...prev,
+      [name]: value || prev[name], // Se o valor for vazio, mantém o antigo
+    }));
+  };
+  
+
+  const updateBookDetails = async () => {
+    console.log("Enviando dados para atualização:", editedBook);
+  
     try {
-      const response = await fetch(`http://localhost:3001/livros/${id}/quantidade`, {
+      const response = await fetch(`http://localhost:3001/livros/${id}`, {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ quantidade: newQuantity }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(editedBook),
       });
-
+  
       if (!response.ok) {
-        throw new Error("Erro ao atualizar quantidade de livros");
+        throw new Error("Erro ao atualizar detalhes do livro");
       }
-
-      const data = await response.json();
-      console.log(data.message);
-      fetchBookDetails();
+  
+      // Atualiza o estado local para refletir imediatamente a mudança
+      setBookDetails(editedBook);
+      setEditMode(false);
     } catch (error) {
-      console.error("Erro ao atualizar quantidade de livros:", error);
+      console.error("Erro ao atualizar detalhes do livro:", error);
     }
   };
+  
 
-  useEffect(() => {
-    fetchBookDetails();
-  }, [id]);
-
-  if (loading) {
-    return <p>Carregando detalhes...</p>;
-  }
-
-  if (!bookDetails) {
-    return <p>Livro não encontrado</p>;
-  }
+  if (loading) return <p>Carregando detalhes...</p>;
+  if (!bookDetails) return <p>Livro não encontrado</p>;
 
   return (
     <div className="book-details-container">
       <div className="book-image">
-        <img
-          src={bookDetails.imagem ? bookDetails.imagem : "default-image.jpg"}
-          alt={bookDetails.nome_do_livro}
-        />
+        <img src={bookDetails.imagem || "default-image.jpg"} alt={bookDetails.nome_do_livro} />
       </div>
-
       <div className="book-info">
         <h1>{bookDetails.nome_do_livro}</h1>
-        <p>
-          <strong>Autor:</strong> {bookDetails.autor}
-        </p>
-        <p>
-          <strong>Editora:</strong> {bookDetails.editora}
-        </p>
-        <p>
-          <strong>Sinopse:</strong> {bookDetails.sinopse}
-        </p>
-        <p>
-          <strong>Quantidade no estoque:</strong>{" "}
-          {bookDetails.quantidade_disponivel}
-        </p>
-        <p>
-          <strong>Quantidade disponível:</strong>{" "}
-          {bookDetails.quantidade_disponivel_nao_alugada}
-        </p>
-
-        <div className="quantity-edit">
-          <label>
-            Nova quantidade:
-            <input
-              type="number"
-              value={newQuantity}
-              onChange={(e) => setNewQuantity(e.target.value)}
-            />
-          </label>
-          <button onClick={updateQuantity}>Atualizar Quantidade</button>
-        </div>
-
-        <div className="reservation-details">
-          {bookDetails.reservasPorUsuario && bookDetails.reservasPorUsuario.length > 0 ? (
-            bookDetails.reservasPorUsuario.map((usuario, userIndex) => (
-              <div key={userIndex} className="usuario-reservas">
-                <h3>{usuario.nome_usuario}</h3>
-                <p><strong>Email:</strong> {usuario.usuario_email}</p>
-                <p><strong>CPF:</strong> {usuario.usuario_cpf}</p>
-                <p><strong>Telefone:</strong> {usuario.usuario_telefone}</p>
-                {usuario.reservas.map((reserva, reservaIndex) => (
-                  <div key={reservaIndex} className="reserva-info">
-                    <p><strong>Status da reserva:</strong> {reserva.reserva_status}</p>
-                    <p><strong>Data de reserva:</strong> {reserva.data_reserva ? format(new Date(reserva.data_reserva), "dd/MM/yyyy") : "N/A"}</p>
-                    <p><strong>Data de devolução:</strong> {reserva.data_devolucao ? format(new Date(reserva.data_devolucao), "dd/MM/yyyy") : "N/A"}</p>
-                    <p><strong>Multa:</strong> R$ {reserva.multa ? reserva.multa.toFixed(2) : "0.00"}</p>
-                    <p><strong>Tempo de atraso:</strong> {reserva.tempo_atraso ? `${reserva.tempo_atraso} dias` : "Não atrasado"}</p>
-                  </div>
-                ))}
-              </div>
-            ))
-          ) : (
-            <p>Este livro não tem reservas no momento.</p>
-          )}
-        </div>
+        <p><strong>Autor:</strong> {bookDetails.autor}</p>
+        <p><strong>Editora:</strong> {bookDetails.editora}</p>
+        <p><strong>Sinopse:</strong> {bookDetails.sinopse}</p>
+        <p><strong>ISBN:</strong> {bookDetails.isbn}</p>
+        <p><strong>Ano de Publicação:</strong> {bookDetails.ano_publicacao}</p>
+        <p><strong>Quantidade disponível:</strong> {bookDetails.quantidade_disponivel}</p>
+        <button onClick={() => setEditMode(!editMode)}>{editMode ? "Cancelar" : "Editar Informações"}</button>
+      </div>
+      {editMode && (
+        <div className="book-edit">
+        <h2>Editar Informações</h2>
+        <input type="text" name="nome_do_livro" placeholder="Nome do Livro" value={editedBook.nome_do_livro || ""} onChange={handleInputChange} />
+        <input type="text" name="autor" placeholder="Autor" value={editedBook.autor || ""} onChange={handleInputChange} />
+        <input type="text" name="editora" placeholder="Editora" value={editedBook.editora || ""} onChange={handleInputChange} />
+        <textarea name="sinopse" placeholder="Sinopse" value={editedBook.sinopse || ""} onChange={handleInputChange}></textarea>
+        <input type="text" name="isbn" placeholder="ISBN" value={editedBook.isbn || ""} onChange={handleInputChange} />
+        <input type="number" name="ano_publicacao" placeholder="Ano de Publicação" value={editedBook.ano_publicacao || ""} onChange={handleInputChange} />
+        <input type="number" name="quantidade_disponivel" placeholder="Quantidade Disponível" value={editedBook.quantidade_disponivel || ""} onChange={handleInputChange} />
+        <input type="text" name="imagem" placeholder="URL da imagem" value={editedBook.imagem || ""} onChange={handleInputChange} />
+        <button onClick={updateBookDetails}>Salvar Alterações</button>
+      </div>  
+      )}
+      <div className="reservation-details">
+        {bookDetails.reservasPorUsuario && bookDetails.reservasPorUsuario.length > 0 ? (
+          bookDetails.reservasPorUsuario.map((usuario, userIndex) => (
+            <div key={userIndex} className="usuario-reservas">
+              <h3>{usuario.nome_usuario}</h3>
+              <p><strong>Email:</strong> {usuario.usuario_email}</p>
+              <p><strong>CPF:</strong> {usuario.usuario_cpf}</p>
+              <p><strong>Telefone:</strong> {usuario.usuario_telefone}</p>
+              {usuario.reservas.map((reserva, reservaIndex) => (
+                <div key={reservaIndex} className="reserva-info">
+                  <p><strong>Status da reserva:</strong> {reserva.reserva_status}</p>
+                  <p><strong>Data de reserva:</strong> {reserva.data_reserva ? format(new Date(reserva.data_reserva), "dd/MM/yyyy") : "N/A"}</p>
+                  <p><strong>Data de devolução:</strong> {reserva.data_devolucao ? format(new Date(reserva.data_devolucao), "dd/MM/yyyy") : "N/A"}</p>
+                  <p><strong>Multa:</strong> R$ {reserva.multa ? reserva.multa.toFixed(2) : "0.00"}</p>
+                  <p><strong>Tempo de atraso:</strong> {reserva.tempo_atraso ? `${reserva.tempo_atraso} dias` : "Não atrasado"}</p>
+                </div>
+              ))}
+            </div>
+          ))
+        ) : (
+          <p>Este livro não tem reservas no momento.</p>
+        )}
       </div>
     </div>
   );

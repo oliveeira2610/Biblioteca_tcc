@@ -508,6 +508,95 @@ app.get("/dashboard", async (req, res) => {
 
 
 
+
+
+
+
+
+
+app.put("/livros/:id", (req, res) => {
+  const { id } = req.params;
+  const {
+    nome_do_livro,
+    autor,
+    editora,
+    sinopse,
+    isbn,
+    ano_publicacao,
+    quantidade_disponivel,
+    imagem,
+    status
+  } = req.body;
+
+  db.run(
+    `UPDATE livros SET 
+      nome_do_livro = ?, 
+      autor = ?, 
+      editora = ?, 
+      sinopse = ?, 
+      isbn = ?, 
+      ano_publicacao = ?, 
+      quantidade_disponivel = ?, 
+      imagem = ?, 
+      status = ?
+    WHERE id = ?`,
+    [
+      nome_do_livro,
+      autor,
+      editora,
+      sinopse,
+      isbn,
+      ano_publicacao,
+      quantidade_disponivel,
+      imagem,
+      status,
+      id
+    ],
+    function (err) {
+      if (err) {
+        console.error("Erro ao atualizar livro:", err);
+        return res.status(500).json({ error: "Erro ao atualizar livro." });
+      }
+      res.status(200).json({ message: "Livro atualizado com sucesso!" });
+    }
+  );
+});
+
+app.put("/livros/:id", (req, res) => {
+  const { id } = req.params;
+  const { nome_do_livro, autor, editora, sinopse, isbn, ano_publicacao, quantidade_disponivel, imagem } = req.body;
+
+  db.run(
+    `UPDATE livros SET 
+      nome_do_livro = ?, 
+      autor = ?, 
+      editora = ?, 
+      sinopse = ?, 
+      isbn = ?, 
+      ano_publicacao = ?, 
+      quantidade_disponivel = ?, 
+      imagem = ?
+    WHERE id = ?`,
+    [nome_do_livro, autor, editora, sinopse, isbn, ano_publicacao, quantidade_disponivel, imagem, id],
+    function (err) {
+      if (err) {
+        console.error("Erro ao atualizar livro:", err);
+        return res.status(500).json({ error: "Erro ao atualizar livro." });
+      }
+      res.status(200).json({ message: "Livro atualizado com sucesso!" });
+    }
+  );
+});
+
+
+
+
+
+
+
+
+
+
 app.get("/livro-detalhes/:livroId/:usuarioId", (req, res) => {
   const { livroId, usuarioId } = req.params;
 
