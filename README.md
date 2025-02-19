@@ -26,9 +26,8 @@ Criar tela para o adm ver o perfil do Usuario e poder ver as observações
 
 Criar sistema de escrever observações para devolução e aparecer nos detalhes da Devolução e no perfil do usuario apenas para os adms na pagina "Historico" e "Users"
 
-Criar botao para deslogar na pagina de "perfil usuario"
 
-Fazer os cards da pagina addbooks redirecionar para uma tela para cadastrar os livros, puxando as informações automaticamente pela api mas tendo a possibilidade de editar,colocando local do livro Ex: Prateleira, Numero do livro alem das outras informações
+// Fazer isso funcionar dps // os cards da pagina addbooks redirecionar para uma tela para cadastrar os livros, puxando as informações automaticamente pela api mas tendo a possibilidade de editar,colocando local do livro Ex: Prateleira, Numero do livro alem das outras informações
 
 Aparecer mais informações do livro na pagina BookDetails
 
@@ -54,6 +53,8 @@ fazer o status de multa ficar vermelho e evitdente na aba perfil JapaJapaJapaJap
 
 
 MELHORIAS FEITAS NO PROJETO:
+
+// FEITO // Criar botao para deslogar na pagina de "perfil usuario"
 
 // FEITO // fazer a pesquisa funcionar junto a digitação em tempo real
 

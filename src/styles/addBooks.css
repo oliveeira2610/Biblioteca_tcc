@@ -17,14 +17,7 @@
     text-align: center;
   }
   
-  .search-input {
-    width: 60%;
-    padding: 0.8rem;
-    font-size: 1rem;
-    border: 2px solid #ddd;
-    border-radius: 4px;
-    transition: border-color 0.3s ease;
-  }
+  
   
   .search-input:focus {
     border-color: #2a9d8f;

@@ -113,8 +113,17 @@ db.serialize(() => {
         criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         status TEXT NOT NULL,
         imagem TEXT
+        local TEXT,
+        numero INTEGER,
+        estante TEXT
       );
     `);
+
+//     -- Adiciona a coluna 'numero' à tabela 'livros'
+// ALTER TABLE livros ADD COLUMN numero INTEGER;
+
+// -- Adiciona a coluna 'estante' à tabela 'livros'
+// ALTER TABLE livros ADD COLUMN estante TEXT;
 
   db.run(`
       CREATE TABLE IF NOT EXISTS reservas (
@@ -678,7 +687,6 @@ app.put("/livros/:id", (req, res) => {
   );
 });
 
-// 🔹 Deletar um livro
 app.delete("/livros/:id", (req, res) => {
   db.run(`DELETE FROM livros WHERE id = ?`, [req.params.id], function (err) {
     if (err) return res.status(500).json({ error: "Erro ao deletar o livro." });
@@ -689,84 +697,40 @@ app.delete("/livros/:id", (req, res) => {
 });
 
 // Endpoint para adicionar um livro
-app.post("/livros", (req, res) => {
-  const {
-    isbn,
-    nome_do_livro,
-    genero,
-    autor,
-    editora,
-    sinopse,
-    ano_publicacao,
-    imagem,
-    quantidade,
-  } = req.body;
+app.post('/livros', (req, res) => {
+  const { nome_do_livro, autor, editora, sinopse, isbn, ano_publicacao, imagem, quantidade, local, numero, estante } = req.body;
 
-  // Define o status como "Disponível" por padrão se não for enviado
-  const status = "Disponível";
-
-  // Verifica se o livro já existe pelo ISBN, exceto para ISBN "Desconhecido"
-  if (isbn !== "Desconhecido") {
-    db.get("SELECT * FROM livros WHERE isbn = ?", [isbn], (err, row) => {
-      if (err) {
-        console.error("Erro ao buscar livro no banco:", err);
-        return res.status(500).json({ error: "Erro interno do servidor" });
-      }
-
-      if (row) {
-        return res.status(400).json({ message: "Livro já cadastrado!" });
-      }
-
-      // Se não existir, insere o livro no banco
-      db.run(
-        "INSERT INTO livros (isbn, nome_do_livro, genero, autor, editora, sinopse, ano_publicacao, status, imagem, quantidade_disponivel) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-        [
-          isbn,
-          nome_do_livro,
-          genero,
-          autor,
-          editora,
-          sinopse,
-          ano_publicacao,
-          status,
-          imagem,
-          quantidade,
-        ],
-        function (err) {
-          if (err) {
-            console.error("Erro ao adicionar livro:", err);
-            return res.status(500).json({ error: "Erro ao adicionar livro" });
-          }
-          res.status(201).json({ message: "Livro adicionado com sucesso!" });
-        }
-      );
-    });
-  } else {
-    // Caso ISBN seja "Desconhecido", insere o livro diretamente, adicionando um UUID para garantir unicidade
-    const uniqueIsbn = isbn + "_" + Date.now(); // Gerar um ISBN único para "Desconhecido"
-    db.run(
-      "INSERT INTO livros (isbn, nome_do_livro, genero, autor, editora, sinopse, ano_publicacao, status, imagem, quantidade_disponivel) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-      [
-        uniqueIsbn,
-        nome_do_livro,
-        genero,
-        autor,
-        editora,
-        sinopse,
-        ano_publicacao,
-        status,
-        imagem,
-        quantidade,
-      ],
-      function (err) {
-        if (err) {
-          console.error("Erro ao adicionar livro:", err);
-          return res.status(500).json({ error: "Erro ao adicionar livro" });
-        }
-        res.status(201).json({ message: "Livro adicionado com sucesso!" });
-      }
-    );
+  // Verifique se todos os campos obrigatórios estão presentes
+  if (!nome_do_livro || !autor || !editora || !isbn || !ano_publicacao || !quantidade || !local || !numero) {
+    return res.status(400).json({ error: 'Todos os campos obrigatórios devem ser preenchidos.' });
   }
+
+  // Insira os dados no banco de dados
+  const query = `
+    INSERT INTO livros (nome_do_livro, autor, editora, sinopse, isbn, ano_publicacao, imagem, quantidade, local, numero, estante)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `;
+  const params = [nome_do_livro, autor, editora, sinopse, isbn, ano_publicacao, imagem, quantidade, local, numero, estante];
+
+  db.run(query, params, function (err) {
+    if (err) {
+      console.error('Erro ao inserir livro no banco de dados:', err);
+      return res.status(500).json({ error: 'Erro ao cadastrar livro. Tente novamente.' });
+    }
+    res.status(201).json({ id: this.lastID });
+  });
+});
+
+// 🔹 Buscar todos os livros
+
+app.get("/livros", (req, res) => {
+  db.all("SELECT * FROM livros", [], (err, rows) => {
+    if (err) {
+      console.error('Erro ao buscar livros no banco de dados:', err);
+      return res.status(500).json({ error: 'Erro ao buscar livros. Tente novamente.' });
+    }
+    res.status(200).json(rows);
+  });
 });
 
 // 🔹 Buscar todos os livros
@@ -1607,7 +1571,6 @@ app.get("/perfil-usuario/:userId", (req, res) => {
               userName: usuario.userName,
               email: usuario.email,
               telefone: usuario.telefone,
-              cpf: usuario.cpf,
               bloqueado: usuario.bloqueado,
               multa: multasPendentes,
               reservas: reservas.map((row) => ({

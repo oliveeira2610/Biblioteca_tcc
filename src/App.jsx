@@ -17,6 +17,7 @@ import DevolucaoDetails from "./pages/DevolucaoDetails";
 import MultasUsuarios from './pages/MultasUsuarios';
 import ReservedBooks from './pages/ReservedBooks';
 import Notifications from './pages/Notifications';
+import RegisterBook from './pages/RegisterBook';
 import PerfilUsuarioAdm from './pages/PerfilUsuarioAdm';
 import Navbar from './components/Navbar'; 
 import AdminRoute from "./components/AdminRoute"; 
@@ -47,7 +48,8 @@ function Layout() {
         <Route path="/home" element={<Home />} />
         <Route path="/users" element={<Users />} />
         <Route path="/search" element={<SearchBooks />} /> 
-        <Route path="/addBooks" element={<AddBooks />} /> 
+        <Route path="/addbooks" element={<AddBooks />} />
+        <Route path="/register-book" element={<RegisterBook />} />
         <Route path="/BookDescription/:id" element={<BookDescription />} />
         <Route path="/historicoReservas" element={<HistoricoReservas />} />
         <Route path="/notifications" element={<Notifications />} />
