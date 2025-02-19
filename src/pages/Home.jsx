@@ -59,6 +59,8 @@ function Home() {
                 )}
                 <h3 className="book-card-title">{book.nome_do_livro}</h3>
                 <p className="book-card-author">{book.autor}</p>
+                
+                
               </div>
             ))
           ) : (
@@ -66,6 +68,11 @@ function Home() {
           )}
         </div>
       </div>
+      <footer>
+    <p>&copy; 2025 Biblioteca XYZ. Todos os direitos reservados.</p>
+    <p>Contato: biblioteca@email.com | Telefone: (99) 9999-9999</p>
+</footer>
+
     </div>
   );
 }

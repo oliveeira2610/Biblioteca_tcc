@@ -1,8 +1,8 @@
 /* Estilização dos cards de livros */
 .book-card {
-    background: #fff;
+    background: #BD9B75;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0px 0px 10px 5px #BD9B75;
     padding: 15px;
     width: 200px;
     text-align: center;
@@ -16,8 +16,8 @@
   }
   
   .book-card img {
-    width: 100px;
-    height: 150px;
+    width: 150px;
+    height: 230px;
     object-fit: cover;
     border-radius: 5px;
     margin-bottom: 10px;
@@ -38,7 +38,7 @@
   .book-card-title {
     font-size: 16px;
     font-weight: bold;
-    color: #222;
+    color: #F0D678;
   }
   
   .book-card-author {
