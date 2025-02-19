@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "../../src/styles/global.css";
 import "../../src/styles/perfilUsuario.css";
-import '../../src/styles/FloatingBackground.css';
+import "../../src/styles/FloatingBackground.css";
 
 function FloatingLetters() {
   const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".split("");
@@ -23,20 +23,6 @@ function FloatingLetters() {
     };
 
     setLetterElements(generateInitialLetters());
-  }, []);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setLetterElements((prevLetters) =>
-        prevLetters.map((letter) => ({
-          ...letter,
-          left: (letter.left + letter.speedX + 100) % 100,
-          top: (letter.top + letter.speedY + 100) % 100,
-        }))
-      );
-    }, 50);
-
-    return () => clearInterval(interval);
   }, []);
 
   return (
@@ -62,68 +48,39 @@ function FloatingLetters() {
 function PerfilUsuarioAdm() {
   const { userId } = useParams();
   const [userInfo, setUserInfo] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [isBlocked, setIsBlocked] = useState(false);
-  const [adminComment, setAdminComment] = useState("");
+  const [historicoReservas, setHistoricoReservas] = useState([]);
   const [adminComments, setAdminComments] = useState([]);
+  const [adminComment, setAdminComment] = useState("");
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchUserInfo = async () => {
+    const fetchUserData = async () => {
       try {
-        const response = await fetch(`http://localhost:3001/perfil-usuario/${userId}`);
-        if (!response.ok) throw new Error("Erro ao buscar informações do usuário.");
-        const data = await response.json();
-        setUserInfo(data);
-        setIsBlocked(data.bloqueado);
-        fetchAdminComments();
-      } catch (err) {
-        setError(err.message);
+        const [userRes, historicoRes, commentsRes] = await Promise.all([
+          fetch(`http://localhost:3001/perfil-usuario/${userId}`),
+          fetch(`http://localhost:3001/usuarios/${userId}/historico-reservas`),
+          fetch(`http://localhost:3001/usuarios/${userId}/comentarios`)
+        ]);
+
+        if (!userRes.ok || !historicoRes.ok || !commentsRes.ok) throw new Error("Erro ao buscar dados");
+
+        const userData = await userRes.json();
+        const historicoData = await historicoRes.json();
+        const commentsData = await commentsRes.json();
+
+        setUserInfo(userData);
+        setHistoricoReservas(historicoData);
+        setAdminComments(commentsData);
+      } catch (error) {
+        console.error(error);
       } finally {
         setLoading(false);
       }
     };
 
-    const fetchAdminComments = async () => {
-      try {
-        const response = await fetch(`http://localhost:3001/usuarios/${userId}/comentarios`);
-        if (!response.ok) throw new Error("Erro ao buscar comentários.");
-        const data = await response.json();
-        setAdminComments(data);
-      } catch (err) {
-        setError(err.message);
-      }
-    };
-
-    fetchUserInfo();
+    fetchUserData();
   }, [userId]);
-
-  const toggleBlockUser = async () => {
-    try {
-      const response = await fetch(`http://localhost:3001/usuarios/${userId}/bloquear`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ bloqueado: !isBlocked }),
-      });
-      if (!response.ok) throw new Error("Erro ao atualizar status de bloqueio.");
-      setIsBlocked(!isBlocked);
-    } catch (err) {
-      setError(err.message);
-    }
-  };
-
-  const deleteUser = async () => {
-    if (!window.confirm("Tem certeza que deseja excluir este usuário?")) return;
-    try {
-      const response = await fetch(`http://localhost:3001/usuarios/${userId}`, { method: "DELETE" });
-      if (!response.ok) throw new Error("Erro ao excluir usuário.");
-      alert("Usuário excluído com sucesso!");
-      navigate("/usuarios");
-    } catch (err) {
-      setError(err.message);
-    }
-  };
 
   const handleCommentChange = (e) => {
     setAdminComment(e.target.value);
@@ -136,19 +93,14 @@ function PerfilUsuarioAdm() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ comment: adminComment }),
       });
+
       if (!response.ok) throw new Error("Erro ao salvar comentário.");
+
       const newComment = await response.json();
       setAdminComments([newComment, ...adminComments]);
       setAdminComment("");
-      alert("Comentário salvo com sucesso!");
-
-      setTimeout(() => {
-        window.location.reload();
-      }, 100);
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      fetchAdminComments();
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -157,51 +109,65 @@ function PerfilUsuarioAdm() {
       const response = await fetch(`http://localhost:3001/usuarios/comentario/${commentId}`, {
         method: "DELETE",
       });
+
       if (!response.ok) throw new Error("Erro ao deletar comentário.");
+
       setAdminComments(adminComments.filter(comment => comment.id !== commentId));
-      alert("Comentário deletado com sucesso!");
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      fetchAdminComments();
+    } catch (error) {
+      console.error(error);
     }
   };
 
   if (loading) return <p>Carregando...</p>;
-  if (error) return <p>Erro: {error}</p>;
   if (!userInfo) return <p>Usuário não encontrado.</p>;
 
   return (
     <div className="perfil-usuario-container floating-background">
       <FloatingLetters />
       <h1>Perfil do Usuário</h1>
+
       <div className="dados-pessoais">
         <h2>Dados Pessoais</h2>
         <p><strong>Nome:</strong> {userInfo.userName}</p>
         <p><strong>Email:</strong> {userInfo.email}</p>
         <p><strong>Telefone:</strong> {userInfo.telefone}</p>
-        <p><strong>Multa Pendente:</strong> {userInfo.multa}</p>
-        <p><strong>Status:</strong> {isBlocked ? "Bloqueado" : "Desbloqueado"}</p>
       </div>
 
+      {/* Seção de Histórico de Reservas (Livros Devolvidos) */}
       <div className="historico-reservas">
-        <h2>Histórico de Reservas</h2>
-        {userInfo.reservas && userInfo.reservas.length > 0 ? (
-          <ul>
-            {userInfo.reservas.map((reserva) => (
-              <li key={reserva.livroId}>
-                <p><strong>Livro:</strong> {reserva.nome_do_livro}</p>
-                <p><strong>Data de Reserva:</strong> {new Date(reserva.data_reserva).toLocaleDateString()}</p>
-                <p><strong>Data de Devolução:</strong> {new Date(reserva.data_devolucao).toLocaleDateString()}</p>
-                <p><strong>Multa:</strong> {reserva.multa}</p>
-              </li>
+        <h2>Livros Devolvidos</h2>
+        {historicoReservas.length > 0 ? (
+          <div className="livros-container">
+            {historicoReservas.map((book) => (
+              <div
+                key={book.livro_id}
+                className="book-card"
+                onClick={() => navigate(`/devolucao-detalhes/${book.livro_id}/${userId}`)}
+                style={{ cursor: "pointer" }}
+              >
+                {book.imagem ? (
+                  <img
+                    src={book.imagem}
+                    alt={book.nome_do_livro}
+                    className="book-card-image"
+                  />
+                ) : (
+                  <div className="no-image-placeholder">Sem imagem</div>
+                )}
+                <h3 className="book-card-title">{book.nome_do_livro}</h3>
+                <p className="book-card-author">{book.autor}</p>
+                <p><strong>Data de Reserva:</strong> {new Date(book.data_reserva).toLocaleDateString()}</p>
+                <p><strong>Data de Devolução:</strong> {new Date(book.data_devolucao).toLocaleDateString()}</p>
+                <p><strong>Data Real da Devolução:</strong> {book.data_devolvido ? new Date(book.data_devolvido).toLocaleDateString() : "N/A"}</p>
+                <p><strong>Multa:</strong> R$ {book.multa?.toFixed(2) || "0.00"}</p>
+              </div>
             ))}
-          </ul>
+          </div>
         ) : (
-          <p>Nenhuma reserva encontrada.</p>
+          <p>Nenhuma devolução encontrada.</p>
         )}
       </div>
-
+  
       <div className="admin-comment-section">
         <h2>Comentários do Administrador</h2>
         <ul className="admin-comments-list">
@@ -219,14 +185,6 @@ function PerfilUsuarioAdm() {
         />
         <button onClick={saveAdminComment}>Salvar Comentário</button>
       </div>
-
-      <button onClick={toggleBlockUser} className="block-user-button" style={{ backgroundColor: isBlocked ? 'red' : 'green' }}>
-        {isBlocked ? "Desbloquear Reservas" : "Bloquear Reservas"}
-      </button>
-
-      <button onClick={deleteUser} className="delete-user-button" style={{ backgroundColor: 'red' }}>
-        Excluir Usuário
-      </button>
     </div>
   );
 }

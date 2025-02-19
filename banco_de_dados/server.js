@@ -349,22 +349,7 @@ app.post("/register-notification", (req, res) => {
 });
 
 
-// VOU EXCLUIR
-// app.get("/check-notification/:userId/:bookId", (req, res) => {
-//   const { userId, bookId } = req.params;
 
-//   db.get(
-//     `SELECT * FROM livros_para_notificacao WHERE user_id = ? AND book_id = ?`,
-//     [userId, bookId],
-//     (err, row) => {
-//       if (err) {
-//         console.error("Erro ao verificar notificação:", err);
-//         return res.status(500).json({ message: "Erro ao verificar notificação" });
-//       }
-//       res.status(200).json({ exists: !!row });
-//     }
-//   );
-// });
 
 
 
@@ -1371,57 +1356,53 @@ app.get("/reservas/historico", async (req, res) => {
 
 
 
-// Endpoint para adicionar um comentário de administrador
-app.post("/usuarios/:id/comentario", (req, res) => {
-  const { id } = req.params;
+app.get("/usuarios/:userId/comentarios", async (req, res) => {
+  const { userId } = req.params;
+  const db = await openDb();
+
+  try {
+    const comentarios = await db.all(`
+      SELECT id, comment, created_at FROM admin_comments WHERE user_id = ? ORDER BY created_at DESC
+    `, [userId]);
+
+    res.json(comentarios);
+  } catch (error) {
+    console.error("Erro ao buscar comentários:", error);
+    res.status(500).json({ error: "Erro ao buscar comentários." });
+  }
+});
+
+
+app.post("/usuarios/:userId/comentario", async (req, res) => {
+  const { userId } = req.params;
   const { comment } = req.body;
+  const db = await openDb();
 
-  db.run(
-    `INSERT INTO admin_comments (user_id, comment) VALUES (?, ?)`,
-    [id, comment],
-    function (err) {
-      if (err) {
-        console.error("Erro ao adicionar comentário de administrador:", err);
-        return res.status(500).json({ error: "Erro ao adicionar comentário de administrador." });
-      }
-      res.status(201).json({ message: "Comentário adicionado com sucesso!", id: this.lastID });
-    }
-  );
+  try {
+    const result = await db.run(`
+      INSERT INTO comentarios (usuario_id, comment, created_at) VALUES (?, ?, CURRENT_TIMESTAMP)
+    `, [userId, comment]);
+
+    res.json({ id: result.lastID, comment, created_at: new Date().toISOString() });
+  } catch (error) {
+    console.error("Erro ao adicionar comentário:", error);
+    res.status(500).json({ error: "Erro ao adicionar comentário." });
+  }
 });
 
-// Endpoint para buscar comentários de administrador
-app.get("/usuarios/:id/comentarios", (req, res) => {
-  const { id } = req.params;
-
-  db.all(
-    `SELECT * FROM admin_comments WHERE user_id = ? ORDER BY created_at DESC`,
-    [id],
-    (err, rows) => {
-      if (err) {
-        console.error("Erro ao buscar comentários de administrador:", err);
-        return res.status(500).json({ error: "Erro ao buscar comentários de administrador." });
-      }
-      res.status(200).json(rows);
-    }
-  );
-});
-
-// Endpoint para deletar um comentário de administrador
-app.delete("/usuarios/comentario/:commentId", (req, res) => {
+app.delete("/usuarios/comentario/:commentId", async (req, res) => {
   const { commentId } = req.params;
+  const db = await openDb();
 
-  db.run(
-    `DELETE FROM admin_comments WHERE id = ?`,
-    [commentId],
-    function (err) {
-      if (err) {
-        console.error("Erro ao deletar comentário de administrador:", err);
-        return res.status(500).json({ error: "Erro ao deletar comentário de administrador." });
-      }
-      res.status(200).json({ message: "Comentário deletado com sucesso!" });
-    }
-  );
+  try {
+    await db.run(`DELETE FROM comentarios WHERE id = ?`, [commentId]);
+    res.json({ message: "Comentário deletado com sucesso." });
+  } catch (error) {
+    console.error("Erro ao deletar comentário:", error);
+    res.status(500).json({ error: "Erro ao deletar comentário." });
+  }
 });
+
 
 
 
@@ -1476,6 +1457,25 @@ app.put("/usuarios/:id/bloquear", (req, res) => {
   );
 });
 
+
+app.get("/usuarios/:userId/historico-reservas", async (req, res) => {
+  const { userId } = req.params;
+  const db = await openDb();
+
+  try {
+    const historicoReservas = await db.all(`
+      SELECT h.livro_id, l.nome_do_livro, l.autor, l.imagem, h.data_reserva, h.data_devolucao, h.data_devolvido, h.multa
+      FROM historico_devolucoes h
+      JOIN livros l ON h.livro_id = l.id
+      WHERE h.usuario_id = ?
+    `, [userId]);
+
+    res.json(historicoReservas);
+  } catch (error) {
+    console.error("Erro ao buscar histórico de reservas:", error);
+    res.status(500).json({ error: "Erro ao buscar histórico de reservas." });
+  }
+});
 
 
 
@@ -1723,6 +1723,42 @@ app.get("/perfil-usuario/:userId", (req, res) => {
 });
 
 
+app.get("/perfil-usuario/:userId", async (req, res) => {
+  const { userId } = req.params;
+  const db = await openDb();
+
+  try {
+    // Buscar dados do usuário
+    const usuario = await db.get(`
+      SELECT id, userName, email, telefone, bloqueado, multa
+      FROM usuarios WHERE id = ?`, [userId]);
+
+    if (!usuario) {
+      return res.status(404).json({ error: "Usuário não encontrado." });
+    }
+
+    // Buscar reservas ativas do usuário
+    const reservas = await db.all(`
+      SELECT r.id AS reserva_id, r.livro_id, l.nome_do_livro, l.imagem, r.data_reserva, r.data_devolucao, r.status, r.multa
+      FROM reservas r
+      JOIN livros l ON r.livro_id = l.id
+      WHERE r.usuario_id = ? AND r.status = 'Reservado'
+    `, [userId]);
+
+    // Buscar histórico de devoluções
+    const devolucoes = await db.all(`
+      SELECT h.id AS devolucao_id, h.livro_id, l.nome_do_livro, l.imagem, h.data_reserva, h.data_devolucao, h.data_devolvido, h.status, h.multa
+      FROM historico_devolucoes h
+      JOIN livros l ON h.livro_id = l.id
+      WHERE h.usuario_id = ?
+    `, [userId]);
+
+    res.json({ ...usuario, reservas, devolucoes });
+  } catch (error) {
+    console.error("Erro ao buscar perfil do usuário:", error);
+    res.status(500).json({ error: "Erro ao buscar perfil do usuário." });
+  }
+});
 
 
 
