@@ -109,14 +109,24 @@ const Users = () => {
     fetchHistoricoDevolucoes();
   }, []);
 
-  const handleReturnBook = async (reservaId) => {
+  const handleReturnBook = async (reservaId, livroId, usuarioId) => {
     try {
       const response = await fetch(
         `http://localhost:3001/reservas/${reservaId}/devolver`,
         { method: "PUT" }
       );
+
       if (!response.ok) throw new Error("Erro ao marcar devolução");
+
       alert("Livro devolvido com sucesso!");
+
+      // Adiciona a reserva ao histórico de devoluções
+      await fetch("http://localhost:3001/historico-devolucoes/adicionar", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ reservaId, livroId, usuarioId }),
+      });
+
       fetchUsers();
       fetchHistoricoDevolucoes();
     } catch (error) {
@@ -198,8 +208,8 @@ const Users = () => {
 
                       <button
                         onClick={(e) => {
-                          e.stopPropagation(); // Evita a navegação para o perfil do usuário
-                          handleReturnBook(book.reservaId);
+                          e.stopPropagation();
+                          handleReturnBook(book.reservaId, book.id, usuario.id);
                           handleCancelReservation(book.id, usuario.id);
                         }}
                       >

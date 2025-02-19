@@ -173,11 +173,22 @@ db.serialize(() => {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         usuario_id INTEGER NOT NULL,
         livro_id INTEGER NOT NULL,
+        data_reserva TIMESTAMP,
         data_devolucao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (usuario_id) REFERENCES usuarios(id),
-        FOREIGN KEY (livro_id) REFERENCES livros(id)
+        data_devolvido TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        status TEXT,
+        multa REAL DEFAULT 0,
+        dias_atraso INTEGER DEFAULT 0,
+        userName TEXT,
+        email TEXT,
+        cpf TEXT,
+        telefone TEXT,
+        bloqueado INTEGER DEFAULT 0,
+        FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
+        FOREIGN KEY (livro_id) REFERENCES livros(id) ON DELETE CASCADE
       );
     `);
+    
 
 });
 
@@ -1247,46 +1258,63 @@ app.post("/reservas", (req, res) => {
 
 
 // Endpoint para marcar devolução de um livro
-// Endpoint para marcar devolução de um livro
 app.put("/reservas/:id/devolver", async (req, res) => {
   const reservaId = req.params.id;
   const db = await openDb();
 
   try {
-    const reserva = await db.get(`SELECT * FROM reservas WHERE id = ?`, reservaId);
+    // Buscar todas as informações da reserva e do usuário
+    const reserva = await db.get(`
+      SELECT r.*, u.userName, u.email, u.cpf, u.telefone, u.bloqueado 
+      FROM reservas r 
+      JOIN usuarios u ON r.usuario_id = u.id 
+      WHERE r.id = ?`, 
+      reservaId
+    );
+
     if (!reserva) {
-      console.error(`Erro: Reserva ${reservaId} não encontrada.`);
       return res.status(404).json({ error: "Reserva não encontrada." });
     }
 
     const bookId = reserva.livro_id;
-    if (!bookId) {
-      console.error(`Erro: livro_id não encontrado para reserva ID ${reservaId}`);
-      return res.status(500).json({ error: "Erro ao obter ID do livro." });
-    }
 
-    await db.run(
-      `UPDATE reservas SET status = 'Devolvido', data_devolucao = CURRENT_TIMESTAMP WHERE id = ?`,
-      reservaId
-    );
+    // Atualizar o status da reserva para 'Devolvido'
+    await db.run(`UPDATE reservas SET status = 'Devolvido', data_devolucao = CURRENT_TIMESTAMP WHERE id = ?`, reservaId);
 
+    // Atualizar status do livro para 'Disponível'
     await db.run(`UPDATE livros SET status = 'Disponível' WHERE id = ?`, bookId);
 
-    // Adicionar ao histórico de devoluções
-    await db.run(`INSERT INTO historico_devolucoes (usuario_id, livro_id) VALUES (?, ?)`, [
-      reserva.usuario_id,
-      bookId,
-    ]);
+    // Adicionar ao histórico de devoluções com todas as informações
+    await db.run(`
+      INSERT INTO historico_devolucoes (usuario_id, livro_id, data_reserva, data_devolucao, data_devolvido, status, multa, dias_atraso, userName, email, cpf, telefone, bloqueado)
+      VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        reserva.usuario_id,
+        bookId,
+        reserva.data_reserva,
+        reserva.data_devolucao, // Data original de devolução prevista
+        reserva.status,
+        reserva.multa,
+        reserva.dias_atraso,
+        reserva.userName,
+        reserva.email,
+        reserva.cpf,
+        reserva.telefone,
+        reserva.bloqueado
+      ]
+    );
 
-    console.log(`Livro ID ${bookId} agora está disponível. Criando notificações...`);
+    // Criar notificação de livro disponível
     createNotification(bookId, "O livro agora está disponível para reserva!");
 
-    res.json({ message: "Livro devolvido com sucesso!" });
+    res.json({ message: "Livro devolvido e registrado no histórico com sucesso!" });
+
   } catch (error) {
     console.error("Erro ao atualizar a reserva:", error);
     res.status(500).json({ error: "Erro ao atualizar a reserva." });
   }
 });
+
 
 
 
@@ -1865,11 +1893,82 @@ app.get("/book-status/:id", (req, res) => {
 /////////////////////// HISTORICO ///////////////////////
 
 
+app.post("/historico-devolucoes/adicionar", async (req, res) => {
+  const { reservaId, livroId, usuarioId } = req.body;
+  const db = await openDb();
+
+  try {
+    // Buscar informações completas da reserva e do usuário
+    const reserva = await db.get(`
+      SELECT r.*, u.userName, u.email, u.cpf, u.telefone, u.bloqueado 
+      FROM reservas r 
+      JOIN usuarios u ON r.usuario_id = u.id 
+      WHERE r.id = ?`, 
+      reservaId
+    );
+
+    if (!reserva) {
+      return res.status(404).json({ error: "Reserva não encontrada." });
+    }
+
+    // Inserir no histórico de devoluções
+    await db.run(`
+      INSERT INTO historico_devolucoes 
+      (usuario_id, livro_id, data_reserva, data_devolucao, data_devolvido, status, multa, dias_atraso, userName, email, cpf, telefone, bloqueado) 
+      VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        usuarioId,
+        livroId,
+        reserva.data_reserva,
+        reserva.data_devolucao, // Data de devolução prevista
+        reserva.status,
+        reserva.multa,
+        reserva.dias_atraso,
+        reserva.userName,
+        reserva.email,
+        reserva.cpf,
+        reserva.telefone,
+        reserva.bloqueado
+      ]
+    );
+
+    res.json({ message: "Devolução registrada no histórico!" });
+  } catch (error) {
+    console.error("Erro ao adicionar ao histórico de devoluções:", error);
+    res.status(500).json({ error: "Erro ao adicionar ao histórico." });
+  }
+});
 
 
 
 
-// Endpoint para obter o histórico de devoluções
+app.get("/historico-devolucoes/:livroId/:usuarioId", async (req, res) => {
+  const { livroId, usuarioId } = req.params;
+  const db = await openDb();
+
+  try {
+    const devolucao = await db.get(`
+      SELECT h.*, l.nome_do_livro, l.autor, l.editora, l.sinopse, l.imagem, l.status, l.quantidade_disponivel
+      FROM historico_devolucoes h
+      JOIN livros l ON h.livro_id = l.id
+      WHERE h.livro_id = ? AND h.usuario_id = ?
+      ORDER BY h.data_devolvido DESC LIMIT 1
+    `, [livroId, usuarioId]);
+
+    if (!devolucao) {
+      return res.status(404).json({ error: "Devolução não encontrada" });
+    }
+
+    res.json(devolucao);
+  } catch (error) {
+    console.error("Erro ao buscar detalhes da devolução:", error);
+    res.status(500).json({ error: "Erro ao buscar detalhes da devolução." });
+  }
+});
+
+
+
+
 app.get("/historico-devolucoes", async (req, res) => {
   const db = await openDb();
 
@@ -1877,17 +1976,18 @@ app.get("/historico-devolucoes", async (req, res) => {
     const historico = await db.all(`
       SELECT 
         h.id,
-        u.id AS usuario_id,
-        u.userName AS usuario,
-        l.id AS livro_id,
+        h.usuario_id,
+        h.userName AS usuario,
+        h.livro_id,
         l.nome_do_livro AS livro,
         l.autor,
         l.imagem,
-        h.data_devolucao
+        h.data_reserva,
+        h.data_devolucao,
+        h.data_devolvido
       FROM historico_devolucoes h
-      JOIN usuarios u ON h.usuario_id = u.id
       JOIN livros l ON h.livro_id = l.id
-      ORDER BY h.data_devolucao DESC
+      ORDER BY h.data_devolvido DESC
     `);
 
     res.json(historico);
@@ -1896,6 +1996,8 @@ app.get("/historico-devolucoes", async (req, res) => {
     res.status(500).json({ error: "Erro ao buscar histórico de devoluções." });
   }
 });
+
+
 
 
 

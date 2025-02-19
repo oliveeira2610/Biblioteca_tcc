@@ -70,7 +70,7 @@ const HistoricoReservas = () => {
     });
 
     axios.get("http://localhost:3001/historico-devolucoes").then((response) => {
-      console.log("Devoluções recebidas:", response.data); // Adicionando log
+      console.log("Devoluções recebidas:", response.data);
       setDevolucoes(response.data);
     });
   }, []);
@@ -84,11 +84,13 @@ const HistoricoReservas = () => {
       console.error("Usuário ID não encontrado.");
     }
   };
-  
+
   return (
     <div className="historico-reservas floating-background">
       <FloatingLetters />
       <h1>Histórico de Reservas e Devoluções</h1>
+
+      {/* Tabela de Reservas */}
       <h2>Reservas</h2>
       <table>
         <thead>
@@ -101,18 +103,25 @@ const HistoricoReservas = () => {
           </tr>
         </thead>
         <tbody>
-          {reservas.map((reserva) => (
-            <tr key={reserva.id}>
-              <td>{reserva.usuario}</td>
-              <td>{reserva.livro}</td>
-              <td>{new Date(reserva.data_reserva).toLocaleDateString()}</td>
-              <td>{reserva.data_devolucao ? new Date(reserva.data_devolucao).toLocaleDateString() : "N/A"}</td>
-              <td>{reserva.status}</td>
+          {reservas.length > 0 ? (
+            reservas.map((reserva) => (
+              <tr key={reserva.id}>
+                <td>{reserva.usuario}</td>
+                <td>{reserva.livro}</td>
+                <td>{new Date(reserva.data_reserva).toLocaleDateString()}</td>
+                <td>{reserva.data_devolucao ? new Date(reserva.data_devolucao).toLocaleDateString() : "N/A"}</td>
+                <td>{reserva.status}</td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="5">Nenhuma reserva encontrada.</td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
 
+      {/* Tabela de Devoluções */}
       <h2>Devoluções</h2>
       <table>
         <thead>
@@ -123,17 +132,24 @@ const HistoricoReservas = () => {
           </tr>
         </thead>
         <tbody>
-  {devolucoes.map((devolucao) => (
-    <tr
-      key={devolucao.id}
-      onClick={() => handleDevolucaoClick(devolucao.livro_id, devolucao.usuario_id)}
-    >
-      <td>{devolucao.usuario}</td>
-      <td>{devolucao.livro}</td>
-      <td>{new Date(devolucao.data_devolucao).toLocaleDateString()}</td>
-    </tr>
-  ))}
-</tbody>
+          {devolucoes.length > 0 ? (
+            devolucoes.map((devolucao) => (
+              <tr
+                key={devolucao.id}
+                onClick={() => handleDevolucaoClick(devolucao.livro_id, devolucao.usuario_id)}
+                style={{ cursor: "pointer" }}
+              >
+                <td>{devolucao.usuario}</td>
+                <td>{devolucao.livro}</td>
+                <td>{new Date(devolucao.data_devolvido).toLocaleDateString()}</td>
+              </tr>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="3">Nenhuma devolução encontrada.</td>
+            </tr>
+          )}
+        </tbody>
       </table>
     </div>
   );
