@@ -6,18 +6,18 @@ import "../../src/styles/DevolucaoDetails.css";
 
 function DevolucaoDetails() {
   const { livroId, usuarioId } = useParams();
-  const [bookDetails, setBookDetails] = useState(null);
+  const [devolucaoDetails, setDevolucaoDetails] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchBookDetails = async () => {
+  const fetchDevolucaoDetails = async () => {
     try {
-      const response = await fetch(`http://localhost:3001/livro-detalhes/${livroId}/${usuarioId}`);
+      const response = await fetch(`http://localhost:3001/historico-devolucoes/${livroId}/${usuarioId}`);
       if (!response.ok) {
-        throw new Error("Erro ao buscar os detalhes do livro");
+        throw new Error("Erro ao buscar os detalhes da devolução");
       }
 
       const data = await response.json();
-      setBookDetails(data);
+      setDevolucaoDetails(data);
     } catch (error) {
       console.error(error);
     } finally {
@@ -26,47 +26,47 @@ function DevolucaoDetails() {
   };
 
   useEffect(() => {
-    fetchBookDetails();
+    fetchDevolucaoDetails();
   }, [livroId, usuarioId]);
 
   if (loading) {
     return <p>Carregando detalhes...</p>;
   }
 
-  if (!bookDetails) {
-    return <p>Livro não encontrado</p>;
+  if (!devolucaoDetails) {
+    return <p>Devolução não encontrada</p>;
   }
 
   return (
     <div className="devolucao-details-container">
       <div className="book-image">
         <img
-          src={bookDetails.imagem ? bookDetails.imagem : "default-image.jpg"}
-          alt={bookDetails.nome_do_livro}
+          src={devolucaoDetails.imagem ? devolucaoDetails.imagem : "default-image.jpg"}
+          alt={devolucaoDetails.nome_do_livro}
         />
       </div>
 
       <div className="book-info">
-        <h1>{bookDetails.nome_do_livro}</h1>
-        <p><strong>Autor:</strong> {bookDetails.autor}</p>
-        <p><strong>Editora:</strong> {bookDetails.editora}</p>
-        <p><strong>Sinopse:</strong> {bookDetails.sinopse}</p>
-        <p><strong>Status:</strong> {bookDetails.status}</p>
-        <p><strong>Quantidade no estoque:</strong> {bookDetails.quantidade_disponivel}</p>
+        <h1>{devolucaoDetails.nome_do_livro}</h1>
+        <p><strong>Autor:</strong> {devolucaoDetails.autor}</p>
+        <p><strong>Editora:</strong> {devolucaoDetails.editora}</p>
+        <p><strong>Sinopse:</strong> {devolucaoDetails.sinopse}</p>
+        <p><strong>Status:</strong> {devolucaoDetails.status}</p>
+        <p><strong>Quantidade no estoque:</strong> {devolucaoDetails.quantidade_disponivel}</p>
       </div>
 
       <div className="reservation-details">
         <div className="usuario-reservas">
-          <h3>{bookDetails.usuario.nome_usuario}</h3>
-          <p><strong>Email:</strong> {bookDetails.usuario.usuario_email}</p>
-          <p><strong>CPF:</strong> {bookDetails.usuario.usuario_cpf}</p>
-          <p><strong>Telefone:</strong> {bookDetails.usuario.usuario_telefone}</p>
+          <h3>{devolucaoDetails.userName}</h3>
+          <p><strong>Email:</strong> {devolucaoDetails.email}</p>
+          <p><strong>CPF:</strong> {devolucaoDetails.cpf}</p>
+          <p><strong>Telefone:</strong> {devolucaoDetails.telefone}</p>
           <div className="reserva-info">
-            <p><strong>Status da reserva:</strong> {bookDetails.reserva.reserva_status}</p>
-            <p><strong>Data de reserva:</strong> {bookDetails.reserva.data_reserva ? format(new Date(bookDetails.reserva.data_reserva), "dd/MM/yyyy") : "N/A"}</p>
-            <p><strong>Data de devolução:</strong> {bookDetails.reserva.data_devolucao ? format(new Date(bookDetails.reserva.data_devolucao), "dd/MM/yyyy") : "N/A"}</p>
-            <p><strong>Devolvido em:</strong> {bookDetails.reserva.devolvido_em ? format(new Date(bookDetails.reserva.devolvido_em), "dd/MM/yyyy") : "N/A"}</p>
-            <p><strong>Multa:</strong> R$ {bookDetails.reserva.multa ? bookDetails.reserva.multa.toFixed(2) : "0.00"}</p>
+            <p><strong>Status da reserva:</strong> {devolucaoDetails.status}</p>
+            <p><strong>Data de reserva:</strong> {devolucaoDetails.data_reserva ? format(new Date(devolucaoDetails.data_reserva), "dd/MM/yyyy") : "N/A"}</p>
+            <p><strong>Data de devolução prevista:</strong> {devolucaoDetails.data_devolucao ? format(new Date(devolucaoDetails.data_devolucao), "dd/MM/yyyy") : "N/A"}</p>
+            <p><strong>Data real da devolução:</strong> {devolucaoDetails.data_devolvido ? format(new Date(devolucaoDetails.data_devolvido), "dd/MM/yyyy") : "N/A"}</p>
+            <p><strong>Multa:</strong> R$ {devolucaoDetails.multa ? devolucaoDetails.multa.toFixed(2) : "0.00"}</p>
           </div>
         </div>
       </div>

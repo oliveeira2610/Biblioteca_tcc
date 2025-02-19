@@ -1,5 +1,10 @@
 LESSIE
 
+
+na tela historico de devoluções ta puxando as informações quando o livro devolvido está alugado pelo usuario, trocar isso e criar uma tabela melhor para historicos de devolução que salve as informações de usuario e da reserva antiga
+
+Fazer telas conversarem com tabela historico_devoluções
+
 ATUALIZAÇÕES:
 
 tela nova DevolucoaoUsuario.jsx = tela que mostra as informações da devolução do livro e o usuario que devolveu e a data de devolução
