@@ -1,10 +1,6 @@
 LESSIE
 
 
-na tela historico de devoluções ta puxando as informações quando o livro devolvido está alugado pelo usuario, trocar isso e criar uma tabela melhor para historicos de devolução que salve as informações de usuario e da reserva antiga
-
-Fazer telas conversarem com tabela historico_devoluções
-
 ATUALIZAÇÕES:
 
 tela nova DevolucoaoUsuario.jsx = tela que mostra as informações da devolução do livro e o usuario que devolveu e a data de devolução
@@ -24,7 +20,7 @@ PRECISA FAZER:
 
 Ver com grupo se tira a pagina de reserved books e apenas mostre a quantidade ou repaginar o historico
 
-fazer a pesquisa funcionar junto a digitação em tempo real
+
 
 Criar tela para o adm ver o perfil do Usuario e poder ver as observações 
 
@@ -58,6 +54,8 @@ fazer o status de multa ficar vermelho e evitdente na aba perfil JapaJapaJapaJap
 
 
 MELHORIAS FEITAS NO PROJETO:
+
+// FEITO // fazer a pesquisa funcionar junto a digitação em tempo real
 
 // FEITO // Na tela reserved books, quando clicar no card ser redirecionado para tela de detalhed de reserva
 
@@ -160,50 +158,3 @@ Registro de devoluções e histórico de reservas.
 Início do Servidor
 O servidor é iniciado na porta 3001.
 
-
-
-
-
-Unico problema ATÉ AGORA
-
-http://localhost:5173/perfil-usuario-adm/8
-
-saveAdminComment @ PerfilUsuarioAdm.jsx:103
-await in saveAdminComment
-callCallback2 @ chunk-YFB5YCE7.js?v=cbebfe8b:3680
-invokeGuardedCallbackDev @ chunk-YFB5YCE7.js?v=cbebfe8b:3705
-invokeGuardedCallback @ chunk-YFB5YCE7.js?v=cbebfe8b:3739
-invokeGuardedCallbackAndCatchFirstError @ chunk-YFB5YCE7.js?v=cbebfe8b:3742
-executeDispatch @ chunk-YFB5YCE7.js?v=cbebfe8b:7046
-processDispatchQueueItemsInOrder @ chunk-YFB5YCE7.js?v=cbebfe8b:7066
-processDispatchQueue @ chunk-YFB5YCE7.js?v=cbebfe8b:7075
-dispatchEventsForPlugins @ chunk-YFB5YCE7.js?v=cbebfe8b:7083
-(anonymous) @ chunk-YFB5YCE7.js?v=cbebfe8b:7206
-batchedUpdates$1 @ chunk-YFB5YCE7.js?v=cbebfe8b:18966
-batchedUpdates @ chunk-YFB5YCE7.js?v=cbebfe8b:3585
-dispatchEventForPluginEventSystem @ chunk-YFB5YCE7.js?v=cbebfe8b:7205
-dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-YFB5YCE7.js?v=cbebfe8b:5484
-dispatchEvent @ chunk-YFB5YCE7.js?v=cbebfe8b:5478
-dispatchDiscreteEvent @ chunk-YFB5YCE7.js?v=cbebfe8b:5455Understand this errorAI
-PerfilUsuarioAdm.jsx:91 
-        
-        
-       POST http://localhost:3001/usuarios/8/comentario 500 (Internal Server Error)
-saveAdminComment @ PerfilUsuarioAdm.jsx:91
-callCallback2 @ chunk-YFB5YCE7.js?v=cbebfe8b:3680
-invokeGuardedCallbackDev @ chunk-YFB5YCE7.js?v=cbebfe8b:3705
-invokeGuardedCallback @ chunk-YFB5YCE7.js?v=cbebfe8b:3739
-invokeGuardedCallbackAndCatchFirstError @ chunk-YFB5YCE7.js?v=cbebfe8b:3742
-executeDispatch @ chunk-YFB5YCE7.js?v=cbebfe8b:7046
-processDispatchQueueItemsInOrder @ chunk-YFB5YCE7.js?v=cbebfe8b:7066
-processDispatchQueue @ chunk-YFB5YCE7.js?v=cbebfe8b:7075
-dispatchEventsForPlugins @ chunk-YFB5YCE7.js?v=cbebfe8b:7083
-(anonymous) @ chunk-YFB5YCE7.js?v=cbebfe8b:7206
-batchedUpdates$1 @ chunk-YFB5YCE7.js?v=cbebfe8b:18966
-batchedUpdates @ chunk-YFB5YCE7.js?v=cbebfe8b:3585
-dispatchEventForPluginEventSystem @ chunk-YFB5YCE7.js?v=cbebfe8b:7205
-dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-YFB5YCE7.js?v=cbebfe8b:5484
-dispatchEvent @ chunk-YFB5YCE7.js?v=cbebfe8b:5478
-dispatchDiscreteEvent @ chunk-YFB5YCE7.js?v=cbebfe8b:5455Understand this errorAI
-PerfilUsuarioAdm.jsx:103 Error: Erro ao salvar comentário.
-    at saveAdminComment (PerfilUsuarioAdm.jsx:97:31)

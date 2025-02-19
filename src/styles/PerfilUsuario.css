@@ -71,3 +71,21 @@
     gap: 20px; /* Espaço entre os cards */
     justify-content: start; /* Alinha os cards à esquerda */
   }
+
+
+  .logout-button {
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background 0.3s;
+  }
+  
+  .logout-button:hover {
+    background-color: #cc0000;
+  }
+  

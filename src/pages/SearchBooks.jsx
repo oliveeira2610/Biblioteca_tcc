@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import "../../src/styles/global.css";
-import '../../src/styles/search-books.css';
+import "../../src/styles/search-books.css";
 import "../../src/styles/book-card.css";
-import '../../src/styles/button.css';
-import '../../src/styles/FloatingBackground.css';
+import "../../src/styles/button.css";
+import "../../src/styles/FloatingBackground.css";
 
 function FloatingLetters() {
   const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".split("");
@@ -61,10 +61,8 @@ function FloatingLetters() {
   );
 }
 
-
-
 function SearchBooks() {
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState("");
   const [books, setBooks] = useState([]);
   const [filteredBooks, setFilteredBooks] = useState([]);
   const [groupedBooks, setGroupedBooks] = useState({});
@@ -78,16 +76,16 @@ function SearchBooks() {
   const fetchBooks = async () => {
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:3001/livros');
+      const response = await fetch("http://localhost:3001/livros");
       if (!response.ok) {
-        throw new Error('Erro ao buscar livros: ' + response.statusText);
+        throw new Error("Erro ao buscar livros: " + response.statusText);
       }
       const data = await response.json();
       setBooks(data);
       setFilteredBooks(data);
       groupBooksByGenre(data);
     } catch (error) {
-      console.error('Erro ao buscar livros:', error);
+      console.error("Erro ao buscar livros:", error);
     } finally {
       setLoading(false);
     }
@@ -95,7 +93,7 @@ function SearchBooks() {
 
   const groupBooksByGenre = (books) => {
     const grouped = books.reduce((acc, book) => {
-      const genre = book.genero || 'Outros';
+      const genre = book.genero || "Outros";
       if (!acc[genre]) acc[genre] = [];
       acc[genre].push(book);
       return acc;
@@ -103,15 +101,14 @@ function SearchBooks() {
     setGroupedBooks(grouped);
   };
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    if (query.trim() === '') {
+  const handleSearch = (newQuery) => {
+    if (newQuery.trim() === "") {
       setFilteredBooks(books);
       groupBooksByGenre(books);
       return;
     }
     const searchResults = books.filter((book) =>
-      book.nome_do_livro.toLowerCase().includes(query.toLowerCase())
+      book.nome_do_livro.toLowerCase().includes(newQuery.toLowerCase())
     );
     setFilteredBooks(searchResults);
     groupBooksByGenre(searchResults);
@@ -130,9 +127,14 @@ function SearchBooks() {
           type="text"
           placeholder="Pesquisar livros..."
           value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          onChange={(e) => {
+            const newQuery = e.target.value;
+            setQuery(newQuery);
+            handleSearch(newQuery); // Faz a pesquisa instantânea
+          }}
           className="search-input"
         />
+
         <button type="submit" className="search-button">
           Buscar
         </button>
@@ -169,8 +171,16 @@ function SearchBooks() {
                 <p className="book-card-author">{book.autor}</p>
 
                 {/* Exibindo o status do livro */}
-                <p className={`book-availability ${book.quantidade_disponivel_nao_alugada > 0 ? 'available' : 'unavailable'}`}>
-                  {book.quantidade_disponivel_nao_alugada > 0 ? 'Disponível' : 'Indisponível'}
+                <p
+                  className={`book-availability ${
+                    book.quantidade_disponivel_nao_alugada > 0
+                      ? "available"
+                      : "unavailable"
+                  }`}
+                >
+                  {book.quantidade_disponivel_nao_alugada > 0
+                    ? "Disponível"
+                    : "Indisponível"}
                 </p>
               </div>
             ))}
@@ -182,4 +192,3 @@ function SearchBooks() {
 }
 
 export default SearchBooks;
-

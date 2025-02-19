@@ -22,23 +22,23 @@ function FloatingLetters() {
         opacity: Math.random() * 0.1 + 0.05,
       }));
     };
-  
-      setLetterElements(generateInitialLetters());
-    }, []);
-  
-    useEffect(() => {
-      const interval = setInterval(() => {
-        setLetterElements((prevLetters) =>
-          prevLetters.map((letter) => ({
-            ...letter,
-            left: (letter.left + letter.speedX + 100) % 100,
-            top: (letter.top + letter.speedY + 100) % 100,
-          }))
-        );
-      }, 50);
-  
-      return () => clearInterval(interval);
-    }, []);
+
+    setLetterElements(generateInitialLetters());
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setLetterElements((prevLetters) =>
+        prevLetters.map((letter) => ({
+          ...letter,
+          left: (letter.left + letter.speedX + 100) % 100,
+          top: (letter.top + letter.speedY + 100) % 100,
+        }))
+      );
+    }, 50);
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="floating-letters-container">
@@ -67,6 +67,7 @@ function PerfilUsuario() {
   const [watchlist, setWatchlist] = useState([]); // Livros que o usuário selecionou para receber notificações
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isBlocked, setIsBlocked] = useState(false); // Adicionado estado para bloqueio do usuário
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -77,8 +78,8 @@ function PerfilUsuario() {
           throw new Error("Erro ao buscar informações do usuário.");
         }
         const data = await response.json();
+        console.log("Dados recebidos:", data);  // Verifique se o CPF está aqui
         setUserInfo(data);
-        setWatchlist(data.livrosParaNotificacao || []); // Livros que o usuário deseja ser notificado
       } catch (err) {
         setError(err.message);
       } finally {
@@ -119,6 +120,11 @@ function PerfilUsuario() {
       setError(err.message);
     }
   };
+  const handleLogout = () => {
+    localStorage.removeItem("userId");  // Remove o ID do usuário do localStorage
+    navigate("/login");  // Redireciona para a tela de login
+  };
+  
 
   if (loading) return <p>Carregando...</p>;
   if (error) return <p>Erro: {error}</p>;
@@ -128,11 +134,20 @@ function PerfilUsuario() {
     <div className="perfil-usuario-container floating-background">
       <FloatingLetters />
       <h1>Perfil do Usuário</h1>
+      
+      <button onClick={handleLogout} className="logout-button">
+  Sair da Conta
+</button>
+
+      
       <div className="dados-pessoais">
         <h2>Dados Pessoais</h2>
         <p><strong>Nome:</strong> {userInfo.userName}</p>
         <p><strong>Email:</strong> {userInfo.email}</p>
         <p><strong>Telefone:</strong> {userInfo.telefone}</p>
+        <p><strong>CPF:</strong> {userInfo.cpf}</p>
+        <p><strong>Multa Pendente:</strong> {userInfo.multa}</p>
+        <p><strong>Status:</strong> {isBlocked ? "Bloqueado" : "Desbloqueado"}</p>
       </div>
 
       {/* Lista de livros reservados */}

@@ -63,6 +63,7 @@ function FloatingLetters() {
 const Users = () => {
   const [usuarios, setUsuarios] = useState([]);
   const [historicoDevolucoes, setHistoricoDevolucoes] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
 
   const fetchUsers = async () => {
@@ -78,11 +79,8 @@ const Users = () => {
 
   const fetchHistoricoDevolucoes = async () => {
     try {
-      const response = await fetch(
-        "http://localhost:3001/historico-devolucoes"
-      );
-      if (!response.ok)
-        throw new Error("Erro ao buscar histórico de devoluções");
+      const response = await fetch("http://localhost:3001/historico-devolucoes");
+      if (!response.ok) throw new Error("Erro ao buscar histórico de devoluções");
       const data = await response.json();
       setHistoricoDevolucoes(data);
     } catch (error) {
@@ -98,7 +96,7 @@ const Users = () => {
       );
       if (!response.ok) throw new Error("Erro ao cancelar reserva");
       alert("Reserva cancelada!");
-      fetchUsers(); // Atualiza os dados
+      fetchUsers();
     } catch (error) {
       console.error("Erro ao cancelar reserva:", error);
     }
@@ -120,7 +118,6 @@ const Users = () => {
 
       alert("Livro devolvido com sucesso!");
 
-      // Adiciona a reserva ao histórico de devoluções
       await fetch("http://localhost:3001/historico-devolucoes/adicionar", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -134,13 +131,27 @@ const Users = () => {
     }
   };
 
+  const filteredUsers = usuarios.filter((usuario) => {
+    return (
+      usuario.userName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      usuario.email.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  });
+
   return (
     <div className="users-container floating-background">
       <FloatingLetters />
-      {usuarios.length === 0 ? (
-        <p>Carregando usuários...</p>
+      <input
+        type="text"
+        placeholder="Pesquisar usuários pelo nome ou email..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        className="search-input"
+      />
+      {filteredUsers.length === 0 ? (
+        <p>Nenhum usuário encontrado.</p>
       ) : (
-        usuarios.map((usuario) => (
+        filteredUsers.map((usuario) => (
           <div key={usuario.id} className="user-card">
             <div
               onClick={(e) => {
@@ -163,7 +174,7 @@ const Users = () => {
                       key={book.id}
                       className="book-card"
                       onClick={(e) => {
-                        e.stopPropagation(); // Evita a navegação para o perfil do usuário
+                        e.stopPropagation();
                         navigate(`/book/${book.id}`);
                       }}
                       style={{ cursor: "pointer" }}
@@ -223,8 +234,6 @@ const Users = () => {
               </div>
             </div>
 
-            {/* Ajuste na exibição dos livros devolvidos */}
-            {/* Seção de Livros Devolvidos */}
             <div className="books-section">
               <h4>Livros Devolvidos:</h4>
               <div className="books-cards">
@@ -273,7 +282,7 @@ const Users = () => {
 
                         {devolucao.data_devolucao && (
                           <p className="book-card-return-date">
-                            Devolvido em:{" "}
+                            Devolvido em: {" "}
                             {new Date(
                               devolucao.data_devolucao
                             ).toLocaleDateString()}

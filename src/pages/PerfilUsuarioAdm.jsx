@@ -52,6 +52,8 @@ function PerfilUsuarioAdm() {
   const [adminComments, setAdminComments] = useState([]);
   const [adminComment, setAdminComment] = useState("");
   const [loading, setLoading] = useState(true);
+  const [isBlocked, setIsBlocked] = useState(false); // Adicionado estado para bloqueio do usuário
+  const [error, setError] = useState(null); // Adicionado estado para erros
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -72,6 +74,7 @@ function PerfilUsuarioAdm() {
         setUserInfo(userData);
         setHistoricoReservas(historicoData);
         setAdminComments(commentsData);
+        setIsBlocked(userData.bloqueado);
       } catch (error) {
         console.error(error);
       } finally {
@@ -81,6 +84,32 @@ function PerfilUsuarioAdm() {
 
     fetchUserData();
   }, [userId]);
+
+  const toggleBlockUser = async () => {
+    try {
+      const response = await fetch(`http://localhost:3001/usuarios/${userId}/bloquear`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ bloqueado: !isBlocked }),
+      });
+      if (!response.ok) throw new Error("Erro ao atualizar status de bloqueio.");
+      setIsBlocked(!isBlocked);
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
+  const deleteUser = async () => {
+    if (!window.confirm("Tem certeza que deseja excluir este usuário?")) return;
+    try {
+      const response = await fetch(`http://localhost:3001/usuarios/${userId}`, { method: "DELETE" });
+      if (!response.ok) throw new Error("Erro ao excluir usuário.");
+      alert("Usuário excluído com sucesso!");
+      navigate("/usuarios");
+    } catch (err) {
+      setError(err.message);
+    }
+  };
 
   const handleCommentChange = (e) => {
     setAdminComment(e.target.value);
@@ -131,6 +160,8 @@ function PerfilUsuarioAdm() {
         <p><strong>Nome:</strong> {userInfo.userName}</p>
         <p><strong>Email:</strong> {userInfo.email}</p>
         <p><strong>Telefone:</strong> {userInfo.telefone}</p>
+        <p><strong>Multa Pendente:</strong> {userInfo.multa}</p>
+        <p><strong>Status:</strong> {isBlocked ? "Bloqueado" : "Desbloqueado"}</p>
       </div>
 
       {/* Seção de Histórico de Reservas (Livros Devolvidos) */}
@@ -185,6 +216,13 @@ function PerfilUsuarioAdm() {
         />
         <button onClick={saveAdminComment}>Salvar Comentário</button>
       </div>
+      <button onClick={toggleBlockUser} className="block-user-button" style={{ backgroundColor: isBlocked ? 'red' : 'green' }}>
+        {isBlocked ? "Desbloquear Reservas" : "Bloquear Reservas"}
+      </button>
+
+      <button onClick={deleteUser} className="delete-user-button" style={{ backgroundColor: 'red' }}>
+        Excluir Usuário
+      </button>
     </div>
   );
 }
