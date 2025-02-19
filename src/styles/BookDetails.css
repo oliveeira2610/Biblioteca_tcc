@@ -91,6 +91,7 @@
 /* Estilo para os detalhes de reservas */
 .reservation-details {
   margin-top: 2rem;
+  width: 72%;
 }
 
 .usuario-reservas {
@@ -135,6 +136,51 @@
   font-size: 1.2rem;
   margin-top: 2rem;
 }
+
+.book-edit {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.book-edit h2 {
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.book-edit input,
+.book-edit textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+}
+
+.book-edit textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.book-edit button {
+  background-color: #007bff;
+  color: white;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-top: 10px;
+}
+
+.book-edit button:hover {
+  background-color: #0056b3;
+}
+
 
 /* Responsividade */
 @media (max-width: 768px) {

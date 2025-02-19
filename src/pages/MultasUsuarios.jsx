@@ -12,26 +12,31 @@ const MultasUsuarios = () => {
   const [valorMulta, setValorMulta] = useState("");
   const navigate = useNavigate();
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        // Buscar multas
-        const multasRes = await axios.get("http://localhost:3001/multas");
-        setMultas(multasRes.data || []);
-
-        // Buscar reservas ativas
-        const reservasRes = await axios.get(
-          "http://localhost:3001/livros-com-reservas"
-        );
-        const filteredBooks = reservasRes.data.filter(
-          (book) => book.reserva_status === "Reservado"
-        );
-
-        setReservasAtivas(filteredBooks);
-      } catch (error) {
-        console.error("Erro ao buscar dados:", error);
-      }
+  const fetchMultas = async () => {
+    try {
+      const multasRes = await axios.get("http://localhost:3001/multas");
+      setMultas(multasRes.data || []);
+    } catch (error) {
+      console.error("Erro ao buscar multas:", error);
     }
+  };
+
+  const fetchReservasAtivas = async () => {
+    try {
+      const reservasRes = await axios.get("http://localhost:3001/livros-com-reservas");
+      const filteredBooks = reservasRes.data.filter((book) => book.reserva_status === "Reservado");
+      setReservasAtivas(filteredBooks);
+    } catch (error) {
+      console.error("Erro ao buscar reservas ativas:", error);
+    }
+  };
+
+  const fetchData = async () => {
+    await fetchMultas();
+    await fetchReservasAtivas();
+  };
+
+  useEffect(() => {
     fetchData();
   }, []);
 
@@ -50,9 +55,8 @@ const MultasUsuarios = () => {
       setReservaId("");
       setValorMulta("");
 
-      // Atualizar lista de multas
-      const response = await axios.get("http://localhost:3001/multas");
-      setMultas(response.data || []);
+      // Atualizar a lista de multas e reservas ativas
+      fetchData();
     } catch (error) {
       alert("Erro ao adicionar multa.");
       console.error(error);

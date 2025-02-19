@@ -12,7 +12,8 @@ import BookDescription from './pages/BookDescription';
 import BookStatus from './pages/BookStatus';
 import PerfilUsuario from './pages/PerfilUsuario';
 import Dashboard from './pages/Dashboard';
-import HistoricoReservas from './pages/HistoricoReservas';
+import HistoricoReservas from "./pages/HistoricoReservas";
+import DevolucaoDetails from "./pages/DevolucaoDetails";
 import MultasUsuarios from './pages/MultasUsuarios';
 import ReservedBooks from './pages/ReservedBooks';
 import Notifications from './pages/Notifications';
@@ -58,6 +59,10 @@ function Layout() {
         <Route path="/bookStatus/:id" element={<BookStatus />} />
         <Route path="/perfil-usuario-adm/:userId" element={<PerfilUsuarioAdm />} />
         <Route path="/perfil-usuario" element={<PerfilUsuario />} />
+        <Route path="/historico-reservas" element={<HistoricoReservas />} />
+        <Route path="/devolucao-detalhes/:livroId/:usuarioId" element={<DevolucaoDetails />} />
+
+
       </Routes>
     </div>
   );
