@@ -159,3 +159,51 @@ Histórico
 Registro de devoluções e histórico de reservas.
 Início do Servidor
 O servidor é iniciado na porta 3001.
+
+
+
+
+
+Unico problema ATÉ AGORA
+
+http://localhost:5173/perfil-usuario-adm/8
+
+saveAdminComment @ PerfilUsuarioAdm.jsx:103
+await in saveAdminComment
+callCallback2 @ chunk-YFB5YCE7.js?v=cbebfe8b:3680
+invokeGuardedCallbackDev @ chunk-YFB5YCE7.js?v=cbebfe8b:3705
+invokeGuardedCallback @ chunk-YFB5YCE7.js?v=cbebfe8b:3739
+invokeGuardedCallbackAndCatchFirstError @ chunk-YFB5YCE7.js?v=cbebfe8b:3742
+executeDispatch @ chunk-YFB5YCE7.js?v=cbebfe8b:7046
+processDispatchQueueItemsInOrder @ chunk-YFB5YCE7.js?v=cbebfe8b:7066
+processDispatchQueue @ chunk-YFB5YCE7.js?v=cbebfe8b:7075
+dispatchEventsForPlugins @ chunk-YFB5YCE7.js?v=cbebfe8b:7083
+(anonymous) @ chunk-YFB5YCE7.js?v=cbebfe8b:7206
+batchedUpdates$1 @ chunk-YFB5YCE7.js?v=cbebfe8b:18966
+batchedUpdates @ chunk-YFB5YCE7.js?v=cbebfe8b:3585
+dispatchEventForPluginEventSystem @ chunk-YFB5YCE7.js?v=cbebfe8b:7205
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-YFB5YCE7.js?v=cbebfe8b:5484
+dispatchEvent @ chunk-YFB5YCE7.js?v=cbebfe8b:5478
+dispatchDiscreteEvent @ chunk-YFB5YCE7.js?v=cbebfe8b:5455Understand this errorAI
+PerfilUsuarioAdm.jsx:91 
+        
+        
+       POST http://localhost:3001/usuarios/8/comentario 500 (Internal Server Error)
+saveAdminComment @ PerfilUsuarioAdm.jsx:91
+callCallback2 @ chunk-YFB5YCE7.js?v=cbebfe8b:3680
+invokeGuardedCallbackDev @ chunk-YFB5YCE7.js?v=cbebfe8b:3705
+invokeGuardedCallback @ chunk-YFB5YCE7.js?v=cbebfe8b:3739
+invokeGuardedCallbackAndCatchFirstError @ chunk-YFB5YCE7.js?v=cbebfe8b:3742
+executeDispatch @ chunk-YFB5YCE7.js?v=cbebfe8b:7046
+processDispatchQueueItemsInOrder @ chunk-YFB5YCE7.js?v=cbebfe8b:7066
+processDispatchQueue @ chunk-YFB5YCE7.js?v=cbebfe8b:7075
+dispatchEventsForPlugins @ chunk-YFB5YCE7.js?v=cbebfe8b:7083
+(anonymous) @ chunk-YFB5YCE7.js?v=cbebfe8b:7206
+batchedUpdates$1 @ chunk-YFB5YCE7.js?v=cbebfe8b:18966
+batchedUpdates @ chunk-YFB5YCE7.js?v=cbebfe8b:3585
+dispatchEventForPluginEventSystem @ chunk-YFB5YCE7.js?v=cbebfe8b:7205
+dispatchEventWithEnableCapturePhaseSelectiveHydrationWithoutDiscreteEventReplay @ chunk-YFB5YCE7.js?v=cbebfe8b:5484
+dispatchEvent @ chunk-YFB5YCE7.js?v=cbebfe8b:5478
+dispatchDiscreteEvent @ chunk-YFB5YCE7.js?v=cbebfe8b:5455Understand this errorAI
+PerfilUsuarioAdm.jsx:103 Error: Erro ao salvar comentário.
+    at saveAdminComment (PerfilUsuarioAdm.jsx:97:31)
