@@ -3,7 +3,7 @@ LESSIE
 
 ATUALIZAÇÕES:
 
-tela nova DevolucoaoUsuario.jsx = tela que mostra as informações da devolução do livro e o usuario que devolveu e a data de devolução
+
 
 
 
@@ -15,6 +15,11 @@ Sistema de pagamento para liberar multas -- na pagina perfil  -> cards
 
 
 
+
+
+
+
+
 PRECISA FAZER:
 
 
@@ -22,18 +27,8 @@ Ver com grupo se tira a pagina de reserved books e apenas mostre a quantidade ou
 
 
 
-Criar tela para o adm ver o perfil do Usuario e poder ver as observações 
-
-Criar sistema de escrever observações para devolução e aparecer nos detalhes da Devolução e no perfil do usuario apenas para os adms na pagina "Historico" e "Users"
 
 
-// Fazer isso funcionar dps // os cards da pagina addbooks redirecionar para uma tela para cadastrar os livros, puxando as informações automaticamente pela api mas tendo a possibilidade de editar,colocando local do livro Ex: Prateleira, Numero do livro alem das outras informações
-
-Aparecer mais informações do livro na pagina BookDetails
-
-Criar uma tela para adicionar livro na mão com imagem por link 
-
-Deixar o formulario de registro com verificações melhores
 
 
 
@@ -53,6 +48,20 @@ fazer o status de multa ficar vermelho e evitdente na aba perfil JapaJapaJapaJap
 
 
 MELHORIAS FEITAS NO PROJETO:
+
+// FEITO // tela nova DevolucoaoUsuario.jsx = tela que mostra as informações da devolução do livro e o usuario que devolveu e a data de devolução
+
+// FEITO // Melhorar as verificações de registro
+
+// FEITO // Aparecer mais informações do livro na pagina BookDetails
+
+// FEITO // Criar uma tela para adicionar livro na mão com imagem por link 
+
+// FEITO // Criar sistema de escrever observações para devolução e aparecer nos detalhes da Devolução 
+
+// FEITO // Criar tela para o adm ver o perfil do Usuario e poder ver as observações 
+
+// FEITO // os cards da pagina addbooks redirecionar para uma tela para cadastrar os livros, puxando as informações automaticamente pela api mas tendo a possibilidade de editar,colocando local do livro Ex: Prateleira, Numero do livro alem das outras informações
 
 // FEITO // Criar botao para deslogar na pagina de "perfil usuario"
 

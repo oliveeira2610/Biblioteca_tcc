@@ -37,13 +37,13 @@ function App() {
 
 function Layout() {
   const location = useLocation();
-  const hideNavbar = location.pathname === "/register" || location.pathname === "/login"; // Não renderiza a Navbar nessas rotas
+  const hideNavbar = location.pathname === "/register" || location.pathname === "/"; // Não renderiza a Navbar nessas rotas
 
   return (
     <div>
       {!hideNavbar && <Navbar />}  {/* Renderiza a Navbar condicionalmente */}
       <Routes>
-        <Route path="/login" element={<Login />} />
+        <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/home" element={<Home />} />
         <Route path="/users" element={<Users />} />

@@ -120,11 +120,11 @@ function PerfilUsuario() {
       setError(err.message);
     }
   };
+
   const handleLogout = () => {
     localStorage.removeItem("userId");  // Remove o ID do usuário do localStorage
-    navigate("/login");  // Redireciona para a tela de login
+    navigate("/");  // Redireciona para a tela de login
   };
-  
 
   if (loading) return <p>Carregando...</p>;
   if (error) return <p>Erro: {error}</p>;
@@ -136,10 +136,9 @@ function PerfilUsuario() {
       <h1>Perfil do Usuário</h1>
       
       <button onClick={handleLogout} className="logout-button">
-  Sair da Conta
-</button>
+        Sair da Conta
+      </button>
 
-      
       <div className="dados-pessoais">
         <h2>Dados Pessoais</h2>
         <p><strong>Nome:</strong> {userInfo.userName}</p>

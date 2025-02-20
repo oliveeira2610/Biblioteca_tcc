@@ -63,6 +63,7 @@ function FloatingLetters() {
 function ManageDatabaseBooks() {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
   const userId = localStorage.getItem("userId");
 
@@ -192,13 +193,25 @@ function ManageDatabaseBooks() {
     fetchBooks();
   }, []);
 
+  // Filtrar livros com base no termo de pesquisa
+  const filteredBooks = books.filter((book) =>
+    book.nome_do_livro.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   return (
     <div className="manage-books-container floating-background">
       <FloatingLetters />
       <h1>📚 Gerenciar Livros</h1>
+      <input
+        type="text"
+        placeholder="Pesquisar livros..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        className="search-input"
+      />
       {loading && <p>Carregando...</p>}
-      <div className="books-list ">
-        {books.map((book) => (
+      <div className="books-list">
+        {filteredBooks.map((book) => (
           <div
             key={book.id}
             className="book-card"
@@ -228,8 +241,6 @@ function ManageDatabaseBooks() {
             )}
 
             {/* Botões de ação */}
-          
-             
             <button
               onClick={(e) => {
                 e.stopPropagation(); // Impede que o clique navegue para a página de detalhes
@@ -238,11 +249,6 @@ function ManageDatabaseBooks() {
             >
               Liberar Reservas
             </button>
-            
-
-           
-
-            {/* Botão de deletar aparece em qualquer caso */}
             <button
               onClick={(e) => {
                 e.stopPropagation(); // Impede que o clique navegue para a página de detalhes

@@ -39,6 +39,10 @@ function AddBooks() {
     navigate('/register-book', { state: { book } });
   };
 
+  const handleRegisterBookClick = () => {
+    navigate('/register-book');
+  };
+
   return (
     <div className="add-books-container">
       <h1>🔎 Pesquisa de Livros</h1>
@@ -51,6 +55,7 @@ function AddBooks() {
           className="search-input"
         />
         <button type="submit" className="search-button">Buscar</button>
+        <button type="button" className="register-button" onClick={handleRegisterBookClick}>Registrar Livro</button>
       </form>
 
       {loading && <p>Carregando...</p>}

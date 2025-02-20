@@ -14,19 +14,6 @@ function BookDetails() {
   useEffect(() => {
     fetchBookDetails();
   }, [id]);
-  
-  useEffect(() => {
-    if (bookDetails) {
-      console.log("Atualizando campos com:", bookDetails); // Verifique se os dados estão corretos
-      setEditedBook({ ...bookDetails });
-    }
-  }, [bookDetails]);
-  
-  useEffect(() => {
-    if (bookDetails) {
-      setEditedBook({ ...bookDetails });
-    }
-  }, [bookDetails]);
 
   const fetchBookDetails = async () => {
     try {
@@ -35,10 +22,10 @@ function BookDetails() {
         throw new Error("Erro ao buscar os detalhes do livro");
       }
       const data = await response.json();
-      console.log("Dados recebidos:", data);
+      console.log("📥 Dados recebidos:", data);
       setBookDetails(data);
     } catch (error) {
-      console.error("Erro ao buscar os detalhes do livro:", error);
+      console.error("🚨 Erro ao buscar os detalhes do livro:", error);
     } finally {
       setLoading(false);
     }
@@ -46,28 +33,32 @@ function BookDetails() {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-  
     setEditedBook((prev) => ({
       ...prev,
       [name]: value || prev[name], // Se o valor for vazio, mantém o antigo
     }));
   };
-  
 
   const updateBookDetails = async () => {
+    // Verifica se todos os campos obrigatórios estão presentes
+    if (!editedBook.nome_do_livro || !editedBook.autor || !editedBook.editora || !editedBook.isbn || !editedBook.ano_publicacao || !editedBook.quantidade_disponivel) {
+      alert("Todos os campos obrigatórios devem ser preenchidos.");
+      return;
+    }
+
     console.log("Enviando dados para atualização:", editedBook);
-  
+
     try {
       const response = await fetch(`http://localhost:3001/livros/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(editedBook),
       });
-  
+
       if (!response.ok) {
         throw new Error("Erro ao atualizar detalhes do livro");
       }
-  
+
       // Atualiza o estado local para refletir imediatamente a mudança
       setBookDetails(editedBook);
       setEditMode(false);
@@ -75,7 +66,11 @@ function BookDetails() {
       console.error("Erro ao atualizar detalhes do livro:", error);
     }
   };
-  
+
+  const handleEditClick = () => {
+    setEditedBook(bookDetails);
+    setEditMode(true);
+  };
 
   if (loading) return <p>Carregando detalhes...</p>;
   if (!bookDetails) return <p>Livro não encontrado</p>;
@@ -88,31 +83,42 @@ function BookDetails() {
       <div className="book-info">
         <h1>{bookDetails.nome_do_livro}</h1>
         <p><strong>Autor:</strong> {bookDetails.autor}</p>
+        <p><strong>Gênero:</strong> {bookDetails.genero}</p>
         <p><strong>Editora:</strong> {bookDetails.editora}</p>
         <p><strong>Sinopse:</strong> {bookDetails.sinopse}</p>
         <p><strong>ISBN:</strong> {bookDetails.isbn}</p>
         <p><strong>Ano de Publicação:</strong> {bookDetails.ano_publicacao}</p>
         <p><strong>Quantidade disponível:</strong> {bookDetails.quantidade_disponivel}</p>
-        <button onClick={() => setEditMode(!editMode)}>{editMode ? "Cancelar" : "Editar Informações"}</button>
+        <p><strong>Status:</strong> {bookDetails.status}</p>
+        <p><strong>📌 Localização:</strong> {bookDetails.local || "Não informado"}</p>
+        <p><strong>📌 Número:</strong> {bookDetails.numero || "Não informado"}</p>
+        <p><strong>📌 Estante:</strong> {bookDetails.estante || "Não informado"}</p>
+        <button onClick={handleEditClick}>{editMode ? "Cancelar" : "Editar Informações"}</button>
       </div>
       {editMode && (
         <div className="book-edit">
-        <h2>Editar Informações</h2>
-        <input type="text" name="nome_do_livro" placeholder="Nome do Livro" value={editedBook.nome_do_livro || ""} onChange={handleInputChange} />
-        <input type="text" name="autor" placeholder="Autor" value={editedBook.autor || ""} onChange={handleInputChange} />
-        <input type="text" name="editora" placeholder="Editora" value={editedBook.editora || ""} onChange={handleInputChange} />
-        <textarea name="sinopse" placeholder="Sinopse" value={editedBook.sinopse || ""} onChange={handleInputChange}></textarea>
-        <input type="text" name="isbn" placeholder="ISBN" value={editedBook.isbn || ""} onChange={handleInputChange} />
-        <input type="number" name="ano_publicacao" placeholder="Ano de Publicação" value={editedBook.ano_publicacao || ""} onChange={handleInputChange} />
-        <input type="number" name="quantidade_disponivel" placeholder="Quantidade Disponível" value={editedBook.quantidade_disponivel || ""} onChange={handleInputChange} />
-        <input type="text" name="imagem" placeholder="URL da imagem" value={editedBook.imagem || ""} onChange={handleInputChange} />
-        <button onClick={updateBookDetails}>Salvar Alterações</button>
-      </div>  
+          <h2>Editar Informações</h2>
+          <input type="text" name="nome_do_livro" placeholder="Nome do Livro" value={editedBook.nome_do_livro || ""} onChange={handleInputChange} />
+          <input type="text" name="autor" placeholder="Autor" value={editedBook.autor || ""} onChange={handleInputChange} />
+          <input type="text" name="genero" placeholder="Gênero" value={editedBook.genero || ""} onChange={handleInputChange} />
+          <input type="text" name="editora" placeholder="Editora" value={editedBook.editora || ""} onChange={handleInputChange} />
+          <textarea name="sinopse" placeholder="Sinopse" value={editedBook.sinopse || ""} onChange={handleInputChange}></textarea>
+          <input type="text" name="isbn" placeholder="ISBN" value={editedBook.isbn || ""} onChange={handleInputChange} />
+          <input type="number" name="ano_publicacao" placeholder="Ano de Publicação" value={editedBook.ano_publicacao || ""} onChange={handleInputChange} />
+          <input type="number" name="quantidade_disponivel" placeholder="Quantidade Disponível" value={editedBook.quantidade_disponivel || ""} onChange={handleInputChange} />
+          <input type="text" name="imagem" placeholder="URL da imagem" value={editedBook.imagem || ""} onChange={handleInputChange} />
+          <input type="text" name="status" placeholder="Status" value={editedBook.status || ""} onChange={handleInputChange} />
+          <input type="text" name="local" placeholder="Localização" value={editedBook.local || ""} onChange={handleInputChange} />
+          <input type="text" name="numero" placeholder="Número" value={editedBook.numero || ""} onChange={handleInputChange} />
+          <input type="text" name="estante" placeholder="Estante" value={editedBook.estante || ""} onChange={handleInputChange} />
+          <button onClick={updateBookDetails}>Salvar Alterações</button>
+        </div>
       )}
+
       <div className="reservation-details">
         {bookDetails.reservasPorUsuario && bookDetails.reservasPorUsuario.length > 0 ? (
-          bookDetails.reservasPorUsuario.map((usuario, userIndex) => (
-            <div key={userIndex} className="usuario-reservas">
+          bookDetails.reservasPorUsuario.map((usuario, index) => (
+            <div key={index} className="usuario-reservas">
               <h3>{usuario.nome_usuario}</h3>
               <p><strong>Email:</strong> {usuario.usuario_email}</p>
               <p><strong>CPF:</strong> {usuario.usuario_cpf}</p>

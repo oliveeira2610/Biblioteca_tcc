@@ -113,8 +113,17 @@ db.serialize(() => {
         criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         status TEXT NOT NULL,
         imagem TEXT
+        local TEXT,
+        numero INTEGER,
+        estante TEXT
       );
     `);
+
+//     -- Adiciona a coluna 'numero' à tabela 'livros'
+// ALTER TABLE livros ADD COLUMN numero INTEGER;
+
+// -- Adiciona a coluna 'estante' à tabela 'livros'
+// ALTER TABLE livros ADD COLUMN estante TEXT;
 
   db.run(`
       CREATE TABLE IF NOT EXISTS reservas (
@@ -678,7 +687,6 @@ app.put("/livros/:id", (req, res) => {
   );
 });
 
-// 🔹 Deletar um livro
 app.delete("/livros/:id", (req, res) => {
   db.run(`DELETE FROM livros WHERE id = ?`, [req.params.id], function (err) {
     if (err) return res.status(500).json({ error: "Erro ao deletar o livro." });
@@ -689,84 +697,55 @@ app.delete("/livros/:id", (req, res) => {
 });
 
 // Endpoint para adicionar um livro
-app.post("/livros", (req, res) => {
-  const {
-    isbn,
-    nome_do_livro,
-    genero,
-    autor,
-    editora,
-    sinopse,
-    ano_publicacao,
-    imagem,
-    quantidade,
-  } = req.body;
+app.post('/livros', (req, res) => {
+  const { nome_do_livro, autor, genero, editora, sinopse, isbn, ano_publicacao, imagem, quantidade_disponivel, local, numero, estante, status } = req.body;
 
-  // Define o status como "Disponível" por padrão se não for enviado
-  const status = "Disponível";
+  console.log("Recebendo dados para cadastro:", req.body);
 
-  // Verifica se o livro já existe pelo ISBN, exceto para ISBN "Desconhecido"
-  if (isbn !== "Desconhecido") {
-    db.get("SELECT * FROM livros WHERE isbn = ?", [isbn], (err, row) => {
-      if (err) {
-        console.error("Erro ao buscar livro no banco:", err);
-        return res.status(500).json({ error: "Erro interno do servidor" });
-      }
-
-      if (row) {
-        return res.status(400).json({ message: "Livro já cadastrado!" });
-      }
-
-      // Se não existir, insere o livro no banco
-      db.run(
-        "INSERT INTO livros (isbn, nome_do_livro, genero, autor, editora, sinopse, ano_publicacao, status, imagem, quantidade_disponivel) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-        [
-          isbn,
-          nome_do_livro,
-          genero,
-          autor,
-          editora,
-          sinopse,
-          ano_publicacao,
-          status,
-          imagem,
-          quantidade,
-        ],
-        function (err) {
-          if (err) {
-            console.error("Erro ao adicionar livro:", err);
-            return res.status(500).json({ error: "Erro ao adicionar livro" });
-          }
-          res.status(201).json({ message: "Livro adicionado com sucesso!" });
-        }
-      );
-    });
-  } else {
-    // Caso ISBN seja "Desconhecido", insere o livro diretamente, adicionando um UUID para garantir unicidade
-    const uniqueIsbn = isbn + "_" + Date.now(); // Gerar um ISBN único para "Desconhecido"
-    db.run(
-      "INSERT INTO livros (isbn, nome_do_livro, genero, autor, editora, sinopse, ano_publicacao, status, imagem, quantidade_disponivel) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-      [
-        uniqueIsbn,
-        nome_do_livro,
-        genero,
-        autor,
-        editora,
-        sinopse,
-        ano_publicacao,
-        status,
-        imagem,
-        quantidade,
-      ],
-      function (err) {
-        if (err) {
-          console.error("Erro ao adicionar livro:", err);
-          return res.status(500).json({ error: "Erro ao adicionar livro" });
-        }
-        res.status(201).json({ message: "Livro adicionado com sucesso!" });
-      }
-    );
+  if (!nome_do_livro || !autor || !editora || !isbn || !ano_publicacao || !quantidade_disponivel || !local || !numero) {
+    return res.status(400).json({ error: 'Todos os campos obrigatórios devem ser preenchidos.' });
   }
+
+  // 📌 Verifica se o ISBN já existe no banco
+  db.get('SELECT id FROM livros WHERE isbn = ?', [isbn], (err, row) => {
+    if (err) {
+      console.error('Erro ao verificar ISBN:', err);
+      return res.status(500).json({ error: 'Erro ao verificar livro existente.' });
+    }
+
+    if (row) {
+      return res.status(400).json({ error: 'Este livro já está cadastrado no sistema!' });
+    }
+
+    // 📌 Se o ISBN não existir, cadastra o livro
+    const query = `
+      INSERT INTO livros (nome_do_livro, autor, genero, editora, sinopse, isbn, ano_publicacao, imagem, quantidade_disponivel, local, numero, estante, status)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
+    const params = [nome_do_livro, autor, genero, editora, sinopse, isbn, ano_publicacao, imagem, quantidade_disponivel, local, numero, estante, status];
+
+    db.run(query, params, function (err) {
+      if (err) {
+        console.error('Erro ao inserir livro no banco de dados:', err);
+        return res.status(500).json({ error: 'Erro ao cadastrar livro. Tente novamente.' });
+      }
+      console.log("Livro cadastrado com sucesso! ID:", this.lastID);
+      res.status(201).json({ id: this.lastID });
+    });
+  });
+});
+
+
+// 🔹 Buscar todos os livros
+
+app.get("/livros", (req, res) => {
+  db.all("SELECT * FROM livros", [], (err, rows) => {
+    if (err) {
+      console.error('Erro ao buscar livros no banco de dados:', err);
+      return res.status(500).json({ error: 'Erro ao buscar livros. Tente novamente.' });
+    }
+    res.status(200).json(rows);
+  });
 });
 
 // 🔹 Buscar todos os livros
@@ -875,11 +854,17 @@ app.get("/livro-detalhes/:id", (req, res) => {
       livros.id AS livro_id,
       livros.nome_do_livro,
       livros.autor,
+      livros.genero,
       livros.editora,
       livros.imagem,
       livros.sinopse,
-      livros.status,
+      livros.isbn,
+      livros.ano_publicacao,
       livros.quantidade_disponivel,
+      livros.status,
+      livros.local,
+      livros.numero,
+      livros.estante,
       COUNT(reservas.id) AS quantidade_reservada,
       (livros.quantidade_disponivel - COUNT(reservas.id)) AS quantidade_disponivel_nao_alugada,
       reservas.id AS reserva_id,
@@ -887,6 +872,7 @@ app.get("/livro-detalhes/:id", (req, res) => {
       reservas.data_reserva,
       reservas.data_devolucao,
       reservas.multa,
+      usuarios.id AS usuario_id,
       usuarios.userName AS nome_usuario,
       usuarios.email AS usuario_email,
       usuarios.cpf AS usuario_cpf,
@@ -895,12 +881,14 @@ app.get("/livro-detalhes/:id", (req, res) => {
     LEFT JOIN reservas ON livros.id = reservas.livro_id AND reservas.status = 'Reservado'
     LEFT JOIN usuarios ON reservas.usuario_id = usuarios.id
     WHERE livros.id = ?
-    GROUP BY usuarios.id, reservas.id
+    GROUP BY 
+      livros.id, livros.nome_do_livro, livros.autor, livros.genero, livros.editora, livros.imagem, livros.sinopse, livros.isbn, 
+      livros.ano_publicacao, livros.quantidade_disponivel, livros.status, livros.local, livros.numero, livros.estante;
   `;
 
   db.all(query, [id], (err, rows) => {
     if (err) {
-      console.error("Erro na consulta:", err);
+      console.error("🚨 Erro na consulta:", err);
       return res.status(500).json({ error: "Erro interno no servidor" });
     }
 
@@ -908,22 +896,25 @@ app.get("/livro-detalhes/:id", (req, res) => {
       return res.status(404).json({ error: "Livro não encontrado" });
     }
 
+    // Agrupar reservas por usuário
     const reservasPorUsuario = rows.reduce((acc, row) => {
-      const usuarioIndex = acc.findIndex(
-        (user) => user.nome_usuario === row.nome_usuario
-      );
+      if (!row.reserva_id) return acc; // Ignora se não houver reservas
+
+      const usuarioIndex = acc.findIndex(user => user.usuario_id === row.usuario_id);
       const reservaInfo = {
         reserva_id: row.reserva_id,
         reserva_status: row.reserva_status,
         data_reserva: row.data_reserva,
         data_devolucao: row.data_devolucao,
         multa: row.multa,
+        tempo_atraso: row.multa > 0 ? Math.floor(row.multa / 2) : 0, // Supondo que cada dia de atraso custa R$2,00
       };
 
       if (usuarioIndex > -1) {
         acc[usuarioIndex].reservas.push(reservaInfo);
       } else {
         acc.push({
+          usuario_id: row.usuario_id,
           nome_usuario: row.nome_usuario,
           usuario_email: row.usuario_email,
           usuario_cpf: row.usuario_cpf,
@@ -934,24 +925,35 @@ app.get("/livro-detalhes/:id", (req, res) => {
       return acc;
     }, []);
 
+    // Estrutura final de retorno
     const bookDetails = {
       id: rows[0].livro_id,
       nome_do_livro: rows[0].nome_do_livro,
       autor: rows[0].autor,
+      genero: rows[0].genero,
       editora: rows[0].editora,
       imagem: rows[0].imagem,
       sinopse: rows[0].sinopse,
-      status: rows[0].status,
+      isbn: rows[0].isbn,
+      ano_publicacao: rows[0].ano_publicacao,
       quantidade_disponivel: rows[0].quantidade_disponivel,
+      status: rows[0].status,
+      local: rows[0].local,
+      numero: rows[0].numero,
+      estante: rows[0].estante,
       quantidade_reservada: rows[0].quantidade_reservada,
-      quantidade_disponivel_nao_alugada:
-        rows[0].quantidade_disponivel_nao_alugada,
+      quantidade_disponivel_nao_alugada: rows[0].quantidade_disponivel_nao_alugada,
       reservasPorUsuario,
     };
+
+    console.log("📚 Dados retornados pela API:", bookDetails); // 🔹 Log para debug
 
     res.json(bookDetails);
   });
 });
+
+
+
 
 app.put("/livros/:id/quantidade", (req, res) => {
   const { quantidade } = req.body;
