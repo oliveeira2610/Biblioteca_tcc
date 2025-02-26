@@ -172,11 +172,57 @@ function PerfilUsuario() {
             </div>
           </div>
           <div className="direita_primeira">
-            <div className="multas_perfil">
-              dsfs  
-            </div>
+            <h2 id="suas_multas">SUAS MULTAS</h2>
+            <div className="multas_perfil"></div>
+            <h2 id="livros_reservados_h2"> LIVROS RESERVADOS</h2>
             <div className="reservados_perfil">
-              sadas
+              <div className="livros-reservados">
+                <h2>Livros Reservados</h2>
+                {userInfo.reservas.length > 0 ? (
+                  <div className="books-list">
+                    {userInfo.reservas.map((reserva) => (
+                      <div key={reserva.livroId} className="book-card">
+                        <h3 className="book-card-title">
+                          {reserva.nome_do_livro}
+                        </h3>
+                        <p>
+                          <strong>Data de Reserva:</strong>{" "}
+                          {new Date(reserva.data_reserva).toLocaleDateString()}
+                        </p>
+                        <p>
+                          <strong>Data de Devolução:</strong>{" "}
+                          {new Date(
+                            reserva.data_devolucao
+                          ).toLocaleDateString()}
+                        </p>
+                        <p>
+                          <strong>Multa:</strong> R$ {reserva.multa.toFixed(2)}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p>Não há livros reservados no momento.</p>
+                )}
+              </div>
+
+              {watchlist.length > 0 ? (
+                <div className="books-list">
+                  {watchlist.map((book) => (
+                    <div key={book.livroId} className="book-card">
+                      <h3 className="book-card-title">{book.nome_do_livro}</h3>
+                      <button
+                        onClick={() => cancelNotification(book.livroId)}
+                        className="cancel-notification-button"
+                      >
+                        Deixar de Receber Notificações
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p>Você não está acompanhando nenhum livro.</p>
+              )}
             </div>
           </div>
         </div>
