@@ -42,7 +42,7 @@ body {
 
 .putaqpariu{
   font-size: 26px;
-  width: 500px;
+  width: 600px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -62,10 +62,10 @@ body {
   font-size: 38;
 }
 
-
-
-
-
+.recomendacoes {
+  padding: 40px;
+  font-size: 38;
+}
 
 .livros-recomendados {
   display: flex;
@@ -78,7 +78,7 @@ body {
   width: 200px;
   padding: 10px;
   text-align: center;
-  background: #fff;
+  background-color: var(---marrom-claro);
   border-radius: 10px;
   box-shadow: 2px 2px 10px rgb(190, 180, 180);
   cursor: pointer;

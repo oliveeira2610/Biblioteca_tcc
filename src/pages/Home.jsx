@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../../src/styles/global.css";
 import "../../src/styles/home.css";
+import "../../src/styles/book-card.css";
 
 function Home() {
   const [randomBooks, setRandomBooks] = useState([]);

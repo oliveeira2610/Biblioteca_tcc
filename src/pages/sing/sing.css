@@ -12,7 +12,7 @@
     .auth-container {
       display: flex;
       align-items: center;
-      min-height: 71.8vh;
+      min-height: 71.6 vh;
       flex-direction: column;
     }
 
@@ -31,7 +31,7 @@
 
   .auth-header img{
     width: 350px;
-    margin-top: 20px
+    margin-top: 0px
   }
 
   .Label-login{
@@ -194,4 +194,8 @@
       .auth-box input, .auth-box button {
           font-size: 14px;
       }
+    }
+
+    .texto_header {
+      color: #826049;
     }
