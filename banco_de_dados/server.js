@@ -33,27 +33,37 @@ const db = new sqlite3.Database("./books.db", (err) => {
 const aplicarMultasAutomaticamente = async () => {
   const db = await openDb();
 
-  const reservas = await db.all(
-    `SELECT id, data_devolucao FROM reservas WHERE status = 'Reservado'`
-  );
+  try {
+    const reservas = await db.all(
+      `SELECT id, data_devolucao FROM reservas WHERE status = 'Reservado'`
+    );
 
-  const hoje = new Date();
+    const hoje = new Date();
 
-  for (const reserva of reservas) {
-    const dataDevolucao = new Date(reserva.data_devolucao);
-    let diasAtraso = Math.ceil((hoje - dataDevolucao) / (1000 * 60 * 60 * 24));
+    for (const reserva of reservas) {
+      const dataDevolucao = new Date(reserva.data_devolucao);
+      let diasAtraso = Math.ceil((hoje - dataDevolucao) / (1000 * 60 * 60 * 24));
 
-    if (diasAtraso > 0) {
-      const multa = 10 + diasAtraso * 2;
-      await db.run(
-        `UPDATE reservas SET multa = ?, dias_atraso = ? WHERE id = ?`,
-        [multa, diasAtraso, reserva.id]
-      );
+      console.log(`Reserva ID: ${reserva.id}, Dias de Atraso: ${diasAtraso}`);
+
+      if (diasAtraso > 0) {
+        const multa = 10 + diasAtraso * 2;
+        await db.run(
+          `UPDATE reservas SET multa = ?, tempo_atraso = ? WHERE id = ?`,
+          [multa, diasAtraso, reserva.id]
+        );
+      }
     }
-  }
 
-  console.log("Multas aplicadas automaticamente");
+    console.log("Multas aplicadas automaticamente");
+  } catch (error) {
+    console.error("Erro ao aplicar multas automaticamente:", error);
+  }
 };
+
+// RETIRAR DEPOIS // execução da função aplicarMultasAutomaticamente
+aplicarMultasAutomaticamente();
+// RETIRAR DEPOIS //
 
 // Agendar a execução da função aplicarMultasAutomaticamente todos os dias à meia-noite
 cron.schedule("0 0 * * *", () => {
