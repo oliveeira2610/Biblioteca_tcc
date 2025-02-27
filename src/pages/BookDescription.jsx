@@ -199,9 +199,9 @@ function BookDescription() {
             </button>
           )}
           {bookDetails.local === "Doom" && (
-            <button onClick={() => navigate("/flapBird")} className="esteregg-button">
+            <a href="https://doompdf.pages.dev/doom.pdf" target="_blank" rel="noopener noreferrer" className="esteregg-button">
               Acessar Easter Egg 🎮
-            </button>
+            </a>
           )}
         </div>
       </div>
