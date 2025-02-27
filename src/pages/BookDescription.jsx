@@ -198,6 +198,11 @@ function BookDescription() {
               Acessar Easter Egg 🎮
             </button>
           )}
+          {bookDetails.local === "Doom" && (
+            <button onClick={() => navigate("/flapBird")} className="esteregg-button">
+              Acessar Easter Egg 🎮
+            </button>
+          )}
         </div>
       </div>
     </div>

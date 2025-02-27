@@ -206,9 +206,9 @@ const Users = () => {
                         Status: {book.status ? book.status : "Desconhecido"}
                       </p>
 
-                      {book.atrasado && (
+                      {book.tempo_atraso && book.tempo_atraso > 0 && (
                         <p className="book-card-late">
-                          Atrasado por: {book.tempoAtraso} dias
+                          Atrasado por: {book.tempo_atraso} dias
                         </p>
                       )}
                       {book.multas && book.multas > 0 && (
