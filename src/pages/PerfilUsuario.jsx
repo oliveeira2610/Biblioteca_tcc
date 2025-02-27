@@ -61,13 +61,11 @@ function FloatingLetters() {
 }
 
 function PerfilUsuario() {
-  const userId = localStorage.getItem("userId"); // Obtendo o ID do usuário logado do localStorage
+  const userId = localStorage.getItem("userId");
   const [userInfo, setUserInfo] = useState(null);
-  const [notifications, setNotifications] = useState([]); // Notificações recebidas
-  const [watchlist, setWatchlist] = useState([]); // Livros que o usuário selecionou para receber notificações
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [isBlocked, setIsBlocked] = useState(false); // Adicionado estado para bloqueio do usuário
+  const [isBlocked, setIsBlocked] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -80,7 +78,7 @@ function PerfilUsuario() {
           throw new Error("Erro ao buscar informações do usuário.");
         }
         const data = await response.json();
-        console.log("Dados recebidos:", data); // Verifique se o CPF está aqui
+        console.log("Dados recebidos:", data);
         setUserInfo(data);
       } catch (err) {
         setError(err.message);
@@ -89,50 +87,12 @@ function PerfilUsuario() {
       }
     };
 
-    const fetchNotifications = async () => {
-      try {
-        const response = await fetch(
-          `http://localhost:3001/notifications/${userId}`
-        );
-        if (!response.ok) {
-          throw new Error("Erro ao buscar notificações.");
-        }
-        const data = await response.json();
-        setNotifications(data);
-      } catch (err) {
-        setError(err.message);
-      }
-    };
-
     fetchUserInfo();
-    fetchNotifications();
   }, [userId]);
 
-  const cancelNotification = async (bookId) => {
-    try {
-      const response = await fetch(
-        `http://localhost:3001/register-notification/${userId}/${bookId}`,
-        {
-          method: "DELETE",
-        }
-      );
-      if (!response.ok) {
-        throw new Error("Erro ao cancelar notificação.");
-      }
-
-      // Removendo o livro da lista de livros para notificação
-      setWatchlist((prevWatchlist) =>
-        prevWatchlist.filter((book) => book.livroId !== bookId)
-      );
-      alert("Notificação removida com sucesso.");
-    } catch (err) {
-      setError(err.message);
-    }
-  };
-
   const handleLogout = () => {
-    localStorage.removeItem("userId"); // Remove o ID do usuário do localStorage
-    navigate("/"); // Redireciona para a tela de login
+    localStorage.removeItem("userId");
+    navigate("/");
   };
 
   if (loading) return <p>Carregando...</p>;
@@ -205,28 +165,22 @@ function PerfilUsuario() {
                   <p>Não há livros reservados no momento.</p>
                 )}
               </div>
-
-              {watchlist.length > 0 ? (
-                <div className="books-list">
-                  {watchlist.map((book) => (
-                    <div key={book.livroId} className="book-card">
-                      <h3 className="book-card-title">{book.nome_do_livro}</h3>
-                      <button
-                        onClick={() => cancelNotification(book.livroId)}
-                        className="cancel-notification-button"
-                      >
-                        Deixar de Receber Notificações
-                      </button>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p>Você não está acompanhando nenhum livro.</p>
-              )}
             </div>
           </div>
         </div>
-        <div className="segundo_container"></div>
+        <div className="segundo_container">
+          <div className="esquerda_segundo">
+            <h1>LIVROS QUE VOCÊ ESTÁ ACOMPANHANDO</h1>
+            <div className="livros_acompanhando">
+              dsfdsf
+              </div>
+          </div>
+          <div className="direita_segundo">
+            <h1>NOTIFICAÇÕES</h1>
+
+            <div className="notificacoes">asdsad</div>
+          </div>
+        </div>
       </div>
     </div>
   );

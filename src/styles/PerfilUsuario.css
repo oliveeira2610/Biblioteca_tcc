@@ -17,11 +17,6 @@ body{
 
 }
 
-.segundo_container{
-
-  height: 50vh;
-  
-}
 
 .esquerda_primeira{
   background-color: #FFF9E1;
@@ -91,4 +86,46 @@ body{
 
 #suas_multas{
   color: #B72626;
+} 
+
+
+.segundo_container{
+  background-color: red;
+  height: 80vh;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.esquerda_segundo{
+  background-color: aqua;
+  height: 100%;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.direita_segundo{
+  background-color: magenta;  
+  height: 100%;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.livros_acompanhando{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.notificacoes{
+  background-color: red;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
 }
