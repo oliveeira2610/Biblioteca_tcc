@@ -19,6 +19,8 @@ import ReservedBooks from './pages/ReservedBooks';
 import Notifications from './pages/Notifications';
 import RegisterBook from './pages/RegisterBook';
 import PerfilUsuarioAdm from './pages/PerfilUsuarioAdm';
+import Dinossauro from './pages/Dinossauro';
+import FlapBird from './pages/FlapBird';
 import Navbar from './components/Navbar'; 
 import AdminRoute from "./components/AdminRoute"; 
 import './styles/global.css';
@@ -61,6 +63,8 @@ function Layout() {
         <Route path="/bookStatus/:id" element={<BookStatus />} />
         <Route path="/perfil-usuario-adm/:userId" element={<PerfilUsuarioAdm />} />
         <Route path="/perfil-usuario" element={<PerfilUsuario />} />
+        <Route path="/dinossauro" element={<Dinossauro />} />
+        <Route path="/flapBird" element={<FlapBird />} />
         <Route path="/historico-reservas" element={<HistoricoReservas />} />
         <Route path="/devolucao-detalhes/:livroId/:usuarioId" element={<DevolucaoDetails />} />
 

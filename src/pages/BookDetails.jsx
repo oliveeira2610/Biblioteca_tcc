@@ -72,6 +72,13 @@ function BookDetails() {
     setEditMode(true);
   };
 
+  const calcularDiasAtraso = (dataDevolucao) => {
+    const hoje = new Date();
+    const dataDev = new Date(dataDevolucao);
+    const diasAtraso = Math.ceil((hoje - dataDev) / (1000 * 60 * 60 * 24));
+    return diasAtraso > 0 ? diasAtraso : 0;
+  };
+
   if (loading) return <p>Carregando detalhes...</p>;
   if (!bookDetails) return <p>Livro não encontrado</p>;
 
@@ -129,7 +136,7 @@ function BookDetails() {
                   <p><strong>Data de reserva:</strong> {reserva.data_reserva ? format(new Date(reserva.data_reserva), "dd/MM/yyyy") : "N/A"}</p>
                   <p><strong>Data de devolução:</strong> {reserva.data_devolucao ? format(new Date(reserva.data_devolucao), "dd/MM/yyyy") : "N/A"}</p>
                   <p><strong>Multa:</strong> R$ {reserva.multa ? reserva.multa.toFixed(2) : "0.00"}</p>
-                  <p><strong>Tempo de atraso:</strong> {reserva.tempo_atraso ? `${reserva.tempo_atraso} dias` : "Não atrasado"}</p>
+                  <p><strong>Tempo de atraso:</strong> {calcularDiasAtraso(reserva.data_devolucao) > 0 ? `${calcularDiasAtraso(reserva.data_devolucao)} dias` : "Não atrasado"}</p>
                 </div>
               ))}
             </div>
