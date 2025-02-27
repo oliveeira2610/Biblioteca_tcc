@@ -30,6 +30,19 @@ PRECISA FAZER:
 Ver com grupo se tira a pagina de reserved books e apenas mostre a quantidade ou repaginar o historico
 
 
+
+
+
+criar sistema de filas, fazer reserva para o livro indisponivel
+
+remover campos estante e localização bookdetails
+
+criar sistema para diferenciar exemplares, na tela de managedatabooks fazer os cards serem agrupamentos das unidades individuais dos livros 
+
+criar uma dashboard com informações de quantos livros e quantas vezes foram reservados no mes e por usuario
+
+
+
                         JapaJapaJapaJapaJapaJapaJapa
 
 
