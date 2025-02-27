@@ -23,14 +23,11 @@ Sistema de pagamento para liberar multas -- na pagina perfil  -> cards
 PRECISA FAZER:
 
 
+
+
+
+
 Ver com grupo se tira a pagina de reserved books e apenas mostre a quantidade ou repaginar o historico
-
-
-
-
-
-
-
 
 
                         JapaJapaJapaJapaJapaJapaJapa

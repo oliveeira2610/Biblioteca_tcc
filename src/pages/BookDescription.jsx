@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "../../src/styles/bookDescription.css";
 import "../../src/styles/button.css";
+import FlappyBird from "../../src/components/EasterEgg2";
 
 function BookDescription() {
   const { id } = useParams();
@@ -185,6 +186,16 @@ function BookDescription() {
           ) : (
             <button className="reserve-button" disabled>
               Indisponível no momento
+            </button>
+          )}
+          {bookDetails.local === "GameEstereggs" && (
+            <button onClick={() => navigate("/dinossauro")} className="esteregg-button">
+              Acessar Easter Egg 🎮
+            </button>
+          )}
+          {bookDetails.local === "flapbird" && (
+            <button onClick={() => navigate("/flapBird")} className="esteregg-button">
+              Acessar Easter Egg 🎮
             </button>
           )}
         </div>
