@@ -49,7 +49,7 @@ const aplicarMultasAutomaticamente = async () => {
       if (diasAtraso > 0) {
         const multa = 10 + diasAtraso * 2;
         await db.run(
-          `UPDATE reservas SET multa = ?, tempo_atraso = ? WHERE id = ?`,
+          `UPDATE reservas SET multa = ?, dias_atraso = ? WHERE id = ?`,
           [multa, diasAtraso, reserva.id]
         );
       }
@@ -134,10 +134,8 @@ db.serialize(() => {
         quantidade_disponivel INTEGER NOT NULL DEFAULT 1,
         criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         status TEXT NOT NULL,
-        imagem TEXT
-        local TEXT,
-        numero INTEGER,
-        estante TEXT
+        imagem TEXT,
+        numero INTEGER
       );
     `);
 
