@@ -133,7 +133,8 @@ function BookDescription() {
   if (!bookDetails) return <p>Livro não encontrado.</p>;
 
   return (
-    <div className="book-details-container">
+    <div className="book-description_container">
+    <div className="body-book-description">
       <button onClick={() => navigate("/search")} className="back-button">
         ← Voltar
       </button>
@@ -209,6 +210,7 @@ function BookDescription() {
           )}
         </div>
       </div>
+    </div>
     </div>
   );
 }

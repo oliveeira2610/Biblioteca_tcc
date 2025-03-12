@@ -63,24 +63,30 @@ body{
 .multas_perfil{
   width: 100%;
   background-color: #FFF9E1;
-  height: 40%;
-  box-shadow: 0px 0px 10px 2px #BD9B75;
-  border-radius: 17px;
-}
-
-.reservados_perfil{
-  width: 100%;
-  background-color: #FFF9E1;
-  height: 40%;
+  height: 30%;
   box-shadow: 0px 0px 10px 2px #BD9B75;
   border-radius: 17px;
   display: flex;
   justify-content: center;
   flex-direction: column;
+  padding: 20px;
+}
+
+.reservados_perfil{
+  width: 100%;
+  background-color: #FFF9E1;
+  height: 50%;
+  box-shadow: 0px 0px 10px 2px #BD9B75;
+  border-radius: 17px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  padding: 20px;
 }
 
 #livros_reservados_h2{
   color: #5A9349;
+
 }
 
 #suas_multas{
@@ -98,7 +104,7 @@ body{
 }
 
 .esquerda_segundo{
-
+  
   height: 100%;
   width: 50%;
   display: flex;
@@ -126,26 +132,41 @@ body{
   box-shadow: 0px 0px 10px 2px #BD9B75;
 }
 
-.livros_acompanhando{
+
+
+.livros_e_notificacoes {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-color: #FFF9E1;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+.livros_acompanhando,
+.notificacoes {
+  background-color: #f8f3e5;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0px 0px 10px 2px #BD9B75;
+  margin: 0 10px;
   height: 85%;
   width: 90%;
-  border-radius: 30px;
-  box-shadow: 0px 0px 10px 2px #BD9B75;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 
 }
 
-.notificacoes{
-  background-color: #FFF9E1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: 85%;
-  width: 90%;
-  border-radius: 30px;
-  box-shadow: 0px 0px 10px 2px #BD9B75;
-
+h1 {
+  font-size: 18px;
+  color: #4a773c;
+  text-align: center;
 }
+
+.books-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  height: auto;
+}
+
+
+

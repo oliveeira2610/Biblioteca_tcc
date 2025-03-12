@@ -1,133 +1,15 @@
-/* Container principal */
-.book-details-container {
-  font-family: 'Roboto', sans-serif;
-  background-color: #FFF9E1; /* Cor de fundo mais suave */
-  color: #333;
-  max-width: 900px;
-  margin: 2rem auto;
-  padding: 2rem;
-  border-radius: 12px; /* Bordas arredondadas */
-  box-shadow: 0px 0px 19px 2px #BD9B75;
+.book-description_container{
+  height: 90.5vh;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  width: 90%;
 }
 
-/* Estilização do conteúdo do livro */
-.book-details-content {
-  display: flex;
-  gap: 2rem;
-  align-items: flex-start;
-  width: 100%;
- 
-}
-
-/* Estilo da imagem */
-.book-details-image {
-  max-width: 250px;
-  flex-shrink: 0;
-}
-
-.book-details-image img {
-  width: 100%;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* Estilização das informações do livro */
-.book-details-info {
-  flex: 1;
-  padding: 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 8px rgba(179, 11, 11, 0.1);
-}
-
-.sinopse_livro{
-  background-color: #8E6B44;
-  padding: 5px;
-  margin-top: 10px;
-  border-radius: 7px;
-  box-shadow: 0px 0px 10px 0px #5C3D27;
-}
-
-/* Título do livro */
-.book-details-info h1 {
-  font-size: 2.8rem;
-  color: #5C3D27;
-
-}
-
-/* Informações do livro */
-.book-details-info p {
-  font-size: 1.4rem;
-  line-height: 1.5;
-  margin-bottom: 0.5rem;
-  color: #B28C33;
-}
-
-.book-details-info p strong {
-  color: #6D4C41;
-  font-weight: bold;
-}
-
-/* Estilo da sinopse */
-.book-details-info .sinopse {
-  background-color: #8D6E63;
-  color: #fff;
-  padding: 1rem;
-  border-radius: 8px;
-  font-size: 1rem;
-  line-height: 1.5;
-  margin-top: 1rem;
-}
-
-/* Estilização dos botões */
-.book-details-info .reserve-button,
-.book-details-info .notify-button {
-  display: inline-block;
-  padding: 0.8rem 1.5rem;
-  font-size: 1rem;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-  font-weight: bold;
-  transition: all 0.3s ease;
-}
-
-.reserve-button {
-  background-color: #2A9D8F;
-  color: white;
-}
-
-.reserve-button:hover {
-  background-color: #21867a;
-}
-
-.notify-button {
-  background-color: #A1887F;
-  color: white;
-}
-
-.notify-button:hover {
-  background-color: #8D6E63;
-}
-
-
-#h2-book-info{
-  font-size: 30px;
-}
-
-/* Responsividade */
-@media (max-width: 768px) {
-  .book-details-content {
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-  }
-
-  .book-details-image {
-      max-width: 200px;
-      margin-bottom: 1rem;
-  }
+.body-book-description{
+  background-color: #FFF9E1;
+  box-shadow: 0px 0px 10px 2px #BD9B75;
+  width: 80vw;
+  border-radius: 10px;
+  padding: 20px;
+  flex-direction: row;
 }

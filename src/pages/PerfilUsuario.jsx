@@ -137,7 +137,6 @@ function PerfilUsuario() {
             <h2 id="livros_reservados_h2"> LIVROS RESERVADOS</h2>
             <div className="reservados_perfil">
               <div className="livros-reservados">
-                <h2>Livros Reservados</h2>
                 {userInfo.reservas.length > 0 ? (
                   <div className="books-list">
                     {userInfo.reservas.map((reserva) => (
@@ -168,8 +167,12 @@ function PerfilUsuario() {
             </div>
           </div>
         </div>
+        <div className="segundo_container">
+
+        
         <div className="esquerda_segundo">
   <h1>LIVROS QUE VOCÊ ESTÁ ACOMPANHANDO</h1>
+  
   <div className="livros_acompanhando">
     {userInfo.watchlist && userInfo.watchlist.length > 0 ? (
       <div className="books-list">
@@ -223,6 +226,7 @@ function PerfilUsuario() {
 </div>
 
       </div>
+    </div>
     </div>
   );
 }
