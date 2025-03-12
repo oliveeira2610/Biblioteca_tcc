@@ -12,8 +12,9 @@ body{
   align-items: center;
   height: 70vh;
   display: flex;
-  /* justify-content: space-around; */
-  justify-content: center;
+  justify-content: space-around;
+
+
 
 }
 
@@ -28,7 +29,6 @@ body{
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  margin-right: 15px;
 }
 
 .direita_primeira{
@@ -37,7 +37,7 @@ body{
   margin-left: 15px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between
+  justify-content: space-between  
 }
 
 .img_perfil img{
@@ -46,11 +46,10 @@ body{
 
 .dados-pessoais p{
   font-size: 18px;
-  counter-reset: #5C3D27;
+  counter-reset: #9c480b;
   margin: 5px 0; 
   line-height: 1.2; 
   
-
 }
 
 
@@ -90,7 +89,7 @@ body{
 
 
 .segundo_container{
-  background-color: red;
+  margin-top: 70px;
   height: 80vh;
   display: flex;
   flex-direction: row;
@@ -99,7 +98,7 @@ body{
 }
 
 .esquerda_segundo{
-  background-color: aqua;
+
   height: 100%;
   width: 50%;
   display: flex;
@@ -108,7 +107,7 @@ body{
 }
 
 .direita_segundo{
-  background-color: magenta;  
+
   height: 100%;
   width: 50%;
   display: flex;
@@ -116,16 +115,37 @@ body{
   align-items: center;
 }
 
+.livros_reservados{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #FFF9E1;
+  height: 85%;
+  width: 90%;
+  border-radius: 30px;
+  box-shadow: 0px 0px 10px 2px #BD9B75;
+}
+
 .livros_acompanhando{
   display: flex;
   flex-direction: column;
   align-items: center;
+  background-color: #FFF9E1;
+  height: 85%;
+  width: 90%;
+  border-radius: 30px;
+  box-shadow: 0px 0px 10px 2px #BD9B75;
+
 }
 
 .notificacoes{
-  background-color: red;
+  background-color: #FFF9E1;
   display: flex;
-  justify-content: center;
   flex-direction: column;
   align-items: center;
+  height: 85%;
+  width: 90%;
+  border-radius: 30px;
+  box-shadow: 0px 0px 10px 2px #BD9B75;
+
 }

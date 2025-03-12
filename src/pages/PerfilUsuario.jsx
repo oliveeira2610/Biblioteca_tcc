@@ -168,19 +168,60 @@ function PerfilUsuario() {
             </div>
           </div>
         </div>
-        <div className="segundo_container">
-          <div className="esquerda_segundo">
-            <h1>LIVROS QUE VOCÊ ESTÁ ACOMPANHANDO</h1>
-            <div className="livros_acompanhando">
-              dsfdsf
-              </div>
+        <div className="esquerda_segundo">
+  <h1>LIVROS QUE VOCÊ ESTÁ ACOMPANHANDO</h1>
+  <div className="livros_acompanhando">
+    {userInfo.watchlist && userInfo.watchlist.length > 0 ? (
+      <div className="books-list">
+        {userInfo.watchlist.map((book) => (
+          <div key={book.livroId} className="book-card">
+            <h3 className="book-card-title">{book.nome_do_livro}</h3>
+            <button
+              onClick={() => cancelNotification(book.livroId)}
+              className="cancel-notification-button"
+            >
+              Deixar de Receber Notificações
+            </button>
           </div>
-          <div className="direita_segundo">
-            <h1>NOTIFICAÇÕES</h1>
+        ))}
+      </div>
+    ) : (
+      <p>Você não está acompanhando nenhum livro.</p>
+    )}
+  </div>
+</div>
 
-            <div className="notificacoes">asdsad</div>
+<div className="direita_segundo">
+  <h1>NOTIFICAÇÕES</h1>
+  <div className="notificacoes">
+    {userInfo.notifications && userInfo.notifications.length > 0 ? (
+      <div className="books-list">
+        {userInfo.notifications.map((notification, index) => (
+          <div key={index} className="book-card">
+            <h3 className="book-card-title">{notification.book_name}</h3>
+            <p className="book-card-author">{notification.autor}</p>
+            <p
+              className={`book-availability ${
+                notification.book_status === "Disponível"
+                  ? "available"
+                  : "unavailable"
+              }`}
+            >
+              {notification.book_status === "Disponível"
+                ? "Disponível"
+                : "Indisponível"}
+            </p>
+            <p className="notification-message">{notification.message}</p>
+            <small>{new Date(notification.timestamp).toLocaleString()}</small>
           </div>
-        </div>
+        ))}
+      </div>
+    ) : (
+      <p>Você ainda não recebeu notificações.</p>
+    )}
+  </div>
+</div>
+
       </div>
     </div>
   );

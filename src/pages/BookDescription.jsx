@@ -147,11 +147,15 @@ function BookDescription() {
         </div>
         <div className="book-details-info">
           <h1>{bookDetails.nome_do_livro}</h1>
-          <p><strong>Autor:</strong> {bookDetails.autor || "Não informado"}</p>
-          <p><strong>Gênero:</strong> {bookDetails.genero || "Não informado"}</p>
-          <p><strong>Data de Lançamento:</strong> {bookDetails.ano_publicacao || "Não informado"}</p>
-          <p><strong>Editora:</strong> {bookDetails.editora || "Não informado"}</p>
-          <p><strong>Sinopse:</strong> {bookDetails.sinopse || "Sinopse não disponível"}</p>
+          <p><strong id="h2-book-info">Autor:</strong> {bookDetails.autor || "Não informado"}</p>
+          <p><strong id="h2-book-info">Gênero:</strong> {bookDetails.genero || "Não informado"}</p>
+          <p><strong id="h2-book-info">Data de Lançamento:</strong> {bookDetails.ano_publicacao || "Não informado"}</p>
+          <p><strong id="h2-book-info"> Editora:</strong> {bookDetails.editora || "Não informado"}</p>
+          <strong id="h2-book-info">Sinopse:</strong>
+          <div className="sinopse_livro">
+            <p> {bookDetails.sinopse || "Sinopse não disponível"}</p>
+          </div>
+          
           {notificationExists ? (
             <>
               <p className="error-message">Você já registrou uma notificação para este livro.</p>
