@@ -1,4 +1,4 @@
-/* colors.css */
+/* var(--marrom-claro) */
 
 :root {
 
@@ -12,7 +12,9 @@
     /*  secundarias  */
 
     ---marrom: #8E6B44;
+    ---marrom-escuro: #5C3D27;
     --amarelo: #ECCC5B;
+    --amarelo-suave: #F0D678;
     ---ouro: #B28C33;
     ---marrom-claro: #BD9B75;
     ---amarelo-claro: #E8CF73;
@@ -37,4 +39,3 @@
     ---cinza-escuro: #515151;
     
   }
-  

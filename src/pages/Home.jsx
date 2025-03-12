@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../../src/styles/global.css";
 import "../../src/styles/home.css";
-import "../../src/styles/book-card.css";
+
 
 function Home() {
   const [randomBooks, setRandomBooks] = useState([]);
@@ -48,18 +48,18 @@ function Home() {
         <div className="livros-recomendados">
           {randomBooks.length > 0 ? (
             randomBooks.map((book) => (
-              <div key={book.id} className="book-card">
+              <div key={book.id} className="book-card-home">
                 {book.imagem ? (
                   <img
                     src={book.imagem}
                     alt={book.nome_do_livro}
-                    className="book-card-image"
+                    className="book-card-image-home"
                   />
                 ) : (
                   <div className="no-image-placeholder">Sem imagem</div>
                 )}
-                <h3 className="book-card-title">{book.nome_do_livro}</h3>
-                <p className="book-card-author">{book.autor}</p>
+                <h3 className="book-card-title-home">{book.nome_do_livro}</h3>
+                <p className="book-card-author-home">{book.autor}</p>
                 
                 
               </div>

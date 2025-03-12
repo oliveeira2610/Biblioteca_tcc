@@ -35,7 +35,7 @@ Ver com grupo se tira a pagina de reserved books e apenas mostre a quantidade ou
 
 criar sistema de filas, fazer reserva para o livro indisponivel
 
-remover campos estante e localização bookdetails
+remover campos estante e localização bookdetails  /// RECRIAR TABELA DE LIVROS COM CODIGO DO SERVER.JS
 
 criar sistema para diferenciar exemplares, na tela de managedatabooks fazer os cards serem agrupamentos das unidades individuais dos livros 
 
