@@ -154,8 +154,10 @@ db.serialize(() => {
         data_devolucao TIMESTAMP,
         status TEXT,
         multa REAL,
+        unidade_id INTEGER,
         FOREIGN KEY (livro_id) REFERENCES livros(id) ON DELETE CASCADE,
         FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+
       );
     `);
 
@@ -222,6 +224,15 @@ db.serialize(() => {
         FOREIGN KEY (livro_id) REFERENCES livros(id) ON DELETE CASCADE
       );
     `);
+
+  db.run(`
+    CREATE TABLE IF NOT EXISTS unidades_livros (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      livro_id INTEGER NOT NULL,
+      status TEXT NOT NULL DEFAULT 'Disponível',
+      FOREIGN KEY (livro_id) REFERENCES livros(id) ON DELETE CASCADE
+    );
+  `);
 });
 
 console.log("Tabelas criadas ou já existentes.");
@@ -722,9 +733,10 @@ app.post('/livros', (req, res) => {
 
   console.log("Recebendo dados para cadastro:", req.body);
 
-  if (!nome_do_livro || !autor || !editora || !isbn || !ano_publicacao || !quantidade_disponivel || !local || !numero) {
+  if (!nome_do_livro || !autor || !editora || !isbn || !ano_publicacao || !quantidade_disponivel || !numero) {
     return res.status(400).json({ error: 'Todos os campos obrigatórios devem ser preenchidos.' });
   }
+  
 
   // 📌 Verifica se o ISBN já existe no banco
   db.get('SELECT id FROM livros WHERE isbn = ?', [isbn], (err, row) => {
@@ -841,6 +853,57 @@ app.get("/livros/:id", (req, res) => {
     res.status(200).json(row);
   });
 });
+
+app.get('/livros/:id', (req, res) => {
+  const { id } = req.params;
+
+  const query = `
+    SELECT livros.*, json_group_array(
+      json_object('id', unidades_livros.id, 'status', unidades_livros.status)
+    ) AS unidades
+    FROM livros
+    LEFT JOIN unidades_livros ON livros.id = unidades_livros.livro_id
+    WHERE livros.id = ?
+    GROUP BY livros.id
+  `;
+
+  db.get(query, [id], (err, row) => {
+    if (err) {
+      console.error("Erro ao buscar livro:", err);
+      return res.status(500).json({ error: "Erro ao buscar livro." });
+    }
+    if (!row) {
+      return res.status(404).json({ error: "Livro não encontrado." });
+    }
+
+    row.unidades = JSON.parse(row.unidades); // Converte o JSON da query para um array
+
+    res.json(row);
+  });
+});
+
+
+app.post('/unidades-livro', (req, res) => {
+  const { livro_id, status } = req.body;
+
+  if (!livro_id || !status) {
+    return res.status(400).json({ error: 'Livro ID e status são obrigatórios.' });
+  }
+
+  db.run(
+    `INSERT INTO unidades_livros (livro_id, status) VALUES (?, ?)`,
+    [livro_id, status],
+    function (err) {
+      if (err) {
+        console.error('Erro ao adicionar unidade:', err);
+        return res.status(500).json({ error: 'Erro ao adicionar unidade.' });
+      }
+      res.status(201).json({ id: this.lastID, livro_id, status });
+    }
+  );
+});
+
+
 
 // 🔹 Atualizar status do livro
 app.put("/livros/:id", (req, res) => {
@@ -1358,6 +1421,26 @@ app.get("/reservas/historico", async (req, res) => {
 });
 
 
+app.post('/unidades-livro', (req, res) => {
+  const { livro_id, status } = req.body;
+
+  if (!livro_id || !status) {
+    return res.status(400).json({ error: 'Livro ID e status são obrigatórios.' });
+  }
+
+  const query = `
+    INSERT INTO unidades_livros (livro_id, status)
+    VALUES (?, ?)
+  `;
+
+  db.run(query, [livro_id, status], function (err) {
+    if (err) {
+      console.error('Erro ao inserir unidade:', err);
+      return res.status(500).json({ error: 'Erro ao cadastrar unidade.' });
+    }
+    res.status(201).json({ id: this.lastID, livro_id, status });
+  });
+});
 
 
 
