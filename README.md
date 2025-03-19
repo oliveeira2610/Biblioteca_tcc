@@ -46,11 +46,11 @@ criar uma dashboard com informações de quantos livros e quantas vezes foram re
                         JapaJapaJapaJapaJapaJapaJapa
 
 
-arrumar o css dos livros (conflito pois há varias páginas css) (o css pronto esta no meu notepad)
+finalizar a pagina bookdescription, bgl chato kkkkkkk
 
-adicionar os livros acompanhando e as notificações na pagina de perfil do usuario e ajeitar a porra dos livros reservados
+fazer o status de multa ficar vermelho e evitdente na aba perfil 
 
-fazer o status de multa ficar vermelho e evitdente na aba perfil JapaJapaJapaJapaJapaJapaJapa
+tirar a pagina notificações
 
 
 
