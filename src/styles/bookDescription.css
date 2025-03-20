@@ -1,9 +1,5 @@
-
-
-/* Estilos gerais */
 .book-description_container {
   font-family: Arial, sans-serif;
-
   padding: 20px;
   border-radius: 10px;
   width: 90vw;
@@ -17,9 +13,10 @@
 .back-button {
   background: none;
   border: none;
-  font-size: 20px;
+  font-size: 35px;
   cursor: pointer;
-  color: #8b6f47;
+  color: #826049;  
+  
 
 }
 
@@ -30,7 +27,6 @@
   margin-top: 10px;
   background-color: #FFF9E1;
   padding: 20px;
-  height: 600px;
   box-shadow: 0px 0px 10px 2px #BD9B75;
   border-radius: 8px;
   
@@ -53,7 +49,8 @@
 }
 
 .book-details-info {
-
+  display: flex;
+  flex-direction: column;
   padding: 15px;
   border-radius: 5px;
   height: 90%;
@@ -68,9 +65,6 @@
   font-size: 28px;
 }
 
-#paragrafos{
-  font-size: 90px;
-}
 
 h1 {
   font-size: 24px;
@@ -122,3 +116,13 @@ button {
   color: white;
 }
 
+
+.h2-e-paragrafos{
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+}
+
+.titulo-book{
+  margin: 0;
+}
