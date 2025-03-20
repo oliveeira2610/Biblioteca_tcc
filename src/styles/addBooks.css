@@ -1,0 +1,20 @@
+.addlivr {
+    font-size: 3vh;
+    padding: 3vh;
+    color: var(--marrom);
+}
+
+.register-button {
+    background-color: var(--marrom);
+    color: var(--branco-primario);
+    margin-bottom: 6px;
+}
+
+.books-list1 {
+    padding-left: 11.4vh;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    padding-top: 3vh;
+    padding-bottom: 6vh;
+}

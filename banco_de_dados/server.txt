@@ -85,6 +85,7 @@ db.serialize(() => {
     role TEXT DEFAULT 'user'
     );
 
+<<<<<<< HEAD
     CREATE TABLE IF NOT EXISTS admin_comments (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER NOT NULL,
@@ -104,6 +105,22 @@ db.serialize(() => {
     );
 
     CREATE TABLE IF NOT EXISTS livros (
+=======
+  db.run(`
+  CREATE TABLE IF NOT EXISTS observacoes_devolucoes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    livro_id INTEGER NOT NULL,
+    usuario_id INTEGER NOT NULL,
+    observacao TEXT,
+    data TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (livro_id) REFERENCES livros(id),
+    FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+  );
+  `);
+
+  db.run(`
+      CREATE TABLE IF NOT EXISTS livros (
+>>>>>>> 6aaec147481166c9045df58ace139f8b3118ae0b
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nome_do_livro TEXT NOT NULL,
         genero TEXT NOT NULL,
@@ -117,7 +134,12 @@ db.serialize(() => {
         status TEXT NOT NULL,
         imagem TEXT,
         numero INTEGER
+<<<<<<< HEAD
     );
+=======
+      );
+    `);
+>>>>>>> 6aaec147481166c9045df58ace139f8b3118ae0b
 
     CREATE TABLE IF NOT EXISTS reservas (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -130,7 +152,13 @@ db.serialize(() => {
         unidade_id INTEGER,
         FOREIGN KEY (livro_id) REFERENCES livros(id) ON DELETE CASCADE,
         FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+<<<<<<< HEAD
     );
+=======
+
+      );
+    `);
+>>>>>>> 6aaec147481166c9045df58ace139f8b3118ae0b
 
     CREATE TABLE IF NOT EXISTS notificacoes (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -175,6 +203,7 @@ db.serialize(() => {
         bloqueado INTEGER DEFAULT 0,
         FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
         FOREIGN KEY (livro_id) REFERENCES livros(id) ON DELETE CASCADE
+<<<<<<< HEAD
     );
 
     CREATE TABLE IF NOT EXISTS unidades_livros (
@@ -182,6 +211,17 @@ db.serialize(() => {
         livro_id INTEGER NOT NULL,
         status TEXT NOT NULL DEFAULT 'Disponível',
         FOREIGN KEY (livro_id) REFERENCES livros(id) ON DELETE CASCADE
+=======
+      );
+    `);
+
+  db.run(`
+    CREATE TABLE IF NOT EXISTS unidades_livros (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      livro_id INTEGER NOT NULL,
+      status TEXT NOT NULL DEFAULT 'Disponível',
+      FOREIGN KEY (livro_id) REFERENCES livros(id) ON DELETE CASCADE
+>>>>>>> 6aaec147481166c9045df58ace139f8b3118ae0b
     );
   `);
 });
@@ -715,6 +755,50 @@ app.post('/livros', (req, res) => {
 });
 
 
+<<<<<<< HEAD
+=======
+// 🔹 Buscar todos os livros
+
+app.get("/livros", (req, res) => {
+  const query = `
+    SELECT 
+      livros.id,
+      livros.nome_do_livro,
+      livros.genero,
+      livros.autor,
+      livros.editora,
+      livros.sinopse,
+      livros.isbn,
+      livros.ano_publicacao,
+      livros.quantidade_disponivel,
+      livros.imagem,
+      livros.status,
+      COUNT(reservas.id) AS quantidade_reservada,
+      (livros.quantidade_disponivel - COUNT(reservas.id)) AS quantidade_disponivel_nao_alugada
+    FROM livros
+    LEFT JOIN reservas ON livros.id = reservas.livro_id AND reservas.status = 'Reservado'
+    GROUP BY livros.id
+  `;
+
+  db.all(query, [], (err, rows) => {
+    if (err) {
+      console.error("Erro ao buscar os livros:", err);
+      return res.status(500).json({ error: "Erro ao buscar os livros." });
+    }
+
+    const books = rows.map((row) => ({
+      ...row,
+      quantidade_disponivel_nao_alugada: Math.max(row.quantidade_disponivel_nao_alugada, 0),
+      status: row.quantidade_disponivel_nao_alugada > 0 ? 'Disponível' : 'Indisponível'
+    }));
+
+    res.status(200).json(books);
+  });
+});
+
+// 🔹 Buscar todos os livros
+
+>>>>>>> 6aaec147481166c9045df58ace139f8b3118ae0b
 app.get("/livros", (req, res) => {
   const query = `
     SELECT 
@@ -848,6 +932,7 @@ app.get("/livros-com-reservas", (req, res) => {
   });
 });
 
+// Endpoint para buscar detalhes do livro
 app.get("/livro-detalhes/:id", (req, res) => {
   const { id } = req.params;
 
@@ -869,7 +954,12 @@ app.get("/livro-detalhes/:id", (req, res) => {
       livros.quantidade_disponivel,
       livros.status,
       livros.numero,
+<<<<<<< HEAD
       COALESCE(COUNT(reservas.id), 0) AS quantidade_reservada,
+=======
+      livros.estante,
+      COALESCE(COUNT(reservas.id), 0) AS quantidade_reservada, -- Garante que COUNT nunca seja NULL
+>>>>>>> 6aaec147481166c9045df58ace139f8b3118ae0b
       (livros.quantidade_disponivel - COALESCE(COUNT(reservas.id), 0)) AS quantidade_disponivel_nao_alugada,
       reservas.id AS reserva_id,
       reservas.status AS reserva_status,
@@ -954,7 +1044,11 @@ app.get("/livro-detalhes/:id", (req, res) => {
   });
 });
 
+<<<<<<< HEAD
 
+=======
+// Endpoint para atualizar detalhes do livro
+>>>>>>> 6aaec147481166c9045df58ace139f8b3118ae0b
 // Endpoint para atualizar detalhes do livro
 app.put("/livros/:id", (req, res) => {
   const { id } = req.params;
@@ -968,9 +1062,15 @@ app.put("/livros/:id", (req, res) => {
     quantidade_disponivel,
     imagem,
     status,
+<<<<<<< HEAD
   
     numero,
 
+=======
+    local,
+    numero,
+    estante
+>>>>>>> 6aaec147481166c9045df58ace139f8b3118ae0b
   } = req.body;
 
   // Verifica se todos os campos obrigatórios estão presentes
@@ -991,7 +1091,11 @@ app.put("/livros/:id", (req, res) => {
       status = ?,
       local = ?,
       numero = ?,
+<<<<<<< HEAD
    = ?
+=======
+      estante = ?
+>>>>>>> 6aaec147481166c9045df58ace139f8b3118ae0b
     WHERE id = ?`,
     [
       nome_do_livro,
@@ -1003,9 +1107,15 @@ app.put("/livros/:id", (req, res) => {
       quantidade_disponivel,
       imagem,
       status,
+<<<<<<< HEAD
     
       numero,
   ,
+=======
+      local,
+      numero,
+      estante,
+>>>>>>> 6aaec147481166c9045df58ace139f8b3118ae0b
       id,
     ],
     function (err) {
@@ -1247,6 +1357,7 @@ app.get("/reservas/historico", async (req, res) => {
 
 
 
+<<<<<<< HEAD
 app.post("/unidades-livro", async (req, res) => {
   const { livro_id, quantidade } = req.body;
 
@@ -1273,6 +1384,10 @@ app.post("/unidades-livro", async (req, res) => {
 });
 
 
+=======
+
+
+>>>>>>> 6aaec147481166c9045df58ace139f8b3118ae0b
 
 
 
@@ -1566,6 +1681,10 @@ app.get("/usuario-logado", (req, res) => {
 });
 
 // Endpoint para buscar informações do perfil do usuário
+<<<<<<< HEAD
+=======
+// Endpoint para buscar informações do perfil do usuário
+>>>>>>> 6aaec147481166c9045df58ace139f8b3118ae0b
 app.get("/perfil-usuario/:userId", (req, res) => {
   const { userId } = req.params;
 
