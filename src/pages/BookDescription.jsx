@@ -16,7 +16,9 @@ function BookDescription() {
 
   const fetchBookDetails = async () => {
     try {
-      const response = await fetch(`http://localhost:3001/livro-detalhes/${id}`);
+      const response = await fetch(
+        `http://localhost:3001/livro-detalhes/${id}`
+      );
       if (!response.ok) throw new Error("Livro não encontrado");
       const data = await response.json();
       setBookDetails(data);
@@ -29,7 +31,9 @@ function BookDescription() {
 
   const fetchUserDetails = async () => {
     try {
-      const response = await fetch(`http://localhost:3001/usuario-logado?id=${userId}`);
+      const response = await fetch(
+        `http://localhost:3001/usuario-logado?id=${userId}`
+      );
       if (!response.ok) throw new Error("Usuário não encontrado");
       const data = await response.json();
       setUser(data);
@@ -40,7 +44,9 @@ function BookDescription() {
 
   const checkNotification = async () => {
     try {
-      const response = await fetch(`http://localhost:3001/check-notification/${userId}/${id}`);
+      const response = await fetch(
+        `http://localhost:3001/check-notification/${userId}/${id}`
+      );
       if (!response.ok) throw new Error("Erro ao verificar notificação");
       const data = await response.json();
       setNotificationExists(data.exists);
@@ -78,11 +84,14 @@ function BookDescription() {
         bookId: Number(bookDetails.id),
       });
 
-      const response = await fetch("http://localhost:3001/register-notification", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: requestBody,
-      });
+      const response = await fetch(
+        "http://localhost:3001/register-notification",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: requestBody,
+        }
+      );
 
       if (!response.ok) {
         const data = await response.json();
@@ -134,11 +143,10 @@ function BookDescription() {
 
   return (
     <div className="book-description_container">
-    <div className="body-book-description">
       <button onClick={() => navigate("/search")} className="back-button">
-        ← Voltar
+        ← 
       </button>
-      <div className="book-details-content">
+      <div className="body-book-description">
         <div className="book-details-image">
           {bookDetails.imagem ? (
             <img src={bookDetails.imagem} alt={bookDetails.nome_do_livro} />
@@ -146,71 +154,101 @@ function BookDescription() {
             <div className="no-image-placeholder">Sem imagem</div>
           )}
         </div>
-        <div className="book-details-info">
-          <h1>{bookDetails.nome_do_livro}</h1>
-          <p><strong id="h2-book-info">Autor:</strong> {bookDetails.autor || "Não informado"}</p>
-          <p><strong id="h2-book-info">Gênero:</strong> {bookDetails.genero || "Não informado"}</p>
-          <p><strong id="h2-book-info">Data de Lançamento:</strong> {bookDetails.ano_publicacao || "Não informado"}</p>
-          <p><strong id="h2-book-info"> Editora:</strong> {bookDetails.editora || "Não informado"}</p>
-          <strong id="h2-book-info">Sinopse:</strong>
-          <div className="sinopse_livro">
-            <p> {bookDetails.sinopse || "Sinopse não disponível"}</p>
-          </div>
-          
-          {notificationExists ? (
-            <>
-              <p className="error-message">Você já registrou uma notificação para este livro.</p>
-              <button onClick={cancelNotification} className="cancel-notification-button">
-                Cancelar Notificação
+
+        <div className="book-details-content">
+          <div className="book-details-info">
+            <h1>{bookDetails.nome_do_livro}</h1>
+            <p>
+              <strong id="h2-book-info">Autor:</strong>{" "}
+              <p id="paragrafos">{bookDetails.autor || "Não informado"} </p>
+            </p>
+            <p>
+              <strong id="h2-book-info">Gênero:</strong>{" "}
+              <p id="paragrafos">{bookDetails.genero || "Não informado"} </p>
+            </p>
+            <p>
+              <strong id="h2-book-info">Data de Lançamento:</strong>{" "}
+              <p id="paragrafos"> {bookDetails.ano_publicacao || "Não informado"} </p>
+            </p>
+            <p>
+              <strong id="h2-book-info"> Editora:</strong>{" "}
+              {bookDetails.editora || "Não informado"} 
+            </p>
+            <strong id="h2-book-info">Sinopse:</strong>
+            <div className="sinopse_livro">
+              <p> {bookDetails.sinopse || "Sinopse não disponível"}</p>
+            </div>
+
+            {notificationExists ? (
+              <>
+                <p className="error-message">
+                  Você já registrou uma notificação para este livro.
+                </p>
+                <button
+                  onClick={cancelNotification}
+                  className="cancel-notification-button"
+                >
+                  Cancelar Notificação
+                </button>
+              </>
+            ) : (
+              <button onClick={registerNotification} className="notify-button">
+                Registrar Notificação
               </button>
-            </>
-          ) : (
-            <button onClick={registerNotification} className="notify-button">
-              Registrar Notificação
-            </button>
-          )}
-          {user?.bloqueado ? (
-            <button className="reserve-button" disabled>
-              Usuário bloqueado para reservas
-            </button>
-          ) : bookDetails.quantidade_disponivel_nao_alugada > 0 ? (
-            <button
-              onClick={() => navigate(`/bookStatus/${id}`)}
-              className="reserve-button"
-              disabled={
-                user?.bloqueado ||
-                bookDetails.quantidade_disponivel_nao_alugada <= 0
-              }
-            >
-              {user?.bloqueado
-                ? "Usuário bloqueado para reservas"
-                : bookDetails.quantidade_disponivel_nao_alugada > 0
-                ? "Reservar"
-                : "Indisponível no momento"}
-            </button>
-          ) : (
-            <button className="reserve-button" disabled>
-              Indisponível no momento
-            </button>
-          )}
-          {bookDetails.local === "GameEstereggs" && (
-            <button onClick={() => navigate("/dinossauro")} className="esteregg-button">
-              Acessar Easter Egg 🎮
-            </button>
-          )}
-          {bookDetails.local === "flapbird" && (
-            <button onClick={() => navigate("/flapBird")} className="esteregg-button">
-              Acessar Easter Egg 🎮
-            </button>
-          )}
-          {bookDetails.local === "Doom" && (
-            <a href="https://doompdf.pages.dev/doom.pdf" target="_blank" rel="noopener noreferrer" className="esteregg-button">
-              Acessar Easter Egg 🎮
-            </a>
-          )}
+            )}
+            {user?.bloqueado ? (
+              <button className="reserve-button" disabled>
+                Usuário bloqueado para reservas
+              </button>
+            ) : bookDetails.quantidade_disponivel_nao_alugada > 0 ? (
+              <button
+                onClick={() => navigate(`/bookStatus/${id}`)}
+                className="reserve-button"
+                disabled={
+                  user?.bloqueado ||
+                  bookDetails.quantidade_disponivel_nao_alugada <= 0
+                }
+              >
+                {user?.bloqueado
+                  ? "Usuário bloqueado para reservas"
+                  : bookDetails.quantidade_disponivel_nao_alugada > 0
+                  ? "Reservar"
+                  : "Indisponível no momento"}
+              </button>
+            ) : (
+              <button className="reserve-button" disabled>
+                Indisponível no momento
+              </button>
+            )}
+            {bookDetails.local === "GameEstereggs" && (
+              <button
+                onClick={() => navigate("/dinossauro")}
+                className="esteregg-button"
+              >
+                Acessar Easter Egg 🎮
+              </button>
+            )}
+            {bookDetails.local === "flapbird" && (
+              <button
+                onClick={() => navigate("/flapBird")}
+                className="esteregg-button"
+              >
+                Acessar Easter Egg 🎮
+              </button>
+            )}
+            {bookDetails.local === "Doom" && (
+              <a
+                href="https://doompdf.pages.dev/doom.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="esteregg-button"
+              >
+                Acessar Easter Egg 🎮
+              </a>
+            )}
+          </div>
         </div>
       </div>
-    </div>
     </div>
   );
 }

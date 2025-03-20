@@ -1,6 +1,67 @@
 LESSIE
 
 
+
+
+DEU PAU
+
+Requisição para /usuarios recebida
+Erro ao buscar usuários e reservas: Error: SQLITE_ERROR: no such column: reservas.atrasado
+--> in Database#all('\n' +
+  '    SELECT \n' +
+  '      usuarios.id, \n' +
+  '      usuarios.userName AS nome, \n' +
+  '      usuarios.email, \n' +
+  '      usuarios.telefone, \n' +
+  '      livros.id AS livro_id,\n' +
+  '      livros.nome_do_livro, \n' +
+  '      livros.imagem, \n' +
+  '      livros.status,\n' +
+  '      reservas.id AS reserva_id, \n' +
+  '      reservas.data_reserva,\n' +
+  '      reservas.data_devolucao,\n' +
+  '      reservas.multa,\n' +
+  '      reservas.atrasado\n' +
+  '    FROM usuarios\n' +
+  '    LEFT JOIN reservas ON usuarios.id = reservas.usuario_id\n' +
+  '    LEFT JOIN livros ON reservas.livro_id = livros.id\n' +
+  '  ', [Function (anonymous)])
+    at C:\Temp\TCC_GRP2\Biblioteca_tcc\banco_de_dados\server.js:1502:6
+    at Layer.handle [as handle_request] (C:\Temp\TCC_GRP2\Biblioteca_tcc\node_modules\express\lib\router\layer.js:95:5)
+    at next (C:\Temp\TCC_GRP2\Biblioteca_tcc\node_modules\express\lib\router\route.js:149:13)
+    at Route.dispatch (C:\Temp\TCC_GRP2\Biblioteca_tcc\node_modules\express\lib\router\route.js:119:3)
+    at Layer.handle [as handle_request] (C:\Temp\TCC_GRP2\Biblioteca_tcc\node_modules\express\lib\router\layer.js:95:5)
+    at C:\Temp\TCC_GRP2\Biblioteca_tcc\node_modules\express\lib\router\index.js:284:15
+    at Function.process_params (C:\Temp\TCC_GRP2\Biblioteca_tcc\node_modules\express\lib\router\index.js:346:12)
+    at next (C:\Temp\TCC_GRP2\Biblioteca_tcc\node_modules\express\lib\router\index.js:280:10)
+    at jsonParser (C:\Temp\TCC_GRP2\Biblioteca_tcc\node_modules\body-parser\lib\types\json.js:113:7) {
+  errno: 1,
+  code: 'SQLITE_ERROR',
+  __augmented: true
+}
+
+RESOLVER COMPATIBILIDADE DE TELAS COM O SISTEMA NOVO
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ATUALIZAÇÕES:
 
 
@@ -46,11 +107,11 @@ criar uma dashboard com informações de quantos livros e quantas vezes foram re
                         JapaJapaJapaJapaJapaJapaJapa
 
 
-arrumar o css dos livros (conflito pois há varias páginas css) (o css pronto esta no meu notepad)
+finalizar a pagina bookdescription, bgl chato kkkkkkk
 
-adicionar os livros acompanhando e as notificações na pagina de perfil do usuario e ajeitar a porra dos livros reservados
+fazer o status de multa ficar vermelho e evitdente na aba perfil 
 
-fazer o status de multa ficar vermelho e evitdente na aba perfil JapaJapaJapaJapaJapaJapaJapa
+tirar a pagina notificações
 
 
 

@@ -143,6 +143,14 @@ function ManageDatabaseBooks() {
 
     // Adicionar reserva (isto pode ser feito no banco de dados de reservas)
     try {
+      const response = await fetch(`http://localhost:3001/livros/${bookId}`);
+      const book = await response.json();
+      const unidadeReservada = book.unidades.find(unidade => unidade.status === "Disponível");
+
+      if (!unidadeReservada) {
+        throw new Error("Não há unidades disponíveis para reserva");
+      }
+
       const reservationResponse = await fetch("http://localhost:3001/reservas", {
         method: "POST",
         headers: {
@@ -150,9 +158,10 @@ function ManageDatabaseBooks() {
         },
         body: JSON.stringify({
           livro_id: bookId,
-          usuario_id: userId, // Certifique-se de passar o userId corretamente
+          unidade_id: unidadeReservada.id,
+          usuario_id: userId,
           data_reserva: new Date().toISOString(),
-          data_devolucao: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // Definindo a data de devolução para 7 dias depois
+          data_devolucao: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
           status: "Reservado",
           multa: 0,
         }),
