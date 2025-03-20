@@ -70,11 +70,29 @@ function BookStatus() {
     returnDate.setDate(currentDate.getDate() + 7);
   
     try {
-      const response = await fetch("http://localhost:3001/reservas", {
+      const response = await fetch(`http://localhost:3001/livros/${id}`);
+      if (!response.ok) {
+        throw new Error("Erro ao buscar detalhes do livro.");
+      }
+  
+      const bookData = await response.json();
+      
+      if (!bookData.unidades || !Array.isArray(bookData.unidades)) {
+        throw new Error("Nenhuma unidade disponível para reserva.");
+      }
+  
+      const unidadeReservada = bookData.unidades.find(unidade => unidade.status === "Disponível");
+  
+      if (!unidadeReservada) {
+        throw new Error("Não há unidades disponíveis para reserva.");
+      }
+  
+      const reservationResponse = await fetch("http://localhost:3001/reservas", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           livro_id: id,
+          unidade_id: unidadeReservada.id,
           usuario_id: user?.id,
           data_reserva: currentDate.toISOString(),
           data_devolucao: returnDate.toISOString(),
@@ -83,8 +101,8 @@ function BookStatus() {
         }),
       });
   
-      if (!response.ok) {
-        const errorData = await response.json();
+      if (!reservationResponse.ok) {
+        const errorData = await reservationResponse.json();
         throw new Error(errorData.error || "Erro ao reservar o livro.");
       }
   
@@ -94,6 +112,7 @@ function BookStatus() {
       alert(err.message);
     }
   };
+  
   
   return (
     <div className="book-status-container">
