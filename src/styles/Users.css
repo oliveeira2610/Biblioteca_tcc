@@ -10,7 +10,7 @@
 }
 
 .user-card {
-  background: #ffffff;
+  background: var(--branco-diferente);
   padding: 20px;
   margin: 15px 0;
   border-radius: 10px;
@@ -30,6 +30,10 @@ h3, h4 {
 
 .books-section {
   margin-top: 15px;
+}
+
+::placeholder {
+  color: #fff6d381;
 }
 
 .books-cards {

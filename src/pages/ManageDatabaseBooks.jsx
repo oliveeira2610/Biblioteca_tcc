@@ -201,16 +201,15 @@ function ManageDatabaseBooks() {
   return (
     <div className="manage-books-container floating-background">
       <FloatingLetters />
-      <h1>📚 Gerenciar Livros</h1>
+      <h1 className="gerencialivr">Gerenciar Livros</h1>
       <input
         type="text"
-        placeholder="Pesquisar livros..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        className="search-input"
+        className="search-input-manage"
       />
       {loading && <p>Carregando...</p>}
-      <div className="books-list">
+      <div className="books-list-manage">
         {filteredBooks.map((book) => (
           <div
             key={book.id}

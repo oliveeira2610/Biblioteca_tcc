@@ -141,7 +141,7 @@ const Users = () => {
   return (
     <div className="users-container floating-background">
       <FloatingLetters />
-      <input
+      <input 
         type="text"
         placeholder="Pesquisar usuários pelo nome ou email..."
         value={searchTerm}

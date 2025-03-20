@@ -6,7 +6,7 @@ body {
 }
 
 .book-card-home {
-  background-color: var(---marrom-claro);
+  background-color: var(--marrom-claro);
   border-radius: 8px;
   box-shadow: 0px 0px 10px 5px #BD9B75;
   padding: 15px;
@@ -121,7 +121,7 @@ body {
 .book-card-title-home {
     font-size: 16px;
     font-weight: lighter;
-    color: var(---branco-diferente);
+    color: var(--branco-diferente);
     margin-top: 10px;
 }
 
