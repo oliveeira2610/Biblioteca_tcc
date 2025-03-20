@@ -67,7 +67,7 @@ function BookStatus() {
   
     try {
       const response = await fetch(`http://localhost:3001/livros/${id}`);
-<<<<<<< HEAD
+      
       if (!response.ok) throw new Error("Erro ao buscar detalhes do livro.");
   
       const bookData = await response.json();
@@ -76,26 +76,14 @@ function BookStatus() {
   
       if (!bookData.unidades || bookData.unidades.length === 0) {
         throw new Error("Este livro não tem unidades cadastradas.");
-=======
-      if (!response.ok) {
-        throw new Error("Erro ao buscar detalhes do livro.");
-      }
-  
-      const bookData = await response.json();
-      
-      if (!bookData.unidades || !Array.isArray(bookData.unidades)) {
-        throw new Error("Nenhuma unidade disponível para reserva.");
->>>>>>> 6aaec147481166c9045df58ace139f8b3118ae0b
+
+
       }
   
       const unidadeReservada = bookData.unidades.find(unidade => unidade.status === "Disponível");
   
       if (!unidadeReservada) {
-<<<<<<< HEAD
         throw new Error("Nenhuma unidade disponível para reserva.");
-=======
-        throw new Error("Não há unidades disponíveis para reserva.");
->>>>>>> 6aaec147481166c9045df58ace139f8b3118ae0b
       }
   
       const reservationResponse = await fetch("http://localhost:3001/reservas", {
@@ -125,13 +113,6 @@ function BookStatus() {
     }
   };
   
-  
-<<<<<<< HEAD
-  
-  
-  
-=======
->>>>>>> 6aaec147481166c9045df58ace139f8b3118ae0b
   return (
     <div className="book-status-container">
       <div className="user-info">

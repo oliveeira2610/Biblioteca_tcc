@@ -144,11 +144,6 @@ function BookDescription() {
   return (
     <div className="book-description_container">
       <button onClick={() => navigate("/search")} className="back-button">
-<<<<<<< HEAD
-        ← 
-=======
-        ←
->>>>>>> 6aaec147481166c9045df58ace139f8b3118ae0b
       </button>
       <div className="body-book-description">
         <div className="book-details-image">
@@ -161,7 +156,7 @@ function BookDescription() {
 
         <div className="book-details-content">
           <div className="book-details-info">
-<<<<<<< HEAD
+          
             <h1>{bookDetails.nome_do_livro}</h1>
             <p>
               <strong id="h2-book-info">Autor:</strong>{" "}
@@ -183,7 +178,7 @@ function BookDescription() {
             <div className="sinopse_livro">
               <p> {bookDetails.sinopse || "Sinopse não disponível"}</p>
             </div>
-=======
+
 
             <h1 className="titulo-book">{bookDetails.nome_do_livro}</h1>
 
@@ -218,7 +213,7 @@ function BookDescription() {
               </p>
             </div>
 
->>>>>>> 6aaec147481166c9045df58ace139f8b3118ae0b
+
 
             {notificationExists ? (
               <>
