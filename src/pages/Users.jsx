@@ -21,6 +21,7 @@ const Users = () => {
       const response = await fetch("http://localhost:3001/usuarios");
       if (!response.ok) throw new Error("Erro ao buscar usuários");
       const data = await response.json();
+      console.log("📥 Dados recebidos:", data);
       setUsuarios(data);
     } catch (error) {
       console.error("Erro ao buscar usuários:", error);
@@ -32,13 +33,14 @@ const Users = () => {
       const response = await fetch("http://localhost:3001/historico-devolucoes");
       if (!response.ok) throw new Error("Erro ao buscar histórico de devoluções");
       const data = await response.json();
+      console.log("📥 Histórico de devoluções recebido:", data);
       setHistoricoDevolucoes(data);
     } catch (error) {
       console.error("Erro ao buscar histórico de devoluções:", error);
     }
   };
 
-  const handleReturnBook = async (reservaId, livroId, usuarioId) => {
+  const handleReturnBook = async (reservaId) => {
     try {
       const response = await fetch(
         `http://localhost:3001/reservas/${reservaId}/devolver`,
@@ -54,14 +56,13 @@ const Users = () => {
   };
 
   const filteredUsers = usuarios.filter((usuario) =>
-    usuario.userName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    usuario.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
     usuario.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   return (
     <div className="users-container floating-background">
       <input
-
         type="text"
         placeholder="Pesquisar usuários pelo nome ou email..."
         value={searchTerm}
@@ -77,7 +78,7 @@ const Users = () => {
               onClick={() => navigate(`/perfil-usuario-adm/${usuario.id}`)}
               style={{ cursor: "pointer" }}
             >
-              <h3>{usuario.userName}</h3>
+              <h3>{usuario.nome}</h3>
               <p>Email: {usuario.email}</p>
               <p>Telefone: {usuario.telefone}</p>
             </div>
@@ -95,7 +96,7 @@ const Users = () => {
                     >
                       {book.imagem ? (
                         <img
-                          src={`http://localhost:3001/${book.imagem}`}
+                          src={book.imagem.startsWith("http") ? book.imagem : `http://localhost:3001/${book.imagem}`}
                           alt={book.nome_do_livro}
                           className="book-card-image"
                           onError={(e) => (e.target.src = "/placeholder.jpg")}
@@ -107,7 +108,7 @@ const Users = () => {
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleReturnBook(book.reservaId, book.id, usuario.id);
+                          handleReturnBook(book.reservaId);
                         }}
                       >
                         Marcar como Devolvido
@@ -117,6 +118,22 @@ const Users = () => {
                 ) : (
                   <p>Sem livros reservados</p>
                 )}
+              </div>
+            </div>
+
+            <div className="history-section">
+              <h4>Histórico de Devoluções:</h4>
+              <div className="history-cards">
+                {historicoDevolucoes
+                  .filter((historico) => historico.usuario_id === usuario.id)
+                  .map((historico) => (
+                    <div key={historico.id} className="history-card">
+                      <p><strong>Livro:</strong> {historico.livro}</p>
+                      <p><strong>Data de Reserva:</strong> {historico.data_reserva}</p>
+                      <p><strong>Data de Devolução:</strong> {historico.data_devolucao}</p>
+                      <p><strong>Multa:</strong> R$ {historico.multa ? historico.multa.toFixed(2) : "0.00"}</p>
+                    </div>
+                  ))}
               </div>
             </div>
           </div>

@@ -876,6 +876,7 @@ app.get("/livro-detalhes/:id", (req, res) => {
       reservas.data_reserva,
       reservas.data_devolucao,
       reservas.multa,
+      reservas.unidade_id, -- Inclui unidade_id
       usuarios.id AS usuario_id,
       usuarios.userName AS nome_usuario,
       usuarios.email AS usuario_email,
@@ -887,7 +888,7 @@ app.get("/livro-detalhes/:id", (req, res) => {
     WHERE livros.id = ?
     GROUP BY 
       livros.id, livros.nome_do_livro, livros.autor, livros.genero, livros.editora, livros.imagem, livros.sinopse, livros.isbn, 
-      livros.ano_publicacao, livros.quantidade_disponivel, livros.status, livros.numero;
+      livros.ano_publicacao, livros.quantidade_disponivel, livros.status, livros.numero, reservas.unidade_id;
   `;
 
   db.all(query, [id], (err, rows) => {
@@ -911,7 +912,7 @@ app.get("/livro-detalhes/:id", (req, res) => {
         data_reserva: row.data_reserva,
         data_devolucao: row.data_devolucao,
         multa: row.multa,
-        tempo_atraso: row.multa > 0 ? Math.floor(row.multa / 2) : 0, // Supondo que cada dia de atraso custa R$2,00
+        unidade_id: row.unidade_id, // Inclui unidade_id
       };
 
       if (usuarioIndex > -1) {
@@ -1492,8 +1493,7 @@ app.get("/usuarios", (req, res) => {
       reservas.id AS reserva_id, 
       reservas.data_reserva,
       reservas.data_devolucao,
-      reservas.multa,
-      reservas.atrasado
+      reservas.multa
     FROM usuarios
     LEFT JOIN reservas ON usuarios.id = reservas.usuario_id
     LEFT JOIN livros ON reservas.livro_id = livros.id
