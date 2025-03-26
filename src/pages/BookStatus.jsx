@@ -65,26 +65,25 @@ function BookStatus() {
       return;
     }
   
-    const currentDate = new Date();
-    const returnDate = new Date(currentDate);
-    returnDate.setDate(currentDate.getDate() + 7);
-  
     try {
       const response = await fetch(`http://localhost:3001/livros/${id}`);
-      if (!response.ok) {
-        throw new Error("Erro ao buscar detalhes do livro.");
-      }
+      
+      if (!response.ok) throw new Error("Erro ao buscar detalhes do livro.");
   
       const bookData = await response.json();
-      
-      if (!bookData.unidades || !Array.isArray(bookData.unidades)) {
-        throw new Error("Nenhuma unidade disponível para reserva.");
+  
+      console.log("Unidades do livro:", bookData.unidades); // 👈 Debug para ver as unidades no console
+  
+      if (!bookData.unidades || bookData.unidades.length === 0) {
+        throw new Error("Este livro não tem unidades cadastradas.");
+
+
       }
   
       const unidadeReservada = bookData.unidades.find(unidade => unidade.status === "Disponível");
   
       if (!unidadeReservada) {
-        throw new Error("Não há unidades disponíveis para reserva.");
+        throw new Error("Nenhuma unidade disponível para reserva.");
       }
   
       const reservationResponse = await fetch("http://localhost:3001/reservas", {
@@ -94,8 +93,8 @@ function BookStatus() {
           livro_id: id,
           unidade_id: unidadeReservada.id,
           usuario_id: user?.id,
-          data_reserva: currentDate.toISOString(),
-          data_devolucao: returnDate.toISOString(),
+          data_reserva: new Date().toISOString(),
+          data_devolucao: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
           status: "Reservado",
           multa: 0,
         }),
@@ -108,11 +107,11 @@ function BookStatus() {
   
       alert("Reserva realizada com sucesso!");
       navigate("/search");
+  
     } catch (err) {
       alert(err.message);
     }
   };
-  
   
   return (
     <div className="book-status-container">

@@ -19,7 +19,10 @@
   min-height: 180px;
   width: 94vw;
   justify-content: center;
+<<<<<<< HEAD
+=======
   text-decoration: none;
+>>>>>>> 6aaec147481166c9045df58ace139f8b3118ae0b
 }
 
 
@@ -37,7 +40,10 @@
   flex-direction: column;
   min-height: 180px;
   width: 44%;
+<<<<<<< HEAD
+=======
   text-decoration: none;
+>>>>>>> 6aaec147481166c9045df58ace139f8b3118ae0b
 }
 
 .cards-meio{
@@ -83,8 +89,14 @@ justify-content: center;
   gap: 2rem;
 }
 
+<<<<<<< HEAD
+
+#textos-cards{
+  color: black;
+=======
 #textos-cards{
   color: var(--marrom);;
+>>>>>>> 6aaec147481166c9045df58ace139f8b3118ae0b
   
 }
 
