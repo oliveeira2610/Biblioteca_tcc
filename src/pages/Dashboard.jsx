@@ -87,7 +87,7 @@ const Dashboard = () => {
 
       
         <Link to="/addBooks" className="card-grande">
-          <h2 id="textos-cards" >Adicionar Livros</h2>
+          <h2 id="textos-cards-add" >Adicionar Livros</h2>
     
         </Link>
       </div>

@@ -1,14 +1,10 @@
-<<<<<<< HEAD
-
-
 /* Estilos gerais */
 .book-description_container {
   font-family: Arial, sans-serif;
+}
 
-=======
 .book-description_container {
   font-family: Arial, sans-serif;
->>>>>>> 6aaec147481166c9045df58ace139f8b3118ae0b
   padding: 20px;
   border-radius: 10px;
   width: 90vw;
@@ -22,17 +18,12 @@
 .back-button {
   background: none;
   border: none;
-<<<<<<< HEAD
   font-size: 20px;
   cursor: pointer;
   color: #8b6f47;
-=======
   font-size: 35px;
   cursor: pointer;
-  color: #826049;  
-  
->>>>>>> 6aaec147481166c9045df58ace139f8b3118ae0b
-
+  color: #826049; 
 }
 
 .body-book-description {
@@ -42,13 +33,9 @@
   margin-top: 10px;
   background-color: #FFF9E1;
   padding: 20px;
-<<<<<<< HEAD
   height: 600px;
-=======
->>>>>>> 6aaec147481166c9045df58ace139f8b3118ae0b
   box-shadow: 0px 0px 10px 2px #BD9B75;
   border-radius: 8px;
-  
 }
 
 .book-details-image{
@@ -68,12 +55,8 @@
 }
 
 .book-details-info {
-<<<<<<< HEAD
-
-=======
   display: flex;
   flex-direction: column;
->>>>>>> 6aaec147481166c9045df58ace139f8b3118ae0b
   padding: 15px;
   border-radius: 5px;
   height: 90%;
@@ -88,12 +71,9 @@
   font-size: 28px;
 }
 
-<<<<<<< HEAD
 #paragrafos{
   font-size: 90px;
 }
-=======
->>>>>>> 6aaec147481166c9045df58ace139f8b3118ae0b
 
 h1 {
   font-size: 24px;
@@ -145,9 +125,6 @@ button {
   color: white;
 }
 
-<<<<<<< HEAD
-=======
-
 .h2-e-paragrafos{
   display: flex;
   flex-direction: row;
@@ -157,4 +134,3 @@ button {
 .titulo-book{
   margin: 0;
 }
->>>>>>> 6aaec147481166c9045df58ace139f8b3118ae0b

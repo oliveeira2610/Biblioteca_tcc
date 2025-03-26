@@ -19,10 +19,8 @@
   min-height: 180px;
   width: 94vw;
   justify-content: center;
-<<<<<<< HEAD
-=======
   text-decoration: none;
->>>>>>> 6aaec147481166c9045df58ace139f8b3118ae0b
+  color: var(--marrom-claro);
 }
 
 
@@ -40,10 +38,7 @@
   flex-direction: column;
   min-height: 180px;
   width: 44%;
-<<<<<<< HEAD
-=======
   text-decoration: none;
->>>>>>> 6aaec147481166c9045df58ace139f8b3118ae0b
 }
 
 .cards-meio{
@@ -61,15 +56,15 @@ justify-content: center;
 
 .dashboard .card h2 {
   font-size: 1.8rem;
-  color: #333;
+  color: var(--marrom-escuro);
   margin-bottom: 1rem;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .dashboard .card p {
-  font-size: 2.5rem;
+  font-size: 2.8rem;
   font-weight: 700;
-  color: #4a90e2;
+  color: var(--marrom-claro);
 }
 
 /* Estilo para os links (cards com Link) */
@@ -89,16 +84,6 @@ justify-content: center;
   gap: 2rem;
 }
 
-<<<<<<< HEAD
-
-#textos-cards{
-  color: black;
-=======
-#textos-cards{
-  color: var(--marrom);;
->>>>>>> 6aaec147481166c9045df58ace139f8b3118ae0b
-  
-}
 
 /* Responsividade */
 @media (max-width: 768px) {

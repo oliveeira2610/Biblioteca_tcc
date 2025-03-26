@@ -96,7 +96,7 @@ function ReservedBooks() {
   return (
     <div className="reserved-books-page-container floating-background">
       <FloatingLetters />
-      <h1>📖 Livros Reservados</h1>
+      <h1 className="livro-reser">Livros Reservados</h1>
       {loading && <p>Carregando...</p>}
       <div className="books-list">
         {reservedBooks.length === 0 && !loading ? (
