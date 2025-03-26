@@ -1492,8 +1492,7 @@ app.get("/usuarios", (req, res) => {
       reservas.id AS reserva_id, 
       reservas.data_reserva,
       reservas.data_devolucao,
-      reservas.multa,
-      reservas.atrasado
+      reservas.multa
     FROM usuarios
     LEFT JOIN reservas ON usuarios.id = reservas.usuario_id
     LEFT JOIN livros ON reservas.livro_id = livros.id
