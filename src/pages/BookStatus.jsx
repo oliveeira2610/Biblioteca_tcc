@@ -66,50 +66,30 @@ function BookStatus() {
     }
   
     try {
-      const response = await fetch(`http://localhost:3001/livros/${id}`);
-      
-      if (!response.ok) throw new Error("Erro ao buscar detalhes do livro.");
-  
-      const bookData = await response.json();
-  
-      console.log("Unidades do livro:", bookData.unidades); // 👈 Debug para ver as unidades no console
-  
-      if (!bookData.unidades || bookData.unidades.length === 0) {
-        throw new Error("Este livro não tem unidades cadastradas.");
-
-
-      }
-  
-      const unidadeReservada = bookData.unidades.find(unidade => unidade.status === "Disponível");
-  
-      if (!unidadeReservada) {
-        throw new Error("Nenhuma unidade disponível para reserva.");
-      }
-  
       const reservationResponse = await fetch("http://localhost:3001/reservas", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          livro_id: id,
-          unidade_id: unidadeReservada.id,
-          usuario_id: user?.id,
+          livro_id: book.id, // ID do livro
+          usuario_id: user?.id, // ID do usuário
           data_reserva: new Date().toISOString(),
-          data_devolucao: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+          data_devolucao: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 dias para devolução
           status: "Reservado",
           multa: 0,
         }),
       });
   
+      const reservationData = await reservationResponse.json();
+  
       if (!reservationResponse.ok) {
-        const errorData = await reservationResponse.json();
-        throw new Error(errorData.error || "Erro ao reservar o livro.");
+        throw new Error(reservationData.error || "Erro ao reservar o livro.");
       }
   
-      alert("Reserva realizada com sucesso!");
+      alert(`Reserva realizada com sucesso! Unidade reservada: ${reservationData.unidade}`);
       navigate("/search");
-  
-    } catch (err) {
-      alert(err.message);
+    } catch (error) {
+      console.error("Erro ao reservar livro:", error);
+      alert(error.message || "Erro ao reservar livro. Tente novamente.");
     }
   };
   

@@ -32,47 +32,61 @@ function RegisterBook() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+  
     const newBookData = { 
       ...formData, 
       quantidade_disponivel: Number(formData.quantidade_disponivel), 
       ano_publicacao: Number(formData.ano_publicacao) 
     };
     delete newBookData.id;
-    
+  
     try {
       console.log("📤 Enviando para o backend:", JSON.stringify(newBookData, null, 2));
-
-      const response = await fetch('http://localhost:3001/livros', {
+  
+      // Primeiro, registra o livro
+      const bookResponse = await fetch('http://localhost:3001/livros', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newBookData),
       });
-
-      const data = await response.json();
-      console.log("📥 Resposta do backend:", data);
-
-      if (!response.ok) {
-        alert(`Erro: ${data.error}`);
+  
+      const bookData = await bookResponse.json();
+      console.log("📥 Resposta do backend:", bookData);
+  
+      if (!bookResponse.ok) {
+        alert(`Erro: ${bookData.error}`);
         return;
       }
-
-      // Criar unidades para o livro cadastrado
-      for (let i = 0; i < newBookData.quantidade_disponivel; i++) {
-        await fetch('http://localhost:3001/unidades-livro', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ livro_id: data.id, status: 'Disponível' }),
-        });
+  
+      // Depois, registra as unidades
+      if (bookData.id) {
+        for (let i = 1; i <= newBookData.quantidade_disponivel; i++) {
+          const unidadeResponse = await fetch('http://localhost:3001/unidades-livro', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              livro_id: bookData.id, // Certifique-se de que o ID do livro está correto
+              unidade: i,           // Número da unidade
+              status: 'Disponível', // Status da unidade
+            }),
+          });
+  
+          const unidadeData = await unidadeResponse.json();
+  
+          if (!unidadeResponse.ok) {
+            console.error(`Erro ao registrar unidade ${i}:`, unidadeData);
+          }
+        }
       }
-
+  
       alert('Livro e unidades cadastrados com sucesso!');
       navigate('/addbooks');
     } catch (error) {
-      console.error('🚨 Erro ao cadastrar livro:', error);
+      console.error('🚨 Erro ao cadastrar livro ou unidades:', error);
       alert('Erro ao cadastrar livro. Tente novamente.');
     }
   };
+  
 
   return (
     <div className="register-book-container">
