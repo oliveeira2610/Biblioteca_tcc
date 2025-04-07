@@ -13,13 +13,14 @@ function BookStatus() {
 
   useEffect(() => {
     const fetchBookDetails = async () => {
+      
       try {
         const response = await fetch(`http://localhost:3001/livros/${id}`);
         if (!response.ok) {
           throw new Error("Livro não encontrado");
         }
         const data = await response.json();
-        setBook(data);
+        setBook(data.livro);
       } catch (err) {
         setError(err.message);
       } finally {

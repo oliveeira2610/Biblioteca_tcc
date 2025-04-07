@@ -769,10 +769,11 @@ app.get("/livros", (req, res) => {
   });
 });
 
-app.get("/livros/:id", (req, res) => {
+app.get('/livros/:id', (req, res) => {
   const { id } = req.params;
-
-  const query = `
+  const db = getDatabaseConnection();
+  
+  const queryLivro = `
     SELECT livros.*, json_group_array(
       json_object('id', unidades_livros.id, 'status', unidades_livros.status)
     ) AS unidades
@@ -781,21 +782,73 @@ app.get("/livros/:id", (req, res) => {
     WHERE livros.id = ?
     GROUP BY livros.id
   `;
-
-  db.get(query, [id], (err, row) => {
+  
+  db.get(queryLivro, [id], (err, livro) => {
     if (err) {
       console.error("Erro ao buscar livro:", err);
       return res.status(500).json({ error: "Erro ao buscar livro." });
     }
-    if (!row) {
+    if (!livro) {
       return res.status(404).json({ error: "Livro não encontrado." });
     }
 
-    row.unidades = row.unidades ? JSON.parse(row.unidades) : [];
+    livro.unidades = livro.unidades ? JSON.parse(livro.unidades) : [];
 
-    res.status(200).json(row);
+    const queryReservas = `
+      SELECT 
+        reservas.id AS reserva_id,
+        reservas.unidade,
+        reservas.usuario_id,
+        reservas.data_reserva,
+        reservas.data_devolucao,
+        reservas.status AS reserva_status,
+        reservas.multa,
+        usuarios.userName AS userName_usuario,
+        usuarios.email AS usuario_email,
+        usuarios.cpf AS usuario_cpf,
+        usuarios.telefone AS usuario_telefone
+      FROM reservas
+      INNER JOIN usuarios ON reservas.usuario_id = usuarios.id
+      WHERE reservas.livro_id = ?
+    `;
+
+    db.all(queryReservas, [id], (err, rows) => {
+      if (err) {
+        console.error('Erro ao buscar reservas:', err.message);
+        return res.status(500).json({ error: 'Erro ao buscar reservas.' });
+      }
+      
+      const reservasPorUsuario = rows.reduce((acc, row) => {
+        const usuarioIndex = acc.findIndex((u) => u.usuario_id === row.usuario_id);
+        const reserva = {
+          reserva_id: row.reserva_id,
+          reserva_status: row.reserva_status,
+          data_reserva: row.data_reserva,
+          data_devolucao: row.data_devolucao,
+          multa: row.multa,
+          unidade: row.unidade,
+        };
+  
+        if (usuarioIndex === -1) {
+          acc.push({
+            usuario_id: row.usuario_id,
+            userName_usuario: row.userName_usuario,
+            usuario_email: row.usuario_email,
+            usuario_cpf: row.usuario_cpf,
+            usuario_telefone: row.usuario_telefone,
+            reservas: [reserva],
+          });
+        } else {
+          acc[usuarioIndex].reservas.push(reserva);
+        }
+        return acc;
+      }, []);
+
+      res.status(200).json({ livro, reservasPorUsuario });
+    });
   });
 });
+
 
 app.post('/unidades-livro', (req, res) => {
   const { livro_id, unidade, status } = req.body;
@@ -1128,15 +1181,39 @@ app.post("/register", async (req, res) => {
 
 
 
-app.delete('/reservas/:id', (req, res) => {
+app.delete('/livros/:id', (req, res) => {
   const { id } = req.params;
+
   const db = getDatabaseConnection();
-  db.run('DELETE FROM reservas WHERE id = ?', [id], function (err) {
+
+  // Excluir as notificações associadas ao livro
+  db.run('DELETE FROM livros_para_notificacao WHERE livro_id = ?', [id], function (err) {
     if (err) {
-      console.error('Erro ao remover reserva:', err.message);
-      return res.status(500).json({ error: 'Erro ao remover reserva.' });
+      console.error('Erro ao excluir notificações do livro:', err.message);
+      return res.status(500).json({ error: 'Erro ao excluir notificações do livro.' });
     }
-    res.status(200).json({ message: 'Reserva removida com sucesso.' });
+
+    // Excluir as unidades associadas ao livro
+    db.run('DELETE FROM unidades_livros WHERE livro_id = ?', [id], function (err) {
+      if (err) {
+        console.error('Erro ao excluir unidades do livro:', err.message);
+        return res.status(500).json({ error: 'Erro ao excluir unidades do livro.' });
+      }
+
+      // Excluir o livro
+      db.run('DELETE FROM livros WHERE id = ?', [id], function (err) {
+        if (err) {
+          console.error('Erro ao excluir livro:', err.message);
+          return res.status(500).json({ error: 'Erro ao excluir livro.' });
+        }
+
+        if (this.changes === 0) {
+          return res.status(404).json({ message: 'Livro não encontrado.' });
+        }
+
+        res.status(200).json({ message: 'Livro, suas unidades e notificações excluídos com sucesso.' });
+      });
+    });
   });
 });
 
@@ -1177,55 +1254,56 @@ db.run(
 );
 
 // Atualizar a lógica de multa ao criar uma reserva
-app.post('/reservas', (req, res) => {
-  const { livro_id, usuario_id, data_reserva, data_devolucao, status, multa } = req.body;
+app.post("/reservas", (req, res) => {
+  const { livro_id, usuario_id, data_reserva, data_devolucao } = req.body;
+
+  console.log("📥 Recebendo dados para reserva:", { livro_id, usuario_id, data_reserva, data_devolucao });
 
   if (!livro_id || !usuario_id) {
-    return res.status(400).json({ error: 'livro_id e usuario_id são obrigatórios.' });
+    console.warn("⚠️ Erro: livro_id e usuario_id são obrigatórios.");
+    return res.status(400).json({ error: "livro_id e usuario_id são obrigatórios." });
   }
 
-  const db = getDatabaseConnection();
-
-  // Buscar a primeira unidade disponível
+  // Verifica se há unidades disponíveis
   db.get(
-    'SELECT unidade FROM unidades_livros WHERE livro_id = ? AND status = "Disponível" LIMIT 1',
+    "SELECT id, unidade FROM unidades_livros WHERE livro_id = ? AND status = 'Disponível' LIMIT 1",
     [livro_id],
-    (err, row) => {
+    (err, unidade) => {
       if (err) {
-        console.error('Erro ao buscar unidade disponível:', err.message);
-        return res.status(500).json({ error: 'Erro ao buscar unidade disponível.' });
+        console.error("❌ Erro ao buscar unidade no banco:", err);
+        return res.status(500).json({ error: "Erro ao verificar disponibilidade da unidade." });
       }
 
-      if (!row) {
-        return res.status(404).json({ error: 'Nenhuma unidade disponível para este livro.' });
+      if (!unidade) {
+        console.warn("⚠️ Nenhuma unidade disponível para o livro ID:", livro_id);
+        return res.status(400).json({ error: "Nenhuma unidade disponível para este livro." });
       }
 
-      const unidade = row.unidade;
+      console.log("✅ Unidade encontrada:", unidade);
 
-      // Atualizar o status da unidade para "Reservado"
+      // Insere a reserva no banco de dados
       db.run(
-        'UPDATE unidades_livros SET status = "Reservado" WHERE livro_id = ? AND unidade = ?',
-        [livro_id, unidade],
+        "INSERT INTO reservas (livro_id, unidade, usuario_id, data_reserva, data_devolucao, status, multa) VALUES (?, ?, ?, ?, ?, 'Reservado', 0)",
+        [livro_id, unidade.unidade, usuario_id, data_reserva, data_devolucao],
         function (err) {
           if (err) {
-            console.error('Erro ao atualizar unidade:', err.message);
-            return res.status(500).json({ error: 'Erro ao atualizar unidade.' });
+            console.error("❌ Erro ao criar reserva:", err);
+            return res.status(500).json({ error: "Erro ao criar reserva." });
           }
 
-          // Registrar a reserva
-          db.run(
-            'INSERT INTO reservas (livro_id, unidade, usuario_id, data_reserva, data_devolucao, status, multa) VALUES (?, ?, ?, ?, ?, ?, ?)',
-            [livro_id, unidade, usuario_id, data_reserva, data_devolucao, status, multa],
-            function (err) {
-              if (err) {
-                console.error('Erro ao registrar reserva:', err.message);
-                return res.status(500).json({ error: 'Erro ao registrar reserva.' });
-              }
+          console.log("✅ Reserva criada com sucesso! ID da reserva:", this.lastID);
 
-              res.status(201).json({
-                message: 'Reserva registrada com sucesso.',
-                unidade,
-              });
+          // Atualiza o status da unidade para "Reservado"
+          db.run(
+            "UPDATE unidades_livros SET status = 'Reservado' WHERE id = ?",
+            [unidade.id],
+            (err) => {
+              if (err) {
+                console.error("❌ Erro ao atualizar unidade:", err);
+                return res.status(500).json({ error: "Erro ao atualizar unidade." });
+              }
+              console.log("✅ Unidade marcada como Reservada:", unidade.id);
+              res.json({ message: "Reserva criada com sucesso", unidade: unidade.unidade });
             }
           );
         }
@@ -1233,6 +1311,7 @@ app.post('/reservas', (req, res) => {
     }
   );
 });
+
 
 // Endpoint para marcar devolução de um livro
 app.put("/reservas/:id/devolver", async (req, res) => {
@@ -1274,19 +1353,35 @@ app.put("/reservas/:id/devolver", async (req, res) => {
 // Liberar todas as reservas de um livro
 app.put('/livros/:id/liberar-reservas', (req, res) => {
   const { id } = req.params;
+
   const db = getDatabaseConnection();
-  db.run(
-    'UPDATE unidades_livros SET status = "Disponível" WHERE livro_id = ? AND status = "Reservado"',
-    [id],
-    function (err) {
-      if (err) {
-        console.error('Erro ao liberar reservas:', err.message);
-        return res.status(500).json({ error: 'Erro ao liberar reservas.' });
-      }
-      res.status(200).json({ message: 'Reservas liberadas com sucesso.', unidades_afetadas: this.changes });
+
+  // Excluir as reservas associadas ao livro
+  db.run('DELETE FROM reservas WHERE livro_id = ?', [id], function (err) {
+    if (err) {
+      console.error('Erro ao excluir reservas do livro:', err.message);
+      return res.status(500).json({ error: 'Erro ao excluir reservas do livro.' });
     }
-  );
+
+    // Atualizar o status das unidades associadas ao livro para "Disponível"
+    db.run(
+      'UPDATE unidades_livros SET status = "Disponível" WHERE livro_id = ? AND status = "Reservado"',
+      [id],
+      function (err) {
+        if (err) {
+          console.error('Erro ao atualizar status das unidades:', err.message);
+          return res.status(500).json({ error: 'Erro ao atualizar status das unidades.' });
+        }
+
+        res.status(200).json({
+          message: 'Reservas excluídas e unidades liberadas com sucesso.',
+          unidades_afetadas: this.changes,
+        });
+      }
+    );
+  });
 });
+
 
 // Endpoint para obter o histórico de reservas
 app.get("/reservas/historico", async (req, res) => {

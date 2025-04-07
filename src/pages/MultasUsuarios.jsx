@@ -107,6 +107,9 @@ const MultasUsuarios = () => {
                 <strong>ID da Reserva:</strong> {book.reserva_id || "N/A"}
               </p>
               <p>
+                <strong>Unidade:</strong> {reserva.unidade || "Não especificada"}
+              </p>
+              <p>
                 <strong>Data de Devolução:</strong> {book.data_devolucao ? new Date(book.data_devolucao).toLocaleDateString() : "Data não definida"}
               </p>
               <p>

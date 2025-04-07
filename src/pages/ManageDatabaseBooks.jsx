@@ -3,8 +3,7 @@ import { useNavigate } from "react-router-dom";
 import "../../src/styles/global.css";
 import "../../src/styles/manageDatabaseBooks.css";
 import "../../src/styles/book-card.css";
-import '../../src/styles/FloatingBackground.css';
-
+import "../../src/styles/FloatingBackground.css";
 
 function FloatingLetters() {
   const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".split("");
@@ -102,7 +101,7 @@ const ManageDatabaseBooks = () => {
         throw new Error(data.error || "Erro ao liberar reservas.");
       }
 
-      alert(`Reservas liberadas com sucesso! Unidades afetadas: ${data.unidades_afetadas}`);
+      alert(`Reservas excluídas e unidades liberadas com sucesso! Unidades afetadas: ${data.unidades_afetadas}`);
       fetchBooks(); // Atualiza a lista de livros após liberar as reservas
     } catch (error) {
       console.error("Erro ao liberar reservas:", error);
@@ -110,56 +109,27 @@ const ManageDatabaseBooks = () => {
     }
   };
 
-  // Função para atualizar o status do livro
-  const updateBookStatus = async (bookId, status) => {
+  // Função para excluir o livro e suas unidades associadas
+  const freeBook = async (bookId) => {
     try {
+      // Enviar requisição para excluir o livro e suas unidades
       const response = await fetch(`http://localhost:3001/livros/${bookId}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ status }),
+        method: "DELETE",
       });
 
       if (!response.ok) {
-        throw new Error("Erro ao atualizar status do livro.");
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Erro ao excluir livro.");
       }
 
-      const updatedBook = await response.json();
-      console.log("Livro atualizado com sucesso:", updatedBook);
+      console.log("Livro e suas unidades excluídos com sucesso.");
+      alert("Livro e suas unidades excluídos com sucesso!");
 
-      // Atualiza o estado local para refletir a mudança
-      setBooks((prevBooks) =>
-        prevBooks.map((book) =>
-          book.id === bookId ? { ...book, status } : book
-        )
-      );
+      // Atualizar a lista de livros após a exclusão
+      fetchBooks();
     } catch (error) {
-      console.error("Erro ao atualizar livro:", error);
-      alert("Erro ao atualizar status do livro.");
-    }
-  };
-
-  // Função para liberar o livro e remover a reserva (caso esteja reservado)
-  const freeBook = async (bookId) => {
-    // Atualizar o status do livro para "Disponível"
-    await updateBookStatus(bookId, "Disponível");
-
-    // Se o livro estava reservado, vamos remover a reserva
-    try {
-      const reservationResponse = await fetch(`http://localhost:3001/reservas/${bookId}`, {
-        method: "DELETE", // Vamos deletar a reserva associada ao livro
-      });
-
-      if (!reservationResponse.ok) {
-        throw new Error("Erro ao remover reserva.");
-      }
-
-      console.log("Reserva removida com sucesso.");
-      fetchBooks(); // Atualiza a lista de livros após remover a reserva
-    } catch (error) {
-      console.error("Erro ao remover reserva:", error);
-      alert("Erro ao remover reserva.");
+      console.error("Erro ao excluir livro:", error);
+      alert(error.message || "Erro ao excluir livro.");
     }
   };
 
@@ -195,7 +165,7 @@ const ManageDatabaseBooks = () => {
             <button onClick={() => releaseAllReservations(book.id)}>
               Liberar Reservas
             </button>
-            <button onClick={() => freeBook(book.id)}>Remover Reserva</button>
+            <button onClick={() => freeBook(book.id)}>Remover livro</button>
           </div>
         ))}
       </div>

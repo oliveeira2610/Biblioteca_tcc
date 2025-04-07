@@ -11,12 +11,12 @@ dps fazer a tela de usuario devolver corretamente as reservas apagando e jogando
 
 
 
+colocar rg para consulta e validação na hora de registrar
 
 
 
 
-
-
+fazer aparecer as coisas corretamentes historico e multa e tudo
 
 
 
