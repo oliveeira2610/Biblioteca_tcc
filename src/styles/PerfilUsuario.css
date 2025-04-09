@@ -12,9 +12,8 @@ body{
   align-items: center;
   height: 70vh;
   display: flex;
-  justify-content: space-around;
-
-
+  /* justify-content: space-around; */
+  justify-content: center;
 
 }
 
@@ -29,6 +28,7 @@ body{
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  margin-right: 15px;
 }
 
 .direita_primeira{
@@ -37,7 +37,7 @@ body{
   margin-left: 15px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between  
+  justify-content: space-between
 }
 
 .img_perfil img{
@@ -46,10 +46,11 @@ body{
 
 .dados-pessoais p{
   font-size: 18px;
-  counter-reset: #9c480b;
+  counter-reset: #5C3D27;
   margin: 5px 0; 
   line-height: 1.2; 
   
+
 }
 
 
@@ -63,25 +64,20 @@ body{
 .multas_perfil{
   width: 100%;
   background-color: #FFF9E1;
-  height: 30%;
+  height: 40%;
   box-shadow: 0px 0px 10px 2px #BD9B75;
   border-radius: 17px;
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  padding: 20px;
 }
 
 .reservados_perfil{
   width: 100%;
   background-color: #FFF9E1;
-  height: 50%;
+  height: 40%;
   box-shadow: 0px 0px 10px 2px #BD9B75;
   border-radius: 17px;
   display: flex;
   justify-content: center;
   flex-direction: column;
-  padding: 20px;
 }
 
 #livros_reservados_h2{
@@ -94,7 +90,7 @@ body{
 
 
 .segundo_container{
-  margin-top: 70px;
+  background-color: red;
   height: 80vh;
   display: flex;
   flex-direction: row;
@@ -103,7 +99,7 @@ body{
 }
 
 .esquerda_segundo{
-  
+  background-color: aqua;
   height: 100%;
   width: 50%;
   display: flex;
@@ -112,7 +108,7 @@ body{
 }
 
 .direita_segundo{
-
+  background-color: magenta;  
   height: 100%;
   width: 50%;
   display: flex;
@@ -120,52 +116,16 @@ body{
   align-items: center;
 }
 
-.livros_reservados{
+.livros_acompanhando{
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #FFF9E1;
-  height: 85%;
-  width: 90%;
-  border-radius: 30px;
-  box-shadow: 0px 0px 10px 2px #BD9B75;
 }
 
-
-
-.livros_e_notificacoes {
+.notificacoes{
+  background-color: red;
   display: flex;
-  justify-content: space-between;
-  margin-top: 20px;
-}
-
-.livros_acompanhando,
-.notificacoes {
-  background-color: #f8f3e5;
-  padding: 15px;
-  border-radius: 8px;
-  box-shadow: 0px 0px 10px 2px #BD9B75;
-  margin: 0 10px;
-  height: 85%;
-  width: 90%;
-  flex-direction: column;
-  align-items: center;
   justify-content: center;
-
+  flex-direction: column;
+  align-items: center;
 }
-
-h1 {
-  font-size: 18px;
-  color: #4a773c;
-  text-align: center;
-}
-
-.books-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  height: auto;
-}
-
-
-

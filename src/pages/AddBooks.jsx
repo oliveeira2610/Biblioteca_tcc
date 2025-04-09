@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../src/styles/addBooks.css';
 import '../../src/styles/button.css';
-import '../../src/styles/colors.css';
 
 function AddBooks() {
   const [query, setQuery] = useState('');
@@ -17,7 +16,7 @@ function AddBooks() {
     
     try {
       const response = await fetch(
-        `https://www.googleapis.com/books/v1/volumes?q=${searchQuery}&maxResults=14`
+        `https://www.googleapis.com/books/v1/volumes?q=${searchQuery}&maxResults=10`
       );
       const data = await response.json();
       setBooks(data.items || []);
@@ -46,21 +45,22 @@ function AddBooks() {
 
   return (
     <div className="add-books-container">
-      <h1 className='addlivr'>ADICIONAR LIVROS</h1>
+      <h1>🔎 Pesquisa de Livros</h1>
       <form onSubmit={handleSearch} className="search-form">
         <input
           type="text"
+          placeholder="Digite o nome do livro, autor ou gênero"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           className="search-input"
         />
-
+        <button type="submit" className="search-button">Buscar</button>
         <button type="button" className="register-button" onClick={handleRegisterBookClick}>Registrar Livro</button>
       </form>
 
       {loading && <p>Carregando...</p>}
 
-      <div className="books-list1">
+      <div className="books-list">
         {books.map((book) => {
           const volumeInfo = book.volumeInfo;
           return (

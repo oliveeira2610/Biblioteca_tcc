@@ -121,10 +121,11 @@ function SearchBooks() {
   return (
     <div className="search-books-container floating-background">
       <FloatingLetters />
-      <h1>ACERVO</h1>
+      <h1>📚 Biblioteca</h1>
       <form onSubmit={handleSearch} className="search-form">
         <input
           type="text"
+          placeholder="Pesquisar livros..."
           value={query}
           onChange={(e) => {
             const newQuery = e.target.value;
@@ -133,8 +134,6 @@ function SearchBooks() {
           }}
           className="search-input"
         />
-
-
 
 
       </form>

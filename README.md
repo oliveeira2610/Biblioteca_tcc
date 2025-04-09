@@ -1,32 +1,6 @@
 LESSIE
 
 
-
-
-RESOLVER COMPATIBILIDADE DE TELAS COM O SISTEMA NOVO
-
-bookstatus - fazer a tela de reserva cadastrar a unidade e n o id na tabela reservas
-
-dps fazer a tela de usuario devolver corretamente as reservas apagando e jogando para historico e fazer notificações funcionarem
-
-
-
-colocar rg para consulta e validação na hora de registrar
-
-
-
-
-fazer aparecer as coisas corretamentes historico e multa e tudo
-
-
-
-
-
-
-
-
-
-
 ATUALIZAÇÕES:
 
 
@@ -72,11 +46,7 @@ criar uma dashboard com informações de quantos livros e quantas vezes foram re
                         JapaJapaJapaJapaJapaJapaJapa
 
 
-finalizar a pagina bookdescription, bgl chato kkkkkkk
-
-fazer o status de multa ficar vermelho e evitdente na aba perfil 
-
-tirar a pagina notificações
+fazer o status de multa ficar vermelho e evitdente na aba perfil JapaJapaJapaJapaJapaJapaJapa
 
 
 

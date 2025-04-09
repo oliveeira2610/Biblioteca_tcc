@@ -97,8 +97,9 @@ function BookDetails() {
         <p><strong>Ano de Publicação:</strong> {bookDetails.ano_publicacao}</p>
         <p><strong>Quantidade disponível:</strong> {bookDetails.quantidade_disponivel}</p>
         <p><strong>Status:</strong> {bookDetails.status}</p>
+        <p><strong>📌 Localização:</strong> {bookDetails.local || "Não informado"}</p>
         <p><strong>📌 Número:</strong> {bookDetails.numero || "Não informado"}</p>
-        <p><strong>Unidades:</strong> {bookDetails.unidades?.join(", ") || "Nenhuma unidade disponível"}</p>
+        <p><strong>📌 Estante:</strong> {bookDetails.estante || "Não informado"}</p>
         <button onClick={handleEditClick}>{editMode ? "Cancelar" : "Editar Informações"}</button>
       </div>
       {editMode && (
@@ -114,7 +115,9 @@ function BookDetails() {
           <input type="number" name="quantidade_disponivel" placeholder="Quantidade Disponível" value={editedBook.quantidade_disponivel || ""} onChange={handleInputChange} />
           <input type="text" name="imagem" placeholder="URL da imagem" value={editedBook.imagem || ""} onChange={handleInputChange} />
           <input type="text" name="status" placeholder="Status" value={editedBook.status || ""} onChange={handleInputChange} />
+          <input type="text" name="local" placeholder="Localização" value={editedBook.local || ""} onChange={handleInputChange} />
           <input type="text" name="numero" placeholder="Número" value={editedBook.numero || ""} onChange={handleInputChange} />
+          <input type="text" name="estante" placeholder="Estante" value={editedBook.estante || ""} onChange={handleInputChange} />
           <button onClick={updateBookDetails}>Salvar Alterações</button>
         </div>
       )}
@@ -134,7 +137,6 @@ function BookDetails() {
                   <p><strong>Data de devolução:</strong> {reserva.data_devolucao ? format(new Date(reserva.data_devolucao), "dd/MM/yyyy") : "N/A"}</p>
                   <p><strong>Multa:</strong> R$ {reserva.multa ? reserva.multa.toFixed(2) : "0.00"}</p>
                   <p><strong>Tempo de atraso:</strong> {calcularDiasAtraso(reserva.data_devolucao) > 0 ? `${calcularDiasAtraso(reserva.data_devolucao)} dias` : "Não atrasado"}</p>
-                  <p><strong>Unidade:</strong> {reserva.unidade || "Não especificada"}</p>
                 </div>
               ))}
             </div>
