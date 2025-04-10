@@ -32,7 +32,7 @@ const Navbar = () => {
       <div className="navbar-container">
         <div className="logo_ola">
           <img src="src/assets/img/Logo_lessie.png" className="Imglogo" />
-          <div className="user-greeting">Olá, {userName}!</div>
+          <div className="user-greeting">Bem vindo, {userName}!</div>
         </div>
         <ul className="nav-links">
           <li>

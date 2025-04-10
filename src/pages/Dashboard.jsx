@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import "../../src/styles/global.css";
+import "../../src/styles/colors.css";
 import "../../src/styles/dashboard.css"; // Adicione um arquivo CSS para os estilos
 
 
@@ -79,41 +80,53 @@ const Dashboard = () => {
   }, []);
 
   return (
+    <div className="body-dashboard">
     <div className="dashboard floating-background">
       <FloatingLetters />
-      <h1>Dashboard da Biblioteca</h1>
+      <div className="cards-grandes">
 
-      <Link to="/addBooks" className="card">
-        <h2>Adicionar Livros</h2>
-  
-      </Link>
-
-
-      <Link to="/manage-database-books" className="card">
-        <h2>Total de Livros</h2>
-        <p>{data.totalBooks}</p>
-      </Link>
-
-      <Link to="/users" className="card">
-        <h2>Total de Usuários</h2>
-        <p>{data.totalUsers}</p>
-      </Link>
-
-      <Link to="/reservedBooks" className="card">
-        <h2>Total de Livros Alugados</h2>
-        <p>{data.totalRented}</p>
-      </Link>
       
-      <Link to="/historicoReservas" className="card">
-        <h2>Total de Livros Devolvidos</h2>
-        <p>{data.totalReturned}</p>
-      </Link>
+        <Link to="/addBooks" className="card-grande">
+          <h2 id="textos-cards-add" >Adicionar Livros</h2>
+    
+        </Link>
+      </div>
 
-      <Link to="/multasUsuarios" className="card">
-        <h2>Total de Multas Aplicadas</h2>
-        <p>R$ {data.totalFines}</p>
-      </Link>
-      
+      <div className="cards-meio">
+
+        
+        <Link to="/manage-database-books" className="card">
+          <h2 id="textos-cards">Total de Livros</h2>
+          <p id="textos-cards">{data.totalBooks}</p>
+        </Link>
+
+        <Link to="/users" className="card">
+          <h2 id="textos-cards">Total de Usuários</h2>
+          <p id="textos-cards">{data.totalUsers}</p>
+        </Link>
+
+        <Link to="/reservedBooks" className="card">
+          <h2 id="textos-cards">Total de Livros Alugados</h2>
+          <p id="textos-cards">{data.totalRented}</p>
+        </Link>
+        
+        <Link to="/historicoReservas" className="card">
+          <h2 id="textos-cards">Total de Livros Devolvidos</h2>
+          <p id="textos-cards">  {data.totalReturned}</p>
+        </Link>
+
+      </div>
+
+      <div className="cards-grandes"> 
+
+        <Link to="/multasUsuarios" className="card-grande">
+          <h2 id="textos-cards"> Total de Multas Aplicadas</h2>
+          <p id="textos-cards">R$ {data.totalFines}</p>
+        </Link>
+
+      </div>
+
+    </div>
     </div>
   );
 };

@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from "react";
 import "../../src/styles/global.css";
 import "../../src/styles/home.css";
-import "../../src/styles/book-card.css";
+import { useNavigate } from "react-router-dom";
+
 
 function Home() {
   const [randomBooks, setRandomBooks] = useState([]);
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     fetchRandomBooks();
   }, []);
+  
 
   const fetchRandomBooks = async () => {
     try {
@@ -26,16 +30,25 @@ function Home() {
     }
   };
 
+  const handleCardClick = (bookId) => {
+    navigate(`/book/${bookId}`);
+  };
+  
+
   return (
     <div className="home-container">
       <div className="fodacitron">
         <div className="img-wrapper">
           <div className="img-home"></div>
           <div className="text-overlay">
-            <p>Bem-vindo ao Lessie</p>
-            <p className="Lessie-logo">LESSIE</p>
-            <p className="putaqpariu">“ Mergulhar no mundo da leitura, permite-nos viajar sem tirar os pés do chão “
-              - Iolanda Brazão</p>
+            <p id="titulo-home">Bem-vindo ao Lessie</p>
+            <p id="nome-site" className="Lessie-logo">
+              LESSIE
+            </p>
+            <p id="putaqpariu" className="putaqpariu">
+              “ Mergulhar no mundo da leitura, permite-nos viajar sem tirar os
+              pés do chão “ - Iolanda Brazão
+            </p>
           </div>
         </div>
       </div>
@@ -48,19 +61,23 @@ function Home() {
         <div className="livros-recomendados">
           {randomBooks.length > 0 ? (
             randomBooks.map((book) => (
-              <div key={book.id} className="book-card">
+              <div
+                key={book.id}
+                className="book-card-home"
+                onClick={() => handleCardClick(book.id)}
+                style={{ cursor: "pointer" }}
+              >
                 {book.imagem ? (
                   <img
                     src={book.imagem}
                     alt={book.nome_do_livro}
-                    className="book-card-image"
+                    className="book-card-image-home"
                   />
                 ) : (
                   <div className="no-image-placeholder">Sem imagem</div>
                 )}
-                <h3 className="book-card-title">{book.nome_do_livro}</h3>
-                <p className="book-card-author">{book.autor}</p>
-                
+                <h3 className="book-card-title-home">{book.nome_do_livro}</h3>
+                <p className="book-card-author-home">{book.autor}</p>
                 
               </div>
             ))
@@ -70,10 +87,9 @@ function Home() {
         </div>
       </div>
       <footer>
-    <p>&copy; 2025 Biblioteca XYZ. Todos os direitos reservados.</p>
-    <p>Contato: biblioteca@email.com | Telefone: (99) 9999-9999</p>
-</footer>
-
+        <p>&copy; 2025 Biblioteca XYZ. Todos os direitos reservados.</p>
+        <p>Contato: biblioteca@email.com | Telefone: (99) 9999-9999</p>
+      </footer>
     </div>
   );
 }

@@ -1,0 +1,27 @@
+.gerencialivr {
+    color: var(--marrom);
+    font-size: 3vh;
+    padding: 3vh;
+}
+
+.search-input-manage { 
+    margin-left: 30vw;
+    background-color: var(--marrom-claro);
+    height: 3vh;
+    box-shadow: 0px 0px 12px 5px #BD9B75;
+    width: 75vh;
+    padding: 0.8rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 12px;
+    transition: border-color 0.3s ease;
+  }
+
+  .books-list-manage {
+    padding-left: 11.4vh;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    padding-top: 7vh;
+    padding-bottom: 6vh;
+}

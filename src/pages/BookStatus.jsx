@@ -13,13 +13,14 @@ function BookStatus() {
 
   useEffect(() => {
     const fetchBookDetails = async () => {
+      
       try {
         const response = await fetch(`http://localhost:3001/livros/${id}`);
         if (!response.ok) {
           throw new Error("Livro não encontrado");
         }
         const data = await response.json();
-        setBook(data);
+        setBook(data.livro);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -65,33 +66,31 @@ function BookStatus() {
       return;
     }
   
-    const currentDate = new Date();
-    const returnDate = new Date(currentDate);
-    returnDate.setDate(currentDate.getDate() + 7);
-  
     try {
-      const response = await fetch("http://localhost:3001/reservas", {
+      const reservationResponse = await fetch("http://localhost:3001/reservas", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          livro_id: id,
-          usuario_id: user?.id,
-          data_reserva: currentDate.toISOString(),
-          data_devolucao: returnDate.toISOString(),
+          livro_id: book.id, // ID do livro
+          usuario_id: user?.id, // ID do usuário
+          data_reserva: new Date().toISOString(),
+          data_devolucao: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 dias para devolução
           status: "Reservado",
           multa: 0,
         }),
       });
   
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Erro ao reservar o livro.");
+      const reservationData = await reservationResponse.json();
+  
+      if (!reservationResponse.ok) {
+        throw new Error(reservationData.error || "Erro ao reservar o livro.");
       }
   
-      alert("Reserva realizada com sucesso!");
+      alert(`Reserva realizada com sucesso! Unidade reservada: ${reservationData.unidade}`);
       navigate("/search");
-    } catch (err) {
-      alert(err.message);
+    } catch (error) {
+      console.error("Erro ao reservar livro:", error);
+      alert(error.message || "Erro ao reservar livro. Tente novamente.");
     }
   };
   

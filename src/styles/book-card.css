@@ -1,14 +1,16 @@
 /* Estilização dos cards de livros */
+
 .book-card {
-    background: #BD9B75;
+    background-color: #FFF6D3;
     border-radius: 8px;
     box-shadow: 0px 0px 10px 5px #BD9B75;
-    padding: 15px;
+    padding: 16px;
     width: 200px;
     text-align: center;
     cursor: pointer;
     transition: transform 0.2s;
     align-items: center;
+
   }
   
   .book-card:hover {
@@ -26,7 +28,7 @@
   .no-image-placeholder {
     width: 100px;
     height: 150px;
-    background: #ddd;
+    background: #dddddd;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -38,12 +40,13 @@
   .book-card-title {
     font-size: 16px;
     font-weight: bold;
-    color: #F0D678;
+    color: var(--marrom-primario);
   }
   
   .book-card-author {
     font-size: 14px;
-    color: #555555;
+    color: var(---marrom-escuro);
+    font-style: italic;
   }
   
   .book-card-status {
@@ -65,12 +68,28 @@
     font-size: 12px;
     color: #333;
   }
-
-
   
  /* Lista de livros */
-  .books-list {
+  .books-list{
     display: flex;
     flex-wrap: wrap;
     gap: 15px;
   }
+
+
+  @media screen and (max-width: 1440px){
+    .book-card-title {
+      font-size: 12px;
+      font-weight: bold;
+      color: var(--marrom-primario);
+
+    }
+    .book-card p{
+      height: 30px;
+    } 
+    .book-card{
+      display: flex;
+      flex-direction: column;
+
+    }
+    }

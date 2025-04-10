@@ -1,182 +1,11 @@
-// import React, { useEffect, useState } from 'react';
-// import { useNavigate } from 'react-router-dom';
-// import "../../src/styles/global.css";
-// import '../../src/styles/notifications.css'; 
-
-// function Notifications() {
-//   const [notifications, setNotifications] = useState([]);
-//   const [user, setUser] = useState(null);
-//   const navigate = useNavigate();
-
-//   useEffect(() => {
-//     const fetchUserDetails = async () => {
-//       const userId = localStorage.getItem("userId");
-//       if (!userId) {
-//         console.error("Usuário não autenticado");
-//         return null;
-//       }
-  
-//       try {
-//         const response = await fetch(`http://localhost:3001/usuario-logado?id=${userId}`);
-//         if (!response.ok) {
-//           throw new Error("Usuário não encontrado");
-//         }
-//         const data = await response.json();
-//         setUser(data);
-//         return userId;
-//       } catch (err) {
-//         console.error("Erro ao buscar usuário:", err);
-//         return null;
-//       }
-//     };
-  
-//     const fetchNotifications = async (userId) => {
-//       if (!userId) return;
-//       try {
-//         const response = await fetch(`http://localhost:3001/notifications/${userId}`);
-//         if (!response.ok) {
-//           throw new Error("Erro ao buscar notificações");
-//         }
-//         const data = await response.json();
-//         setNotifications(data);
-//       } catch (error) {
-//         console.error("Erro ao buscar notificações:", error);
-//       }
-//     };
-  
-//     const loadData = async () => {
-//       const userId = await fetchUserDetails();
-//       if (userId) {
-//         fetchNotifications(userId);
-  
-//         // Atualiza automaticamente as notificações a cada 10 segundos
-//         const interval = setInterval(() => {
-//           fetchNotifications(userId);
-//         }, 10000);
-  
-//         return () => clearInterval(interval);
-//       }
-//     };
-  
-//     loadData();
-//   }, []);
-  
-  
-
-//   const clearAllNotifications = async () => {
-//     if (!user?.id) {
-//       console.error("Usuário não autenticado");
-//       return;
-//     }
-//     try {
-//       const response = await fetch(`http://localhost:3001/notifications/${user.id}`, {
-//         method: "DELETE",
-//       });
-//       if (!response.ok) {
-//         throw new Error("Erro ao deletar notificações");
-//       }
-  
-//       alert("Todas as notificações foram deletadas. Novas notificações aparecerão quando disponíveis.");
-//       setNotifications([]); 
-  
-//       // Buscar novas notificações depois de 5 segundos
-//       setTimeout(() => {
-//         fetch(`http://localhost:3001/notifications/${user.id}`)
-//           .then((response) => response.json())
-//           .then((data) => setNotifications(data))
-//           .catch((error) => console.error("Erro ao buscar notificações:", error));
-//       }, 5000);
-//     } catch (error) {
-//       console.error("Erro ao deletar notificações:", error);
-//     }
-//   };
-  
-  
-
-//   const cancelBookNotification = async (bookId) => {
-//     if (!user?.id) {
-//       console.error("Usuário não autenticado");
-//       return;
-//     }
-//     try {
-//       const response = await fetch(`http://localhost:3001/notifications/${user.id}/${bookId}`, {
-//         method: "DELETE",
-//       });
-//       if (!response.ok) {
-//         throw new Error("Erro ao deletar notificações do livro");
-//       }
-//       setNotifications((prevNotifications) =>
-//         prevNotifications.filter((notification) => notification.book_id !== bookId)
-//       );
-//       alert("Notificações do livro deletadas com sucesso.");
-//     } catch (error) {
-//       console.error("Erro ao deletar notificações do livro:", error);
-//     }
-//   };
-
-//   return (
-//     <div className="notifications-page-container">
-//       <h1>Notificações</h1>
-//       <button onClick={clearAllNotifications} className="clear-all-button">
-//         Limpar Todas as Notificações
-//       </button>
-//       {notifications.length > 0 ? (
-//         <div className="books-list">
-//           {notifications.map((notification, index) => (
-//             <div
-//               key={index}
-//               className="book-card"
-//               onClick={() => navigate(`/BookDescription/${notification.book_id}`)}
-//             >
-//               {notification.imagem ? (
-//                 <img
-//                   src={notification.imagem}
-//                   alt={notification.book_name}
-//                   className="book-card-image"
-//                 />
-//               ) : (
-//                 <div className="no-image-placeholder">Sem imagem</div>
-//               )}
-//               <h3 className="book-card-title">{notification.book_name}</h3>
-//               <p className="book-card-author">{notification.autor}</p>
-//               <p
-//                 className={`book-availability ${
-//                   notification.book_status === 'Disponível' ? 'available' : 'unavailable'
-//                 }`}
-//               >
-//                 {notification.book_status === 'Disponível' ? 'Disponível' : 'Indisponível'}
-//               </p>
-//               <p className="notification-message">{notification.message}</p>
-//               <small>{new Date(notification.timestamp).toLocaleString()}</small>
-//               <button
-//                 onClick={(e) => {
-//                   e.stopPropagation();
-//                   cancelBookNotification(notification.book_id);
-//                 }}
-//                 className="cancel-notification-button"
-//               >
-//                 Limpar Notificação
-//               </button>
-//             </div>
-//           ))}
-//         </div>
-//       ) : (
-//         <p>Sem notificações no momento</p>
-//       )}
-//     </div>
-//   );
-// }
-
-// export default Notifications;
-
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import "../../src/styles/global.css";
+import '../../src/styles/global.css';
 import '../../src/styles/notifications.css';
 import '../../src/styles/FloatingBackground.css';
 
 function FloatingLetters() {
-  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".split("");
+  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'.split('');
   const [letterElements, setLetterElements] = useState([]);
 
   useEffect(() => {
@@ -192,23 +21,23 @@ function FloatingLetters() {
         opacity: Math.random() * 0.1 + 0.05,
       }));
     };
-  
-      setLetterElements(generateInitialLetters());
-    }, []);
-  
-    useEffect(() => {
-      const interval = setInterval(() => {
-        setLetterElements((prevLetters) =>
-          prevLetters.map((letter) => ({
-            ...letter,
-            left: (letter.left + letter.speedX + 100) % 100,
-            top: (letter.top + letter.speedY + 100) % 100,
-          }))
-        );
-      }, 50);
-  
-      return () => clearInterval(interval);
-    }, []);
+
+    setLetterElements(generateInitialLetters());
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setLetterElements((prevLetters) =>
+        prevLetters.map((letter) => ({
+          ...letter,
+          left: (letter.left + letter.speedX + 100) % 100,
+          top: (letter.top + letter.speedY + 100) % 100,
+        }))
+      );
+    }, 50);
+
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div className="floating-letters-container">
@@ -237,97 +66,77 @@ function Notifications() {
 
   useEffect(() => {
     const fetchUserDetails = async () => {
-      const userId = localStorage.getItem("userId");
-      if (!userId) {
-        console.error("Usuário não autenticado");
-        return null;
-      }
-  
+      const userId = localStorage.getItem('userId');
+      if (!userId) return;
+
       try {
         const response = await fetch(`http://localhost:3001/usuario-logado?id=${userId}`);
-        if (!response.ok) {
-          throw new Error("Usuário não encontrado");
-        }
         const data = await response.json();
         setUser(data);
         return userId;
       } catch (err) {
-        console.error("Erro ao buscar usuário:", err);
+        console.error('Erro ao buscar usuário:', err);
         return null;
       }
     };
-  
+
     const fetchNotifications = async (userId) => {
-      if (!userId) return;
       try {
         const response = await fetch(`http://localhost:3001/notifications/${userId}`);
-        if (!response.ok) {
-          throw new Error("Erro ao buscar notificações");
-        }
         const data = await response.json();
         setNotifications(data);
-      } catch (error) {
-        console.error("Erro ao buscar notificações:", error);
+      } catch (err) {
+        console.error('Erro ao buscar notificações:', err);
       }
     };
-  
+
     const loadData = async () => {
       const userId = await fetchUserDetails();
       if (userId) {
         fetchNotifications(userId);
-        const interval = setInterval(() => {
-          fetchNotifications(userId);
-        }, 10000);
+        const interval = setInterval(() => fetchNotifications(userId), 10000);
         return () => clearInterval(interval);
       }
     };
-  
+
     loadData();
   }, []);
+
+  const cancelBookNotification = (bookId) => {
+    // lógica para cancelar a notificação (ainda a ser implementada)
+    console.log(`Cancelando notificação do livro ${bookId}`);
+  };
 
   return (
     <div className="notifications-page-container floating-background">
       <FloatingLetters />
-      <h1>Notificações</h1>
-      <button onClick={() => setNotifications([])} className="clear-all-button">
-        Limpar Todas as Notificações
-      </button>
+      <h2 className="notifications-title">Notificações</h2>
       {notifications.length > 0 ? (
-        <div className="books-list">
-
-
+        <div className="notifications-list">
           {notifications.map((notification, index) => (
             <div
               key={index}
-              className="book-card"
+              className="notification-card"
               onClick={() => navigate(`/BookDescription/${notification.book_id}`)}
             >
-              {notification.imagem ? (
-                <img
-                  src={notification.imagem}
-                  alt={notification.book_name}
-                  className="book-card-image"
-                />
-              ) : (
-                <div className="no-image-placeholder">Sem imagem</div>
-              )}
-              <h3 className="book-card-title">{notification.book_name}</h3>
-              <p className="book-card-author">{notification.autor}</p>
-              <p
-                className={`book-availability ${
-                  notification.book_status === 'Disponível' ? 'available' : 'unavailable'
-                }`}
-              >
-                {notification.book_status === 'Disponível' ? 'Disponível' : 'Indisponível'}
+              <p className="notification-date">
+                {new Date(notification.timestamp).toLocaleDateString('pt-BR')}
               </p>
-              <p className="notification-message">{notification.message}</p>
-              <small>{new Date(notification.timestamp).toLocaleString()}</small>
+              <p className="notification-message">
+                <strong>{notification.book_name || 'Notificação'}</strong>{' '}
+                {notification.message}
+              </p>
+              {notification.book_status && (
+                <p className={`notification-availability ${notification.book_status === 'Disponível' ? 'available' : 'unavailable'}`}>
+                  {notification.book_status}
+                </p>
+              )}
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   cancelBookNotification(notification.book_id);
                 }}
-                className="cancel-notification-button"
+                className="clear-notification-button"
               >
                 Limpar Notificação
               </button>
@@ -335,11 +144,10 @@ function Notifications() {
           ))}
         </div>
       ) : (
-        <p>Sem notificações no momento</p>
+        <p className="no-notifications-message">Sem notificações no momento</p>
       )}
     </div>
   );
 }
 
 export default Notifications;
-

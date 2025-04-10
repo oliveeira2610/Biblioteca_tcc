@@ -110,7 +110,7 @@ function PerfilUsuario() {
               <img src="src/assets/img/perfil_icone.png" alt="" />
             </div>
             <div className="dados-pessoais">
-              <p id="nome_p">
+              <p>
                 <strong>Nome:</strong> {userInfo.userName}
               </p>
               <p>
@@ -133,11 +133,12 @@ function PerfilUsuario() {
           </div>
           <div className="direita_primeira">
             <h2 id="suas_multas">SUAS MULTAS</h2>
-            <div className="multas_perfil"></div>
+            <div className="multas_perfil">
+                {userInfo.multa}
+            </div>
             <h2 id="livros_reservados_h2"> LIVROS RESERVADOS</h2>
             <div className="reservados_perfil">
               <div className="livros-reservados">
-                <h2>Livros Reservados</h2>
                 {userInfo.reservas.length > 0 ? (
                   <div className="books-list">
                     {userInfo.reservas.map((reserva) => (
@@ -171,14 +172,63 @@ function PerfilUsuario() {
         <div className="segundo_container">
           <div className="esquerda_segundo">
             <h1>LIVROS QUE VOCÊ ESTÁ ACOMPANHANDO</h1>
+
             <div className="livros_acompanhando">
-              dsfdsf
-              </div>
+              {userInfo.watchlist && userInfo.watchlist.length > 0 ? (
+                <div className="books-list">
+                  {userInfo.watchlist.map((book) => (
+                    <div key={book.livroId} className="book-card">
+                      <h3 className="book-card-title">{book.nome_do_livro}</h3>
+                      <button
+                        onClick={() => cancelNotification(book.livroId)}
+                        className="cancel-notification-button"
+                      >
+                        Deixar de Receber Notificações
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p>Você não está acompanhando nenhum livro.</p>
+              )}
+            </div>
           </div>
+
           <div className="direita_segundo">
             <h1>NOTIFICAÇÕES</h1>
-
-            <div className="notificacoes">asdsad</div>
+            <div className="notificacoes">
+              {userInfo.notifications && userInfo.notifications.length > 0 ? (
+                <div className="books-list">
+                  {userInfo.notifications.map((notification, index) => (
+                    <div key={index} className="book-card">
+                      <h3 className="book-card-title">
+                        {notification.book_name}
+                      </h3>
+                      <p className="book-card-author">{notification.autor}</p>
+                      <p
+                        className={`book-availability ${
+                          notification.book_status === "Disponível"
+                            ? "available"
+                            : "unavailable"
+                        }`}
+                      >
+                        {notification.book_status === "Disponível"
+                          ? "Disponível"
+                          : "Indisponível"}
+                      </p>
+                      <p className="notification-message">
+                        {notification.message}
+                      </p>
+                      <small>
+                        {new Date(notification.timestamp).toLocaleString()}
+                      </small>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p>Você ainda não recebeu notificações.</p>
+              )}
+            </div>
           </div>
         </div>
       </div>
