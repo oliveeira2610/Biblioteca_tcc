@@ -133,7 +133,7 @@ function BookStatus() {
         <p><strong>Autor:</strong> {book.autor}</p>
         <p><strong>Editora:</strong> {book.editora}</p>
 
-        <div className="book-details-image">
+        <div className="book-details-image-status">
           {book.imagem ? (
             <img src={book.imagem} alt={book.nome_do_livro} />
           ) : (

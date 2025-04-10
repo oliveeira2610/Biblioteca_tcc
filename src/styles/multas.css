@@ -1,3 +1,51 @@
-.books-list {
+.books-list-multa {
     padding-left: 6vw;
+    flex-wrap: wrap;
+    display: flex;
+    gap: 2vh;
 }
+
+.aplicadass {
+    font-size: 3vh;
+    margin-top: 2.6vh;
+    color: var(--marrom);
+}
+
+.thread1 {
+    padding-left: 43.5vw;
+    padding-top: 0.5vh;
+    color: var(--marrom-escuro);
+    justify-content: space-between;
+}
+
+.ativas1 {
+    font-size: 3vh;
+    margin-top: 2.5vh;
+    color: var(--marrom);
+}
+
+.inputa { 
+    background-color: var(--marrom);
+    height: 1.5vh;
+    width: 7vw;
+    padding: 0.9rem;
+    font-size: 0.923rem;
+    border: none;
+    border-radius: 12px;
+    transition: border-color 0.3s ease;
+    color: var(--branco-diferente);
+    border: none;
+  }
+
+  .botao-multas {
+    background-color: var(--marrom-claro);
+  }
+
+  .botao-multas:hover {
+    background-color: var(--amarelo-suave);
+    color: var(--marrom);
+  }
+
+  .textos3{
+    padding-right: 15px;
+  }

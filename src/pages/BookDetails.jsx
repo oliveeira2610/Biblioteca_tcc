@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { format } from "date-fns";
 import "../../src/styles/global.css";
+import "../../src/styles/colors.css";
 import "../../src/styles/BookDetails.css";
 
 function BookDetails() {
@@ -87,7 +88,7 @@ function BookDetails() {
       <div className="book-image">
         <img src={bookDetails.imagem || "default-image.jpg"} alt={bookDetails.nome_do_livro} />
       </div>
-      <div className="book-info">
+      <div className="book-info1">
         <h1>{bookDetails.nome_do_livro}</h1>
         <p><strong>Autor:</strong> {bookDetails.autor}</p>
         <p><strong>Gênero:</strong> {bookDetails.genero}</p>
@@ -97,7 +98,7 @@ function BookDetails() {
         <p><strong>Ano de Publicação:</strong> {bookDetails.ano_publicacao}</p>
         <p><strong>Quantidade disponível:</strong> {bookDetails.quantidade_disponivel}</p>
         <p><strong>Status:</strong> {bookDetails.status}</p>
-        <p><strong>📌 Número:</strong> {bookDetails.numero || "Não informado"}</p>
+        <p><strong>Número:</strong> {bookDetails.numero || "Não informado"}</p>
         <p><strong>Unidades:</strong> {bookDetails.unidades?.join(", ") || "Nenhuma unidade disponível"}</p>
         <button onClick={handleEditClick}>{editMode ? "Cancelar" : "Editar Informações"}</button>
       </div>
@@ -140,7 +141,7 @@ function BookDetails() {
             </div>
           ))
         ) : (
-          <p>Este livro não tem reservas no momento.</p>
+          null
         )}
       </div>
     </div>

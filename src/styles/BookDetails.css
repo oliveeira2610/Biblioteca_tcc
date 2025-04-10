@@ -1,7 +1,7 @@
 /* Estilos gerais para a página de detalhes do livro */
 .book-details-container {
   font-family: 'Roboto', sans-serif;
-  background-color: #f4f7f6;
+  background-color: var(--marrom);
   color: #333;
   display: flex;
   padding: 2rem;
@@ -9,8 +9,9 @@
   justify-content: center;
   max-width: 1200px;
   margin: 0 auto;
-  border-radius: 8px;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+  border-bottom-right-radius: 8px;
+  border-bottom-left-radius: 8px;
 }
 
 /* Estilo para a imagem do livro */
@@ -25,12 +26,12 @@
   height: auto;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-top: 0rem;
 }
 
 /* Estilo para as informações do livro */
-.book-info {
-  flex: 2;
-  background-color: #ffffff;
+.book-info1 {
+  background-color: var(--marrom-claro);
   padding: 2rem;
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -38,20 +39,20 @@
 }
 
 /* Estilo para os títulos e parágrafos das informações */
-.book-info h1 {
+.book-info1 h1 {
   font-size: 2rem;
-  color: #2a9d8f;
+  color: var(--branco-primario);
   margin-bottom: 1rem;
 }
 
-.book-info p {
+.book-info1 p {
   font-size: 1.1rem;
   line-height: 1.6;
   margin-bottom: 1rem;
-  color: #555;
+  color: var(--branco-diferente);
 }
 
-.book-info p strong {
+.book-info1 p strong {
   color: #333;
   font-weight: bold;
 }
@@ -90,12 +91,12 @@
 
 /* Estilo para os detalhes de reservas */
 .reservation-details {
-  margin-top: 2rem;
-  width: 72%;
+  color: var(--branco-diferente);
 }
 
 .usuario-reservas {
-  margin-bottom: 2rem;
+
+  margin-top: 5vw;
 }
 
 .usuario-reservas h3 {
@@ -140,7 +141,7 @@
 .book-edit {
   margin-top: 20px;
   padding: 20px;
-  background-color: #f8f9fa;
+  background-color: var(--marrom-claro);
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
@@ -148,7 +149,7 @@
 .book-edit h2 {
   font-size: 1.5rem;
   margin-bottom: 15px;
-  color: #333;
+  color: var(--branco-primario);
 }
 
 .book-edit input,
@@ -167,8 +168,8 @@
 }
 
 .book-edit button {
-  background-color: #007bff;
-  color: white;
+  background-color: var(--marrom);
+  color: var(--branco-primario);
   padding: 10px 15px;
   border: none;
   border-radius: 5px;
@@ -178,7 +179,7 @@
 }
 
 .book-edit button:hover {
-  background-color: #0056b3;
+  background-color: var(--marrom-escuro);
 }
 
 

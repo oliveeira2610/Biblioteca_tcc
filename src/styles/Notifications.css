@@ -10,10 +10,15 @@
     font-weight: bold;
     margin-bottom: 15px;
   }
+
+  .titolo {
+    color: var(--marrom);
+    font-size: 2rem;
+  }
   
   /* botão para limpar todas as notificações */
-  .clear-all-notifications-button {
-    background-color: #f44336;
+  .clear-all-button {
+    background-color: var(--marrom);
     color: white;
     padding: 10px 20px;
     border: none;
@@ -22,8 +27,8 @@
     border-radius: 5px;
   }
   
-  .clear-all-notifications-button:hover {
-    background-color: #d32f2f;
+  .clear-all-button:hover {
+    background-color: var(--marrom-claro);
   }
   
   /* lista de notificações */

@@ -69,11 +69,6 @@ function Home() {
           )}
         </div>
       </div>
-      <footer>
-    <p>&copy; 2025 Biblioteca XYZ. Todos os direitos reservados.</p>
-    <p>Contato: biblioteca@email.com | Telefone: (99) 9999-9999</p>
-</footer>
-
     </div>
   );
 }

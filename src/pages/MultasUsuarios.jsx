@@ -53,32 +53,32 @@ const MultasUsuarios = () => {
 
   return (
     <div className="multas-usuarios">
-      <h1>Multas Aplicadas</h1>
-      <table>
+      <h1 className="aplicadass">Multas Aplicadas</h1>
+      <table className="thread1">
         <thead>
           <tr>
             <th>Usuário</th>
             <th>Total de Multas</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="textos">
           {multas.length === 0 ? (
             <tr>
-              <td colSpan="2">Nenhuma multa registrada.</td>
+              <td colSpan="2" className="fe">Nenhuma multa registrada.</td>
             </tr>
           ) : (
             multas.map((multa) => (
               <tr key={multa.usuario_id}>
-                <td>{multa.usuario || "Usuário Desconhecido"}</td>
-                <td>R$ {multa.total_multa ? multa.total_multa.toFixed(2) : "0.00"}</td>
+                <td  className="textos3">{multa.usuario || "Usuário Desconhecido"}</td>
+                <td  className="">R$ {multa.total_multa ? multa.total_multa.toFixed(2) : "0.00"}</td>
               </tr>
             ))
           )}
         </tbody>
       </table>
 
-      <h1>Reservas Ativas</h1>
-      <div className="books-list">
+      <h1 className="ativas1">Reservas Ativas</h1>
+      <div className="books-list-multa">
         {reservasAtivas.length === 0 ? (
           <p>Nenhuma reserva ativa no momento.</p>
         ) : (
@@ -122,12 +122,12 @@ const MultasUsuarios = () => {
               )}
               <div>
                 <input
+                className="inputa"
                   type="number"
-                  placeholder="Definir multa (R$)"
                   value={valorMulta}
                   onChange={(e) => setValorMulta(e.target.value)}
                 />
-                <button onClick={() => handleDefinirMulta(book.reserva_id, valorMulta)}>Definir Multa</button>
+                <button className="botao-multas" onClick={() => handleDefinirMulta(book.reserva_id, valorMulta)}>Definir Multa</button>
               </div>
             </div>
           ))

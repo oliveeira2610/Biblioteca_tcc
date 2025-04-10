@@ -146,7 +146,7 @@ function BookDescription() {
       <button onClick={() => navigate("/search")} className="back-button">
       </button>
       <div className="body-book-description">
-        <div className="book-details-image">
+        <div className="book-details-image-description">
           {bookDetails.imagem ? (
             <img src={bookDetails.imagem} alt={bookDetails.nome_do_livro} />
           ) : (
@@ -172,45 +172,11 @@ function BookDescription() {
             </p>
             <p>
               <strong id="h2-book-info"> Editora:</strong>{" "}
-              {bookDetails.editora || "Não informado"} 
+             <p id="paragrafos"> {bookDetails.editora || "Não informado"} </p>
             </p>
             <strong id="h2-book-info">Sinopse:</strong>
             <div className="sinopse_livro">
               <p> {bookDetails.sinopse || "Sinopse não disponível"}</p>
-            </div>
-
-
-            <h1 className="titulo-book">{bookDetails.nome_do_livro}</h1>
-
-            <div className="h2-e-paragrafos"> 
-              <strong id="h2-book-info">Autor:</strong>{" "}
-              <p id="paragrafos">{bookDetails.autor || "Não informado"} </p>
-            </div>
-            
-            <div className="h2-e-paragrafos">
-              <strong id="h2-book-info">Gênero:</strong>{" "}
-              <p id="paragrafos">{bookDetails.genero || "Não informado"} </p>
-            </div>
-            
-            <div className="h2-e-paragrafos">
-              <strong id="h2-book-info">Data de Lançamento:</strong>{" "}
-              <p id="paragrafos">{bookDetails.ano_publicacao || "Não informado"}</p>
-            </div>
-            
-
-            <div className="h2-e-paragrafos">
-              <strong id="h2-book-info"> Editora:</strong>{" "}
-              <p id="paragrafos"> {bookDetails.editora || "Não informado"} </p>
-            </div>
-
-            <strong id="h2-book-info">Sinopse:</strong>
-
-
-            <div className="sinopse_livro">
-              <p id="paragrafos">
-                {" "}
-                {bookDetails.sinopse || "Sinopse não disponível"}
-              </p>
             </div>
 
 
@@ -255,32 +221,6 @@ function BookDescription() {
               <button className="reserve-button" disabled>
                 Indisponível no momento
               </button>
-            )}
-            {bookDetails.local === "GameEstereggs" && (
-              <button
-                onClick={() => navigate("/dinossauro")}
-                className="esteregg-button"
-              >
-                Acessar Easter Egg 🎮
-              </button>
-            )}
-            {bookDetails.local === "flapbird" && (
-              <button
-                onClick={() => navigate("/flapBird")}
-                className="esteregg-button"
-              >
-                Acessar Easter Egg 🎮
-              </button>
-            )}
-            {bookDetails.local === "Doom" && (
-              <a
-                href="https://doompdf.pages.dev/doom.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="esteregg-button"
-              >
-                Acessar Easter Egg 🎮
-              </a>
             )}
           </div>
         </div>
