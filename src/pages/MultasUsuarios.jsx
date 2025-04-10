@@ -31,22 +31,34 @@ const MultasUsuarios = () => {
     }
   };
 
+  const fetchData = async () => {
+    await fetchMultas();
+    await fetchReservasAtivas();
+  };
+
   useEffect(() => {
-    fetchMultas();
-    fetchReservasAtivas();
+    fetchData();
   }, []);
 
-  const handleDefinirMulta = async (reservaId, valorMulta) => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!reservaId || !valorMulta) {
+      alert("Preencha todos os campos.");
+      return;
+    }
     try {
-      await axios.post(`http://localhost:3001/adicionar-multa`, {
+      await axios.post("http://localhost:3001/adicionar-multa", {
         reserva_id: reservaId,
-        valor_multa: parseFloat(valorMulta)
+        valor_multa: parseFloat(valorMulta),
       });
-      alert("Multa definida com sucesso!");
-      fetchMultas();
-      fetchReservasAtivas();
+      alert("Multa adicionada com sucesso!");
+      setReservaId("");
+      setValorMulta("");
+
+      // Atualizar a lista de multas e reservas ativas
+      fetchData();
     } catch (error) {
-      alert("Erro ao definir multa.");
+      alert("Erro ao adicionar multa.");
       console.error(error);
     }
   };
@@ -54,6 +66,27 @@ const MultasUsuarios = () => {
   return (
     <div className="multas-usuarios">
       <h1>Multas Aplicadas</h1>
+      <form onSubmit={handleSubmit} className="form-multa">
+        <label>ID da Reserva:</label>
+        <input
+          type="number"
+          value={reservaId}
+          onChange={(e) => setReservaId(e.target.value)}
+          required
+        />
+        <label>Valor da Multa (R$):</label>
+        <input
+          type="number"
+          step="0.01"
+          value={valorMulta}
+          onChange={(e) => setValorMulta(e.target.value)}
+          required
+        />
+        <button type="submit" disabled={!reservaId || !valorMulta}>
+          Adicionar Multa
+        </button>
+      </form>
+
       <table>
         <thead>
           <tr>
@@ -70,7 +103,9 @@ const MultasUsuarios = () => {
             multas.map((multa) => (
               <tr key={multa.usuario_id}>
                 <td>{multa.usuario || "Usuário Desconhecido"}</td>
-                <td>R$ {multa.total_multa ? multa.total_multa.toFixed(2) : "0.00"}</td>
+                <td>
+                  R$ {multa.total_multa ? multa.total_multa.toFixed(2) : "0.00"}
+                </td>
               </tr>
             ))
           )}
@@ -83,13 +118,16 @@ const MultasUsuarios = () => {
           <p>Nenhuma reserva ativa no momento.</p>
         ) : (
           reservasAtivas.map((book) => (
-            <div key={book.livro_id} className="book-card">
+            <div
+              key={book.livro_id}
+              className="book-card"
+              onClick={() => navigate(`/book/${book.livro_id}`)}
+            >
               {book.imagem ? (
                 <img
                   src={book.imagem}
                   alt={book.nome_do_livro}
                   className="book-card-image"
-                  onClick={() => navigate(`/book/${book.livro_id}`)}
                 />
               ) : (
                 <div className="no-image-placeholder">Sem imagem</div>
@@ -101,37 +139,30 @@ const MultasUsuarios = () => {
                 {book.autor || "Autor desconhecido"}
               </p>
               <p>
-                <strong>Usuário que Reservou:</strong> {book.usuario || "Não informado"}
+                <strong>Usuário que Reservou:</strong>{" "}
+                {book.usuario || "Não informado"}
               </p>
               <p>
                 <strong>ID da Reserva:</strong> {book.reserva_id || "N/A"}
               </p>
               <p>
-                <strong>Unidade:</strong> {reserva.unidade || "Não especificada"}
-              </p>
-              <p>
-                <strong>Data de Devolução:</strong> {book.data_devolucao ? new Date(book.data_devolucao).toLocaleDateString() : "Data não definida"}
+                <strong>Data de Devolução:</strong>{" "}
+                {book.data_devolucao
+                  ? new Date(book.data_devolucao).toLocaleDateString()
+                  : "Data não definida"}
               </p>
               <p>
                 <strong>Editora:</strong> {book.editora || "Não informada"}
               </p>
               <p>
-                <strong>Status da Reserva:</strong> {book.reserva_status || "Indefinido"}
+                <strong>Status da Reserva:</strong>{" "}
+                {book.reserva_status || "Indefinido"}
               </p>
               {book.multa > 0 && (
                 <p className="book-card-fine">
                   Multa pendente: R$ {book.multa.toFixed(2)}
                 </p>
               )}
-              <div>
-                <input
-                  type="number"
-                  placeholder="Definir multa (R$)"
-                  value={valorMulta}
-                  onChange={(e) => setValorMulta(e.target.value)}
-                />
-                <button onClick={() => handleDefinirMulta(book.reserva_id, valorMulta)}>Definir Multa</button>
-              </div>
             </div>
           ))
         )}
