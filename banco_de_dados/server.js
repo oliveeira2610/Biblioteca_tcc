@@ -2,6 +2,8 @@ const express = require("express");
 const sqlite3 = require("sqlite3").verbose();
 const cors = require("cors");
 const cron = require("node-cron");
+const path = require('path');
+
 
 const app = express();
 const PORT = 3001;
@@ -17,6 +19,18 @@ async function openDb() {
   return sqlite.open({
     filename: "./books.db",
     driver: sqlite3.Database,
+  });
+}
+
+// Função para obter a conexão com o banco de dados
+function getDatabaseConnection() {
+  const dbPath = path.resolve(__dirname, 'books.db'); // Substitua pelo caminho correto do seu banco de dados
+  return new sqlite3.Database(dbPath, (err) => {
+    if (err) {
+      console.error('Erro ao conectar ao banco de dados:', err.message);
+    } else {
+      console.log('Conectado ao banco de dados SQLite.');
+    }
   });
 }
 
@@ -119,17 +133,18 @@ db.serialize(() => {
         numero INTEGER
     );
 
-    CREATE TABLE IF NOT EXISTS reservas (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        livro_id INTEGER NOT NULL,
-        usuario_id INTEGER NOT NULL,
-        data_reserva TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-        data_devolucao TIMESTAMP,
-        status TEXT,
-        multa REAL,
-        unidade_id INTEGER,
-        FOREIGN KEY (livro_id) REFERENCES livros(id) ON DELETE CASCADE,
-        FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
+    CREATE TABLE reservas (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      livro_id INTEGER NOT NULL,
+      unidade INTEGER NOT NULL,
+      usuario_id INTEGER NOT NULL,
+      data_reserva TEXT NOT NULL,
+      data_devolucao TEXT NOT NULL,
+      status TEXT NOT NULL,
+      multa REAL NOT NULL DEFAULT 0,
+      FOREIGN KEY (livro_id) REFERENCES livros(id),
+      FOREIGN KEY (unidade) REFERENCES unidades_livros(unidade),
+      FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
     );
 
     CREATE TABLE IF NOT EXISTS notificacoes (
@@ -180,9 +195,12 @@ db.serialize(() => {
     CREATE TABLE IF NOT EXISTS unidades_livros (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         livro_id INTEGER NOT NULL,
+        unidade INTEGER NOT NULL, -- Identificador único dentro do grupo do livro
         status TEXT NOT NULL DEFAULT 'Disponível',
-        FOREIGN KEY (livro_id) REFERENCES livros(id) ON DELETE CASCADE
+        FOREIGN KEY (livro_id) REFERENCES livros(id) ON DELETE CASCADE,
+        UNIQUE(livro_id, unidade) -- Garante que cada unidade seja única para um livro
     );
+
   `);
 });
 
@@ -751,10 +769,11 @@ app.get("/livros", (req, res) => {
   });
 });
 
-app.get("/livros/:id", (req, res) => {
+app.get('/livros/:id', (req, res) => {
   const { id } = req.params;
-
-  const query = `
+  const db = getDatabaseConnection();
+  
+  const queryLivro = `
     SELECT livros.*, json_group_array(
       json_object('id', unidades_livros.id, 'status', unidades_livros.status)
     ) AS unidades
@@ -763,54 +782,122 @@ app.get("/livros/:id", (req, res) => {
     WHERE livros.id = ?
     GROUP BY livros.id
   `;
-
-  db.get(query, [id], (err, row) => {
+  
+  db.get(queryLivro, [id], (err, livro) => {
     if (err) {
       console.error("Erro ao buscar livro:", err);
       return res.status(500).json({ error: "Erro ao buscar livro." });
     }
-    if (!row) {
+    if (!livro) {
       return res.status(404).json({ error: "Livro não encontrado." });
     }
 
-    row.unidades = row.unidades ? JSON.parse(row.unidades) : [];
+    livro.unidades = livro.unidades ? JSON.parse(livro.unidades) : [];
 
-    res.status(200).json(row);
+    const queryReservas = `
+      SELECT 
+        reservas.id AS reserva_id,
+        reservas.unidade,
+        reservas.usuario_id,
+        reservas.data_reserva,
+        reservas.data_devolucao,
+        reservas.status AS reserva_status,
+        reservas.multa,
+        usuarios.userName AS userName_usuario,
+        usuarios.email AS usuario_email,
+        usuarios.cpf AS usuario_cpf,
+        usuarios.telefone AS usuario_telefone
+      FROM reservas
+      INNER JOIN usuarios ON reservas.usuario_id = usuarios.id
+      WHERE reservas.livro_id = ?
+    `;
+
+    db.all(queryReservas, [id], (err, rows) => {
+      if (err) {
+        console.error('Erro ao buscar reservas:', err.message);
+        return res.status(500).json({ error: 'Erro ao buscar reservas.' });
+      }
+      
+      const reservasPorUsuario = rows.reduce((acc, row) => {
+        const usuarioIndex = acc.findIndex((u) => u.usuario_id === row.usuario_id);
+        const reserva = {
+          reserva_id: row.reserva_id,
+          reserva_status: row.reserva_status,
+          data_reserva: row.data_reserva,
+          data_devolucao: row.data_devolucao,
+          multa: row.multa,
+          unidade: row.unidade,
+        };
+  
+        if (usuarioIndex === -1) {
+          acc.push({
+            usuario_id: row.usuario_id,
+            userName_usuario: row.userName_usuario,
+            usuario_email: row.usuario_email,
+            usuario_cpf: row.usuario_cpf,
+            usuario_telefone: row.usuario_telefone,
+            reservas: [reserva],
+          });
+        } else {
+          acc[usuarioIndex].reservas.push(reserva);
+        }
+        return acc;
+      }, []);
+
+      res.status(200).json({ livro, reservasPorUsuario });
+    });
   });
 });
 
-app.post('/unidades-livro', (req, res) => {
-  const { livro_id, status } = req.body;
 
-  if (!livro_id || !status) {
-    return res.status(400).json({ error: 'Livro ID e status são obrigatórios.' });
+app.post('/unidades-livro', (req, res) => {
+  const { livro_id, unidade, status } = req.body;
+
+  // Validação dos dados recebidos
+  if (!livro_id || !unidade || !status) {
+    return res.status(400).json({ error: 'Dados insuficientes.' });
   }
 
-  db.run(
-    `INSERT INTO unidades_livros (livro_id, status) VALUES (?, ?)`,
-    [livro_id, status],
-    function (err) {
-      if (err) {
-        console.error('Erro ao adicionar unidade:', err);
-        return res.status(500).json({ error: 'Erro ao adicionar unidade.' });
+  try {
+    const db = getDatabaseConnection();
+    db.run(
+      'INSERT INTO unidades_livros (livro_id, unidade, status) VALUES (?, ?, ?)',
+      [livro_id, unidade, status],
+      function (err) {
+        if (err) {
+          console.error('Erro ao registrar unidade:', err.message);
+          return res.status(500).json({ error: 'Erro ao registrar unidade.' });
+        }
+        res.status(201).json({ message: 'Unidade registrada com sucesso.' });
       }
-      res.status(201).json({ id: this.lastID, livro_id, status });
-    }
-  );
+    );
+  } catch (error) {
+    console.error('Erro ao registrar unidade:', error);
+    res.status(500).json({ error: 'Erro ao registrar unidade.' });
+  }
 });
 
 
-
-// 🔹 Atualizar status do livro
-app.put("/livros/:id", (req, res) => {
+// Atualizar o status do livro
+app.put('/livros/:id', (req, res) => {
+  const { id } = req.params;
   const { status } = req.body;
+
+  if (!status) {
+    return res.status(400).json({ error: 'O campo status é obrigatório.' });
+  }
+
+  const db = getDatabaseConnection();
   db.run(
-    `UPDATE livros SET status = ? WHERE id = ?`,
-    [status, req.params.id],
+    'UPDATE livros SET status = ? WHERE id = ?',
+    [status, id],
     function (err) {
-      if (err)
-        return res.status(500).json({ error: "Erro ao atualizar status." });
-      res.status(200).json({ message: "Status atualizado com sucesso!" });
+      if (err) {
+        console.error('Erro ao atualizar status do livro:', err.message);
+        return res.status(500).json({ error: 'Erro ao atualizar status do livro.' });
+      }
+
+      res.status(200).json({ message: 'Status do livro atualizado com sucesso.' });
     }
   );
 });
@@ -876,7 +963,7 @@ app.get("/livro-detalhes/:id", (req, res) => {
       reservas.data_reserva,
       reservas.data_devolucao,
       reservas.multa,
-      reservas.unidade_id, -- Inclui unidade_id
+      reservas.unidade,
       usuarios.id AS usuario_id,
       usuarios.userName AS nome_usuario,
       usuarios.email AS usuario_email,
@@ -888,7 +975,7 @@ app.get("/livro-detalhes/:id", (req, res) => {
     WHERE livros.id = ?
     GROUP BY 
       livros.id, livros.nome_do_livro, livros.autor, livros.genero, livros.editora, livros.imagem, livros.sinopse, livros.isbn, 
-      livros.ano_publicacao, livros.quantidade_disponivel, livros.status, livros.numero, reservas.unidade_id;
+      livros.ano_publicacao, livros.quantidade_disponivel, livros.status, livros.numero, reservas.unidade;
   `;
 
   db.all(query, [id], (err, rows) => {
@@ -912,7 +999,7 @@ app.get("/livro-detalhes/:id", (req, res) => {
         data_reserva: row.data_reserva,
         data_devolucao: row.data_devolucao,
         multa: row.multa,
-        unidade_id: row.unidade_id, // Inclui unidade_id
+        unidade: row.unidade, // Inclui unidade
       };
 
       if (usuarioIndex > -1) {
@@ -1092,21 +1179,41 @@ app.post("/register", async (req, res) => {
 
 /////////////////////// RESERVAS ///////////////////////
 
-// Rota para deletar a reserva
-app.delete("/reservas/:livro_id", (req, res) => {
-  const { livro_id } = req.params;
 
-  db.run("DELETE FROM reservas WHERE livro_id = ?", [livro_id], function (err) {
+
+app.delete('/livros/:id', (req, res) => {
+  const { id } = req.params;
+
+  const db = getDatabaseConnection();
+
+  // Excluir as notificações associadas ao livro
+  db.run('DELETE FROM livros_para_notificacao WHERE livro_id = ?', [id], function (err) {
     if (err) {
-      console.error("Erro ao remover reserva:", err);
-      return res.status(500).json({ message: "Erro ao remover reserva" });
+      console.error('Erro ao excluir notificações do livro:', err.message);
+      return res.status(500).json({ error: 'Erro ao excluir notificações do livro.' });
     }
 
-    if (this.changes === 0) {
-      return res.status(404).json({ message: "Reserva não encontrada" });
-    }
+    // Excluir as unidades associadas ao livro
+    db.run('DELETE FROM unidades_livros WHERE livro_id = ?', [id], function (err) {
+      if (err) {
+        console.error('Erro ao excluir unidades do livro:', err.message);
+        return res.status(500).json({ error: 'Erro ao excluir unidades do livro.' });
+      }
 
-    return res.json({ message: "Reserva removida com sucesso." });
+      // Excluir o livro
+      db.run('DELETE FROM livros WHERE id = ?', [id], function (err) {
+        if (err) {
+          console.error('Erro ao excluir livro:', err.message);
+          return res.status(500).json({ error: 'Erro ao excluir livro.' });
+        }
+
+        if (this.changes === 0) {
+          return res.status(404).json({ message: 'Livro não encontrado.' });
+        }
+
+        res.status(200).json({ message: 'Livro, suas unidades e notificações excluídos com sucesso.' });
+      });
+    });
   });
 });
 
@@ -1147,45 +1254,62 @@ db.run(
 );
 
 // Atualizar a lógica de multa ao criar uma reserva
-app.post("/reservas", async (req, res) => {
-  const { livro_id, usuario_id, data_reserva, data_devolucao, status, multa } = req.body;
+app.post("/reservas", (req, res) => {
+  const { livro_id, usuario_id, data_reserva, data_devolucao } = req.body;
 
-  if (!livro_id || !usuario_id || !data_reserva || !data_devolucao || !status) {
-    return res.status(400).json({ error: "Todos os campos obrigatórios devem ser preenchidos." });
+  console.log("📥 Recebendo dados para reserva:", { livro_id, usuario_id, data_reserva, data_devolucao });
+
+  if (!livro_id || !usuario_id) {
+    console.warn("⚠️ Erro: livro_id e usuario_id são obrigatórios.");
+    return res.status(400).json({ error: "livro_id e usuario_id são obrigatórios." });
   }
 
-  try {
-    const db = await openDb();
+  // Verifica se há unidades disponíveis
+  db.get(
+    "SELECT id, unidade FROM unidades_livros WHERE livro_id = ? AND status = 'Disponível' LIMIT 1",
+    [livro_id],
+    (err, unidade) => {
+      if (err) {
+        console.error("❌ Erro ao buscar unidade no banco:", err);
+        return res.status(500).json({ error: "Erro ao verificar disponibilidade da unidade." });
+      }
 
-    // Verificar se há uma unidade disponível para reserva
-    const unidadeDisponivel = await db.get(
-      `SELECT * FROM unidades_livros WHERE livro_id = ? AND status = 'Disponível' LIMIT 1`,
-      [livro_id]
-    );
+      if (!unidade) {
+        console.warn("⚠️ Nenhuma unidade disponível para o livro ID:", livro_id);
+        return res.status(400).json({ error: "Nenhuma unidade disponível para este livro." });
+      }
 
-    if (!unidadeDisponivel) {
-      return res.status(400).json({ error: "Não há unidades disponíveis para reserva." });
+      console.log("✅ Unidade encontrada:", unidade);
+
+      // Insere a reserva no banco de dados
+      db.run(
+        "INSERT INTO reservas (livro_id, unidade, usuario_id, data_reserva, data_devolucao, status, multa) VALUES (?, ?, ?, ?, ?, 'Reservado', 0)",
+        [livro_id, unidade.unidade, usuario_id, data_reserva, data_devolucao],
+        function (err) {
+          if (err) {
+            console.error("❌ Erro ao criar reserva:", err);
+            return res.status(500).json({ error: "Erro ao criar reserva." });
+          }
+
+          console.log("✅ Reserva criada com sucesso! ID da reserva:", this.lastID);
+
+          // Atualiza o status da unidade para "Reservado"
+          db.run(
+            "UPDATE unidades_livros SET status = 'Reservado' WHERE id = ?",
+            [unidade.id],
+            (err) => {
+              if (err) {
+                console.error("❌ Erro ao atualizar unidade:", err);
+                return res.status(500).json({ error: "Erro ao atualizar unidade." });
+              }
+              console.log("✅ Unidade marcada como Reservada:", unidade.id);
+              res.json({ message: "Reserva criada com sucesso", unidade: unidade.unidade });
+            }
+          );
+        }
+      );
     }
-
-    // Criar a reserva
-    const result = await db.run(
-      `INSERT INTO reservas (livro_id, usuario_id, data_reserva, data_devolucao, status, multa, unidade_id)
-       VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [livro_id, usuario_id, data_reserva, data_devolucao, status, multa, unidadeDisponivel.id]
-    );
-
-    // Atualizar a unidade para "Reservado"
-    await db.run(
-      `UPDATE unidades_livros SET status = 'Reservado' WHERE id = ?`,
-      [unidadeDisponivel.id]
-    );
-
-    res.status(201).json({ message: "Reserva realizada com sucesso!", reserva_id: result.lastID });
-
-  } catch (error) {
-    console.error("Erro ao criar reserva:", error);
-    res.status(500).json({ error: "Erro ao criar reserva." });
-  }
+  );
 });
 
 
@@ -1214,7 +1338,7 @@ app.put("/reservas/:id/devolver", async (req, res) => {
     // Liberar a unidade reservada
     await db.run(
       `UPDATE unidades_livros SET status = 'Disponível' WHERE id = ?`,
-      [reserva.unidade_id]
+      [reserva.unidade]
     );
 
     res.json({ message: "Livro devolvido com sucesso!" });
@@ -1223,6 +1347,39 @@ app.put("/reservas/:id/devolver", async (req, res) => {
     console.error("Erro ao devolver livro:", error);
     res.status(500).json({ error: "Erro ao devolver livro." });
   }
+});
+
+
+// Liberar todas as reservas de um livro
+app.put('/livros/:id/liberar-reservas', (req, res) => {
+  const { id } = req.params;
+
+  const db = getDatabaseConnection();
+
+  // Excluir as reservas associadas ao livro
+  db.run('DELETE FROM reservas WHERE livro_id = ?', [id], function (err) {
+    if (err) {
+      console.error('Erro ao excluir reservas do livro:', err.message);
+      return res.status(500).json({ error: 'Erro ao excluir reservas do livro.' });
+    }
+
+    // Atualizar o status das unidades associadas ao livro para "Disponível"
+    db.run(
+      'UPDATE unidades_livros SET status = "Disponível" WHERE livro_id = ? AND status = "Reservado"',
+      [id],
+      function (err) {
+        if (err) {
+          console.error('Erro ao atualizar status das unidades:', err.message);
+          return res.status(500).json({ error: 'Erro ao atualizar status das unidades.' });
+        }
+
+        res.status(200).json({
+          message: 'Reservas excluídas e unidades liberadas com sucesso.',
+          unidades_afetadas: this.changes,
+        });
+      }
+    );
+  });
 });
 
 

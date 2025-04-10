@@ -135,7 +135,7 @@ function BookDetails() {
                   <p><strong>Data de devolução:</strong> {reserva.data_devolucao ? format(new Date(reserva.data_devolucao), "dd/MM/yyyy") : "N/A"}</p>
                   <p><strong>Multa:</strong> R$ {reserva.multa ? reserva.multa.toFixed(2) : "0.00"}</p>
                   <p><strong>Tempo de atraso:</strong> {calcularDiasAtraso(reserva.data_devolucao) > 0 ? `${calcularDiasAtraso(reserva.data_devolucao)} dias` : "Não atrasado"}</p>
-                  <p><strong>Unidade:</strong> {reserva.unidade_id || "Não especificada"}</p>
+                  <p><strong>Unidade:</strong> {reserva.unidade || "Não especificada"}</p>
                 </div>
               ))}
             </div>
