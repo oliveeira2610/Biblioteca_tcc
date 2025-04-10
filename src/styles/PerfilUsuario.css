@@ -167,7 +167,11 @@ h1 {
   padding-top: 0px;
 }
 
-
+@media screen and (max-width: 1570px){
+  .direita_primeira{
+    width: 48vw;
+  }
+}
 
 @media screen and (max-width: 1440px) {
   .container_principal_user{
@@ -175,10 +179,11 @@ h1 {
   }
   .esquerda_primeira{
     height: 500px;
-    width: 300PX;
+    width: 300px;
   }
   .direita_primeira{
     height: 58vh;
+    width: 63vw;
   }
   .img_perfil img{
   height: 200px;
@@ -214,5 +219,19 @@ h1 {
   height: 60vh;
 }
 
+}
 
+@media screen and (max-width: 980px){
+  .direita_primeira{
+    width: 48vw;
+  }
+
+  h1{
+    font-size: 15px;
+  }
+
+  .livros_acompanhando,
+  .notificacoes{
+    width: 80%;
+  }
 }
