@@ -117,7 +117,7 @@ function DevolucaoDetails() {
         <p><strong>Quantidade no estoque:</strong> {devolucaoDetails.quantidade_disponivel}</p>
       </div>
 
-      <div className="reservation-details">
+      <div className="reservation-details1">
         <div className="usuario-reservas">
           <h3>{devolucaoDetails.userName}</h3>
           <p><strong>Email:</strong> {devolucaoDetails.email}</p>
