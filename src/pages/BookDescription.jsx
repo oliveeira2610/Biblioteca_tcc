@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "../../src/styles/bookDescription.css";
 import "../../src/styles/button.css";
+import "../../src/styles/colors.css";
 import FlappyBird from "../../src/components/EasterEgg2";
 
 function BookDescription() {
@@ -159,24 +160,24 @@ function BookDescription() {
           
             <h1>{bookDetails.nome_do_livro}</h1>
             <p id="info-geral">
-              <strong id="h2-book-info">Autor:</strong>{" "}
+              <strong id="h2-book-info1">Autor:</strong>{" "}
               <p id="paragrafos">{bookDetails.autor || "Não informado"} </p>
             </p>
             <p id="info-geral"> 
-              <strong id="h2-book-info">Gênero:</strong>{" "}
+              <strong id="h2-book-info1">Gênero:</strong>{" "}
               <p id="paragrafos">{bookDetails.genero || "Não informado"} </p>
             </p>
             <p id="info-geral">
-              <strong id="h2-book-info">Data de Lançamento:</strong>{" "}
+              <strong id="h2-book-info1">Data de Lançamento:</strong>{" "}
               <p id="paragrafos"> {bookDetails.ano_publicacao || "Não informado"} </p>
             </p>
             <p id="info-geral">
-              <strong id="h2-book-info"> Editora:</strong>{" "}
+              <strong id="h2-book-info1"> Editora:</strong>{" "}
               {bookDetails.editora || "Não informado"} 
             </p>
 
             
-            <strong id="h2-book-info">Sinopse:</strong>
+            <strong id="h2-book-info1">Sinopse:</strong>
             <div className="sinopse_livro">
               <p> {bookDetails.sinopse || "Sinopse não disponível"}</p>
             </div>
@@ -185,27 +186,27 @@ function BookDescription() {
             <h1 className="titulo-book">{bookDetails.nome_do_livro}</h1>
 
             <div className="h2-e-paragrafos"> 
-              <strong id="h2-book-info">Autor:</strong>{" "}
+              <strong id="h2-book-info1">Autor:</strong>{" "}
               <p id="paragrafos">{bookDetails.autor || "Não informado"} </p>
             </div>
             
             <div className="h2-e-paragrafos">
-              <strong id="h2-book-info">Gênero:</strong>{" "}
+              <strong id="h2-book-info1">Gênero:</strong>{" "}
               <p id="paragrafos">{bookDetails.genero || "Não informado"} </p>
             </div>
             
             <div className="h2-e-paragrafos">
-              <strong id="h2-book-info">Data de Lançamento:</strong>{" "}
+              <strong id="h2-book-info1">Data de Lançamento:</strong>{" "}
               <p id="paragrafos">{bookDetails.ano_publicacao || "Não informado"}</p>
             </div>
             
 
             <div className="h2-e-paragrafos">
-              <strong id="h2-book-info"> Editora:</strong>{" "}
+              <strong id="h2-book-info1"> Editora:</strong>{" "}
               <p id="paragrafos"> {bookDetails.editora || "Não informado"} </p>
             </div>
 
-            <strong id="h2-book-info">Sinopse:</strong>
+            <strong id="h2-book-info1">Sinopse:</strong>
 
 
             <div className="sinopse_livro">
