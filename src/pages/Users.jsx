@@ -107,29 +107,23 @@ const Users = () => {
     fetchHistoricoDevolucoes();
   }, []);
 
-  const handleReturnBook = async (reservaId, livroId, usuarioId) => {
+  const handleReturnBook = async (reservaId) => {
     try {
       const response = await fetch(
-        `http://localhost:3001/reservas/${reservaId}/devolver`,
+        `http://localhost:3001/reservas/${reservaId}/devolver-e-registrar`,
         { method: "PUT" }
       );
-
+  
       if (!response.ok) throw new Error("Erro ao marcar devolução");
-
+  
       alert("Livro devolvido com sucesso!");
-
-      await fetch("http://localhost:3001/historico-devolucoes/adicionar", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ reservaId, livroId, usuarioId }),
-      });
-
       fetchUsers();
       fetchHistoricoDevolucoes();
     } catch (error) {
       console.error("Erro ao marcar devolução:", error);
     }
   };
+  
 
   const filteredUsers = usuarios.filter((usuario) => {
     return (
@@ -220,9 +214,9 @@ const Users = () => {
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
-                          handleReturnBook(book.reservaId, book.id, usuario.id);
-                          handleCancelReservation(book.id, usuario.id);
+                          handleReturnBook(book.reservaId);
                         }}
+                        
                       >
                         Marcar como Devolvido
                       </button>

@@ -30,6 +30,28 @@ function BookDescription() {
     }
   };
 
+  const handleEntrarNaFila = async () => {
+    const userId = localStorage.getItem("userId");
+    if (!userId || !bookDetails?.id) {
+      return alert("Erro ao identificar usuário ou livro.");
+    }
+  
+    try {
+      const response = await fetch("http://localhost:3001/fila-reserva", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ livro_id: bookDetails.id, usuario_id: userId }),
+      });
+  
+      const data = await response.json();
+      alert(data.message);
+    } catch (err) {
+      console.error("Erro ao entrar na fila:", err);
+      alert("Erro ao entrar na fila. Tente novamente.");
+    }
+  };
+  
+
   const fetchUserDetails = async () => {
     try {
       const response = await fetch(
@@ -216,7 +238,7 @@ function BookDescription() {
               </p>
             </div>
 
-
+            
 
             {notificationExists ? (
               <>
@@ -229,6 +251,7 @@ function BookDescription() {
                 >
                   Cancelar Notificação
                 </button>
+
               </>
             ) : (
               <button onClick={registerNotification} className="notify-button">
@@ -254,11 +277,16 @@ function BookDescription() {
                   ? "Reservar"
                   : "Indisponível no momento"}
               </button>
+              
             ) : (
-              <button className="reserve-button" disabled>
-                Indisponível no momento
+              <button onClick={handleEntrarNaFila}>
+                  Entrar na fila de reserva
               </button>
             )}
+
+
+
+
             {bookDetails.local === "GameEstereggs" && (
               <button
                 onClick={() => navigate("/dinossauro")}
