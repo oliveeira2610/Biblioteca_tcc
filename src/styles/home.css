@@ -22,9 +22,9 @@ body {
   transform: scale(1.05);
 }
 
-.home-container {
+/* .home-container {
   height: 90.5vh;
-}
+} */
 
 .img-wrapper {
   position: relative; /* Para posicionar o texto corretamente */
@@ -79,14 +79,14 @@ body {
   justify-content: center;
   align-items: center;
 }
-
+/* 
 .segundaparte-home{
   display: flex;
   flex-direction: column;
   justify-content: start;
   align-items: center;
   height: 100vh;
-}
+} */
 
 
 .segundaparte-home h2{
@@ -129,6 +129,36 @@ body {
   font-style: italic;
   font-weight: bold;
 }
+
+/* Garante que a página ocupe 100% da altura da tela */
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+/* Wrapper principal da Home */
+.home-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* Parte do conteúdo principal, entre header e footer */
+.segundaparte-home {
+  flex: 1; /* Essa parte ocupa o espaço restante */
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+}
+
+
+.footer {
+  color: rgb(0, 0, 0);
+  text-align: center;
+  padding: 20px;
+}
+
 
 
 

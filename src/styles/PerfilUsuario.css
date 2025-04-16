@@ -235,3 +235,31 @@ h1 {
     width: 80%;
   }
 }
+
+
+
+@media screen and (max-width: 690px){
+  .primeiro_container{
+    height: 50vh;
+  }
+  .segundo_container{
+    height: 50vh;
+  }
+  .esquerda_primeira{
+    height: 400px;
+    width: 250px;
+  }
+  .direita_primeira{
+    height: 400px;
+    width: 280px;
+  }
+  .img_perfil img{
+    height: 150px;
+  }
+  h2{
+    font-size: 18px;
+  }
+  h1{
+    font-size: 12px;
+  }
+}

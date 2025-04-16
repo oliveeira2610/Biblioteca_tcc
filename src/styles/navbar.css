@@ -79,3 +79,10 @@
     width: 100%;
   }
 }
+
+
+@media screen and (max-width: 880px) {
+  .navbar{
+    width: 100%;
+  }
+}

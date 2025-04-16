@@ -182,42 +182,6 @@ function BookDescription() {
               <p> {bookDetails.sinopse || "Sinopse não disponível"}</p>
             </div>
 
-
-            <h1 className="titulo-book">{bookDetails.nome_do_livro}</h1>
-
-            <div className="h2-e-paragrafos"> 
-              <strong id="h2-book-info1">Autor:</strong>{" "}
-              <p id="paragrafos">{bookDetails.autor || "Não informado"} </p>
-            </div>
-            
-            <div className="h2-e-paragrafos">
-              <strong id="h2-book-info1">Gênero:</strong>{" "}
-              <p id="paragrafos">{bookDetails.genero || "Não informado"} </p>
-            </div>
-            
-            <div className="h2-e-paragrafos">
-              <strong id="h2-book-info1">Data de Lançamento:</strong>{" "}
-              <p id="paragrafos">{bookDetails.ano_publicacao || "Não informado"}</p>
-            </div>
-            
-
-            <div className="h2-e-paragrafos">
-              <strong id="h2-book-info1"> Editora:</strong>{" "}
-              <p id="paragrafos"> {bookDetails.editora || "Não informado"} </p>
-            </div>
-
-            <strong id="h2-book-info1">Sinopse:</strong>
-
-
-            <div className="sinopse_livro">
-              <p id="paragrafos">
-                {" "}
-                {bookDetails.sinopse || "Sinopse não disponível"}
-              </p>
-            </div>
-
-
-
             {notificationExists ? (
               <>
                 <p className="error-message">
