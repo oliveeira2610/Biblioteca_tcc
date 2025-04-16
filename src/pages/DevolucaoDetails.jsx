@@ -129,6 +129,9 @@ function DevolucaoDetails() {
             <p><strong>Data de devolução prevista:</strong> {devolucaoDetails.data_devolucao ? format(new Date(devolucaoDetails.data_devolucao), "dd/MM/yyyy") : "N/A"}</p>
             <p><strong>Data real da devolução:</strong> {devolucaoDetails.data_devolvido ? format(new Date(devolucaoDetails.data_devolvido), "dd/MM/yyyy") : "N/A"}</p>
             <p><strong>Multa:</strong> R$ {devolucaoDetails.multa ? devolucaoDetails.multa.toFixed(2) : "0.00"}</p>
+            <p><strong>Unidade reservada:</strong> {devolucaoDetails.numero_unidade ?? "N/A"}</p>
+
+
           </div>
         </div>
       </div>

@@ -13,28 +13,28 @@ function BookStatus() {
 
   useEffect(() => {
     const fetchBookDetails = async () => {
-      
       try {
         const response = await fetch(`http://localhost:3001/livros/${id}`);
         if (!response.ok) {
           throw new Error("Livro não encontrado");
         }
         const data = await response.json();
-        setBook(data.livro);
+        // Alterado: assigna o objeto retornado diretamente ao state "book"
+        setBook(data);
       } catch (err) {
         setError(err.message);
       } finally {
         setLoading(false);
       }
     };
-
+  
     const fetchUserDetails = async () => {
       const userId = localStorage.getItem("userId");
       if (!userId) {
         setError("Usuário não autenticado");
         return;
       }
-
+  
       try {
         const response = await fetch(`http://localhost:3001/usuario-logado?id=${userId}`);
         if (!response.ok) {
@@ -46,10 +46,11 @@ function BookStatus() {
         setError(err.message);
       }
     };
-
+  
     fetchBookDetails();
     fetchUserDetails();
   }, [id]);
+  
 
   if (loading) return <p>Carregando detalhes...</p>;
   if (error) return <p>Erro: {error}</p>;
@@ -67,7 +68,7 @@ function BookStatus() {
     }
   
     try {
-      const reservationResponse = await fetch("http://localhost:3001/reservas", {
+      const reservationResponse = await fetch("http://localhost:3001/reservar-unidade", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -86,7 +87,8 @@ function BookStatus() {
         throw new Error(reservationData.error || "Erro ao reservar o livro.");
       }
   
-      alert(`Reserva realizada com sucesso! Unidade reservada: ${reservationData.unidade}`);
+      alert(`Reserva realizada com sucesso! Unidade reservada: ${reservationData.numero_unidade}`);
+
       navigate("/search");
     } catch (error) {
       console.error("Erro ao reservar livro:", error);

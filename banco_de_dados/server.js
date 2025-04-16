@@ -222,6 +222,19 @@ db.serialize(() => {
         FOREIGN KEY (livro_id) REFERENCES livros(id) ON DELETE CASCADE
       );
     `);
+    db.run(
+      `ALTER TABLE reservas ADD COLUMN numero_unidade INTEGER`,
+      (err) => {
+        if (err && err.message.includes("duplicate column name")) {
+          console.log("A coluna numero_unidade já existe.");
+        } else if (err) {
+          console.error("Erro ao adicionar coluna numero_unidade:", err);
+        } else {
+          console.log("Coluna numero_unidade adicionada com sucesso.");
+        }
+      }
+    );
+    
 });
 
 console.log("Tabelas criadas ou já existentes.");
@@ -890,72 +903,212 @@ app.get("/livros-com-reservas", (req, res) => {
 });
 
 // Endpoint para buscar detalhes do livro
-app.get("/livro-detalhes/:id", (req, res) => {
-  const { id } = req.params;
+// Endpoint para buscar detalhes do livro
+// app.get("/livro-detalhes/:id", (req, res) => {
+//   const { id } = req.params;
 
-  if (!id) {
-    return res.status(400).json({ error: "ID do livro não fornecido" });
-  }
+//   const query = `
+//     SELECT 
+//       l.id AS livro_id,
+//       l.nome_do_livro,
+//       l.autor,
+//       l.genero,
+//       l.editora,
+//       l.imagem,
+//       l.sinopse,
+//       l.isbn,
+//       l.ano_publicacao,
+//       l.quantidade_disponivel,
+//       l.status,
+//       l.numero,
 
-  const query = `
-    SELECT 
-      livros.id AS livro_id,
-      livros.nome_do_livro,
-      livros.autor,
-      livros.genero,
-      livros.editora,
-      livros.imagem,
-      livros.sinopse,
-      livros.isbn,
-      livros.ano_publicacao,
-      livros.quantidade_disponivel,
-      livros.status,
-      livros.local,
-      livros.numero,
-      livros.estante,
-      COALESCE(COUNT(reservas.id), 0) AS quantidade_reservada, -- Garante que COUNT nunca seja NULL
-      (livros.quantidade_disponivel - COALESCE(COUNT(reservas.id), 0)) AS quantidade_disponivel_nao_alugada,
-      reservas.id AS reserva_id,
-      reservas.status AS reserva_status,
-      reservas.data_reserva,
-      reservas.data_devolucao,
-      reservas.multa,
-      usuarios.id AS usuario_id,
-      usuarios.userName AS nome_usuario,
-      usuarios.email AS usuario_email,
-      usuarios.cpf AS usuario_cpf,
-      usuarios.telefone AS usuario_telefone
-    FROM livros
-    LEFT JOIN reservas ON livros.id = reservas.livro_id AND reservas.status = 'Reservado'
-    LEFT JOIN usuarios ON reservas.usuario_id = usuarios.id
-    WHERE livros.id = ?
-    GROUP BY 
-      livros.id, livros.nome_do_livro, livros.autor, livros.genero, livros.editora, livros.imagem, livros.sinopse, livros.isbn, 
-      livros.ano_publicacao, livros.quantidade_disponivel, livros.status, livros.local, livros.numero, livros.estante;
-  `;
+//       r.id AS reserva_id,
+//       r.status AS reserva_status,
+//       r.data_reserva,
+//       r.data_devolucao,
+//       r.multa,
+//       r.numero_unidade,
 
-  db.all(query, [id], (err, rows) => {
-    if (err) {
-      console.error("🚨 Erro na consulta:", err);
-      return res.status(500).json({ error: "Erro interno no servidor" });
-    }
+//       u.id AS usuario_id,
+//       u.userName AS nome_usuario,
+//       u.email AS usuario_email,
+//       u.cpf AS usuario_cpf,
+//       u.telefone AS usuario_telefone
 
-    if (rows.length === 0) {
+//     FROM livros l
+//     LEFT JOIN reservas r ON l.id = r.livro_id AND r.status = 'Reservado'
+//     LEFT JOIN usuarios u ON u.id = r.usuario_id
+//     WHERE l.id = ?
+//   `;
+
+//   db.all(query, [id], (err, rows) => {
+//     if (err) {
+//       console.error("Erro ao buscar detalhes do livro:", err);
+//       return res.status(500).json({ error: "Erro ao buscar livro." });
+//     }
+
+//     if (rows.length === 0) {
+//       return res.status(404).json({ error: "Livro não encontrado" });
+//     }
+
+//     const reservasPorUsuario = rows.reduce((acc, row) => {
+//       if (!row.reserva_id || !row.usuario_id) return acc;
+
+//       const usuarioIndex = acc.findIndex(u => u.usuario_id === row.usuario_id);
+
+//       const reserva = {
+//         reserva_id: row.reserva_id,
+//         reserva_status: row.reserva_status,
+//         data_reserva: row.data_reserva,
+//         data_devolucao: row.data_devolucao,
+//         multa: row.multa,
+//         numero_unidade: row.numero_unidade
+//       };
+
+//       if (usuarioIndex > -1) {
+//         acc[usuarioIndex].reservas.push(reserva);
+//       } else {
+//         acc.push({
+//           usuario_id: row.usuario_id,
+//           nome_usuario: row.nome_usuario,
+//           usuario_email: row.usuario_email,
+//           usuario_cpf: row.usuario_cpf,
+//           usuario_telefone: row.usuario_telefone,
+//           reservas: [reserva],
+//         });
+//       }
+
+//       return acc;
+//     }, []);
+
+//     const livro = {
+//       id: rows[0].livro_id,
+//       nome_do_livro: rows[0].nome_do_livro,
+//       autor: rows[0].autor,
+//       genero: rows[0].genero,
+//       editora: rows[0].editora,
+//       imagem: rows[0].imagem,
+//       sinopse: rows[0].sinopse,
+//       isbn: rows[0].isbn,
+//       ano_publicacao: rows[0].ano_publicacao,
+//       quantidade_disponivel: rows[0].quantidade_disponivel,
+//       status: rows[0].status,
+//       numero: rows[0].numero,
+//       reservasPorUsuario
+//     };
+
+//     res.json(livro);
+//   });
+// });
+
+
+app.get("/livro-detalhes/:livroId/:usuarioId", async (req, res) => {
+  const { livroId, usuarioId } = req.params;
+  const db = await openDb();
+
+  try {
+    const livro = await db.get(`SELECT * FROM livros WHERE id = ?`, [livroId]);
+
+    if (!livro) {
       return res.status(404).json({ error: "Livro não encontrado" });
     }
 
-    // Agrupar reservas por usuário
-    const reservasPorUsuario = rows.reduce((acc, row) => {
-      if (!row.reserva_id) return acc; // Ignora se não houver reservas
+    const reservas = await db.all(
+      `SELECT 
+        r.id AS reserva_id,
+        r.status AS reserva_status,
+        r.data_reserva,
+        r.data_devolucao,
+        r.multa,
+        r.numero_unidade,
+        u.id AS usuario_id,
+        u.userName AS nome_usuario,
+        u.email AS usuario_email,
+        u.cpf AS usuario_cpf,
+        u.telefone AS usuario_telefone
+      FROM reservas r
+      JOIN usuarios u ON u.id = r.usuario_id
+      WHERE r.livro_id = ? AND r.usuario_id = ? AND r.status = 'Reservado'`,
+      [livroId, usuarioId]
+    );
 
-      const usuarioIndex = acc.findIndex(user => user.usuario_id === row.usuario_id);
+    const reservasPorUsuario = reservas.length > 0
+      ? [{
+          usuario_id: reservas[0].usuario_id,
+          nome_usuario: reservas[0].nome_usuario,
+          usuario_email: reservas[0].usuario_email,
+          usuario_cpf: reservas[0].usuario_cpf,
+          usuario_telefone: reservas[0].usuario_telefone,
+          reservas: reservas.map((r) => ({
+            reserva_id: r.reserva_id,
+            reserva_status: r.reserva_status,
+            data_reserva: r.data_reserva,
+            data_devolucao: r.data_devolucao,
+            multa: r.multa,
+            numero_unidade: r.numero_unidade
+          }))
+        }]
+      : [];
+
+    res.json({
+      ...livro,
+      reservasPorUsuario
+    });
+  } catch (err) {
+    console.error("Erro ao buscar detalhes do livro:", err);
+    res.status(500).json({ error: "Erro ao buscar detalhes do livro" });
+  }
+});
+
+
+
+
+
+
+
+app.get("/livro-detalhes/:id", async (req, res) => {
+  const { id } = req.params;
+  const db = await openDb();
+
+  try {
+    const livroBase = await db.get(
+      `SELECT * FROM livros WHERE id = ?`,
+      [id]
+    );
+
+    if (!livroBase) {
+      return res.status(404).json({ error: "Livro não encontrado" });
+    }
+
+    const reservas = await db.all(
+      `SELECT 
+        r.id AS reserva_id,
+        r.status AS reserva_status,
+        r.data_reserva,
+        r.data_devolucao,
+        r.multa,
+        r.numero_unidade,
+        u.id AS usuario_id,
+        u.userName AS nome_usuario,
+        u.email AS usuario_email,
+        u.cpf AS usuario_cpf,
+        u.telefone AS usuario_telefone
+      FROM reservas r
+      JOIN usuarios u ON u.id = r.usuario_id
+      WHERE r.livro_id = ? AND r.status = 'Reservado'`,
+      [id]
+    );
+
+    // Agrupar reservas por usuário
+    const reservasPorUsuario = reservas.reduce((acc, row) => {
+      const usuarioIndex = acc.findIndex((u) => u.usuario_id === row.usuario_id);
       const reservaInfo = {
         reserva_id: row.reserva_id,
         reserva_status: row.reserva_status,
         data_reserva: row.data_reserva,
         data_devolucao: row.data_devolucao,
         multa: row.multa,
-        tempo_atraso: row.multa > 0 ? Math.floor(row.multa / 2) : 0, // Supondo que cada dia de atraso custa R$2,00
+        numero_unidade: row.numero_unidade,
       };
 
       if (usuarioIndex > -1) {
@@ -970,35 +1123,23 @@ app.get("/livro-detalhes/:id", (req, res) => {
           reservas: [reservaInfo],
         });
       }
+
       return acc;
     }, []);
 
-    // Estrutura final de retorno
-    const bookDetails = {
-      id: rows[0].livro_id,
-      nome_do_livro: rows[0].nome_do_livro,
-      autor: rows[0].autor,
-      genero: rows[0].genero,
-      editora: rows[0].editora,
-      imagem: rows[0].imagem,
-      sinopse: rows[0].sinopse,
-      isbn: rows[0].isbn,
-      ano_publicacao: rows[0].ano_publicacao,
-      quantidade_disponivel: rows[0].quantidade_disponivel,
-      status: rows[0].status,
-      local: rows[0].local,
-      numero: rows[0].numero,
-      estante: rows[0].estante,
-      quantidade_reservada: rows[0].quantidade_reservada,
-      quantidade_disponivel_nao_alugada: Math.max(rows[0].quantidade_disponivel_nao_alugada, 0), // Garante que não fique negativo
-      reservasPorUsuario,
+    const livroDetalhado = {
+      ...livroBase,
+      reservasPorUsuario
     };
 
-    console.log("📚 Dados retornados pela API:", bookDetails); // 🔹 Log para debug
-
-    res.json(bookDetails);
-  });
+    res.json(livroDetalhado);
+  } catch (err) {
+    console.error("Erro ao buscar detalhes do livro:", err);
+    res.status(500).json({ error: "Erro ao buscar detalhes do livro" });
+  }
 });
+
+
 
 // Endpoint para atualizar detalhes do livro
 // Endpoint para atualizar detalhes do livro
@@ -1156,26 +1297,75 @@ app.delete("/reservas/:livro_id", (req, res) => {
 });
 
 // Rota para deletar uma reserva específica
-app.delete("/reservas/:livro_id/:usuario_id", (req, res) => {
+app.delete("/reservas/:livro_id/:usuario_id", async (req, res) => {
   const { livro_id, usuario_id } = req.params;
+  const dbInstance = await openDb();
 
-  db.run(
-    "DELETE FROM reservas WHERE livro_id = ? AND usuario_id = ?",
-    [livro_id, usuario_id],
-    function (err) {
-      if (err) {
-        console.error("Erro ao remover reserva:", err);
-        return res.status(500).json({ message: "Erro ao remover reserva" });
-      }
+  try {
+    // Buscar reserva ativa vinculada ao usuário e ao livro
+    const reserva = await dbInstance.get(
+      `SELECT r.*, u.userName, u.email, u.cpf, u.telefone, u.bloqueado 
+       FROM reservas r 
+       JOIN usuarios u ON r.usuario_id = u.id 
+       WHERE r.livro_id = ? AND r.usuario_id = ? AND r.status = 'Reservado'`,
+      [livro_id, usuario_id]
+    );
 
-      if (this.changes === 0) {
-        return res.status(404).json({ message: "Reserva não encontrada" });
-      }
-
-      return res.json({ message: "Reserva removida com sucesso." });
+    // Caso não exista
+    if (!reserva) {
+      return res.status(404).json({ error: "Reserva não encontrada." });
     }
-  );
+
+    // Inserir no histórico com todos os dados + unidade
+    const jaRegistrado = await db.get(
+      `SELECT id FROM historico_devolucoes WHERE usuario_id = ? AND livro_id = ? AND status = 'Devolvido'`,
+      [reserva.usuario_id, reserva.livro_id]
+    );
+    
+    if (!jaRegistrado) {
+      await db.run(
+        `INSERT INTO historico_devolucoes (
+          usuario_id, livro_id, data_reserva, data_devolucao, data_devolvido,
+          status, multa, dias_atraso, userName, email, cpf, telefone, bloqueado, numero_unidade
+        )
+        VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          reserva.usuario_id,
+          reserva.livro_id,
+          reserva.data_reserva,
+          reserva.data_devolucao,
+          "Devolvido",
+          reserva.multa,
+          reserva.dias_atraso,
+          reserva.userName,
+          reserva.email,
+          reserva.cpf,
+          reserva.telefone,
+          reserva.bloqueado,
+          reserva.numero_unidade
+        ]
+      );
+    }
+    
+
+    // Deletar a reserva original
+    await dbInstance.run(
+      `DELETE FROM reservas WHERE id = ?`,
+      reserva.id
+    );
+
+    res.json({
+      message: `Reserva da unidade ${reserva.numero_unidade} cancelada e registrada no histórico.`,
+      numero_unidade: reserva.numero_unidade,
+      livro_id,
+      usuario_id
+    });
+  } catch (err) {
+    console.error("❌ Erro ao cancelar reserva:", err);
+    res.status(500).json({ error: "Erro ao cancelar reserva." });
+  }
 });
+
 
 // Modificar a tabela reservas para armazenar o número de dias em atraso e a multa
 db.run(
@@ -1276,13 +1466,12 @@ app.put("/reservas/:id/devolver", async (req, res) => {
   const db = await openDb();
 
   try {
-    // Buscar todas as informações da reserva e do usuário
+    // 1. Buscar a reserva com número da unidade
     const reserva = await db.get(
-      `
-      SELECT r.*, u.userName, u.email, u.cpf, u.telefone, u.bloqueado 
-      FROM reservas r 
-      JOIN usuarios u ON r.usuario_id = u.id 
-      WHERE r.id = ?`,
+      `SELECT r.*, u.userName, u.email, u.cpf, u.telefone, u.bloqueado 
+       FROM reservas r 
+       JOIN usuarios u ON r.usuario_id = u.id 
+       WHERE r.id = ?`,
       reservaId
     );
 
@@ -1290,72 +1479,76 @@ app.put("/reservas/:id/devolver", async (req, res) => {
       return res.status(404).json({ error: "Reserva não encontrada." });
     }
 
-    const bookId = reserva.livro_id;
-
-    // Atualizar o status da reserva para 'Devolvido'
+    // 2. Marcar como devolvido, mantendo o número da unidade
     await db.run(
-      `UPDATE reservas SET status = 'Devolvido', data_devolucao = CURRENT_TIMESTAMP WHERE id = ?`,
+      `UPDATE reservas 
+       SET status = 'Devolvido', data_devolucao = CURRENT_TIMESTAMP 
+       WHERE id = ?`,
       reservaId
     );
 
-    // Atualizar status do livro para 'Disponível'
-    await db.run(
-      `UPDATE livros SET status = 'Disponível' WHERE id = ?`,
-      bookId
+    // 3. Atualizar status do livro para 'Disponível' se houver unidades livres
+    const unidadesReservadas = await db.all(
+      `SELECT numero_unidade FROM reservas WHERE livro_id = ? AND status = 'Reservado'`,
+      [reserva.livro_id]
     );
 
-    // Adicionar ao histórico de devoluções com todas as informações
-    await db.run(
-      `
-      INSERT INTO historico_devolucoes (usuario_id, livro_id, data_reserva, data_devolucao, data_devolvido, status, multa, dias_atraso, userName, email, cpf, telefone, bloqueado)
-      VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [
-        reserva.usuario_id,
-        bookId,
-        reserva.data_reserva,
-        reserva.data_devolucao, // Data original de devolução prevista
-        reserva.status,
-        reserva.multa,
-        reserva.dias_atraso,
-        reserva.userName,
-        reserva.email,
-        reserva.cpf,
-        reserva.telefone,
-        reserva.bloqueado,
-      ]
+    const livroInfo = await db.get(
+      `SELECT quantidade_disponivel FROM livros WHERE id = ?`,
+      [reserva.livro_id]
     );
 
-    // Criar notificação de livro disponível
-    createNotification(bookId, "O livro agora está disponível para reserva!");
+    const totalUnidades = livroInfo.quantidade_disponivel;
+    const totalReservadas = unidadesReservadas.length;
+
+    if (totalReservadas < totalUnidades) {
+      await db.run(
+        `UPDATE livros SET status = 'Disponível' WHERE id = ?`,
+        reserva.livro_id
+      );
+    }
+
+    // 4. Registrar no histórico com unidade devolvida
+      await db.run(
+        `INSERT INTO historico_devolucoes 
+          (usuario_id, livro_id, data_reserva, data_devolucao, data_devolvido, status, multa, dias_atraso, 
+          userName, email, cpf, telefone, bloqueado, numero_unidade)
+        VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          reserva.usuario_id,
+          reserva.livro_id,
+          reserva.data_reserva,
+          reserva.data_devolucao,
+          reserva.status,
+          reserva.multa,
+          reserva.dias_atraso,
+          reserva.userName,
+          reserva.email,
+          reserva.cpf,
+          reserva.telefone,
+          reserva.bloqueado,
+          reserva.numero_unidade 
+        ]
+      );
+    
+
+    // 5. Notificar usuários interessados
+    createNotification(reserva.livro_id, `A unidade ${reserva.numero_unidade} do livro foi devolvida e está disponível!`);
 
     res.json({
-      message: "Livro devolvido e registrado no histórico com sucesso!",
+      message: `Unidade ${reserva.numero_unidade} devolvida com sucesso.`,
     });
   } catch (error) {
-    console.error("Erro ao atualizar a reserva:", error);
-    res.status(500).json({ error: "Erro ao atualizar a reserva." });
+    console.error("Erro ao devolver reserva:", error);
+    res.status(500).json({ error: "Erro ao processar devolução." });
   }
 });
 
-// Endpoint para obter o histórico de reservas
-app.get("/reservas/historico", async (req, res) => {
-  const db = await openDb();
 
-  try {
-    const historico = await db.all(`
-      SELECT r.id, u.userName AS usuario, l.nome_do_livro AS livro, r.data_reserva, r.data_devolucao, r.status
-      FROM reservas r
-      JOIN usuarios u ON r.usuario_id = u.id
-      JOIN livros l ON r.livro_id = l.id
-      ORDER BY r.data_reserva DESC
-    `);
 
-    res.json(historico);
-  } catch (error) {
-    console.error("Erro ao buscar histórico de reservas:", error);
-    res.status(500).json({ error: "Erro ao buscar histórico de reservas." });
-  }
-});
+
+
+
 
 
 
@@ -1956,7 +2149,7 @@ app.post("/historico-devolucoes/adicionar", async (req, res) => {
     await db.run(
       `
       INSERT INTO historico_devolucoes 
-      (usuario_id, livro_id, data_reserva, data_devolucao, data_devolvido, status, multa, dias_atraso, userName, email, cpf, telefone, bloqueado) 
+      (usuario_id, livro_id, data_reserva, data_devolucao, data_devolvido, status, multa, dias_atraso, userName, email, cpf, telefone, bloqueado, numero_unidade) 
       VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         usuarioId,
@@ -1971,6 +2164,7 @@ app.post("/historico-devolucoes/adicionar", async (req, res) => {
         reserva.cpf,
         reserva.telefone,
         reserva.bloqueado,
+        reserva.numero_unidade,
       ]
     );
 
@@ -1981,32 +2175,35 @@ app.post("/historico-devolucoes/adicionar", async (req, res) => {
   }
 });
 
-app.get("/historico-devolucoes/:livroId/:usuarioId", async (req, res) => {
-  const { livroId, usuarioId } = req.params;
-  const db = await openDb();
+app.get("/historico-devolucoes/:livro_id/:usuario_id", async (req, res) => {
+  const { livro_id, usuario_id } = req.params;
+  const dbInstance = await openDb();
 
   try {
-    const devolucao = await db.get(
-      `
-      SELECT h.*, l.nome_do_livro, l.autor, l.editora, l.sinopse, l.imagem, l.status, l.quantidade_disponivel
-      FROM historico_devolucoes h
-      JOIN livros l ON h.livro_id = l.id
-      WHERE h.livro_id = ? AND h.usuario_id = ?
-      ORDER BY h.data_devolvido DESC LIMIT 1
-    `,
-      [livroId, usuarioId]
+    const devolucao = await dbInstance.get(
+      `SELECT h.id, h.usuario_id, h.livro_id, h.data_reserva, h.data_devolucao, 
+              h.data_devolvido, h.status, h.multa, h.dias_atraso,
+              h.userName, h.email, h.cpf, h.telefone, h.bloqueado,
+              h.numero_unidade, 
+              l.nome_do_livro, l.autor, l.editora, l.sinopse, l.imagem, l.quantidade_disponivel
+       FROM historico_devolucoes h
+       JOIN livros l ON h.livro_id = l.id
+       WHERE h.livro_id = ? AND h.usuario_id = ?
+       ORDER BY h.data_devolvido DESC LIMIT 1`,
+      [livro_id, usuario_id]
     );
 
     if (!devolucao) {
-      return res.status(404).json({ error: "Devolução não encontrada" });
+      return res.status(404).json({ error: "Devolução não encontrada." });
     }
 
     res.json(devolucao);
-  } catch (error) {
-    console.error("Erro ao buscar detalhes da devolução:", error);
-    res.status(500).json({ error: "Erro ao buscar detalhes da devolução." });
+  } catch (err) {
+    console.error("Erro ao buscar histórico de devolução:", err);
+    res.status(500).json({ error: "Erro interno ao buscar devolução." });
   }
 });
+
 
 app.get("/historico-devolucoes", async (req, res) => {
   const db = await openDb();
@@ -2035,6 +2232,100 @@ app.get("/historico-devolucoes", async (req, res) => {
     res.status(500).json({ error: "Erro ao buscar histórico de devoluções." });
   }
 });
+
+app.get("/reservas/historico", async (req, res) => {
+  const db = await openDb();
+
+  try {
+    const reservas = await db.all(`
+      SELECT 
+        r.id,
+        r.data_reserva,
+        r.data_devolucao,
+        r.status,
+        r.numero_unidade,
+        u.userName AS usuario,
+        l.nome_do_livro AS livro
+      FROM reservas r
+      JOIN usuarios u ON r.usuario_id = u.id
+      JOIN livros l ON r.livro_id = l.id
+      WHERE r.status = 'Reservado'
+      ORDER BY r.data_reserva DESC
+    `);
+
+    res.json(reservas);
+  } catch (err) {
+    console.error("Erro ao buscar histórico de reservas:", err);
+    res.status(500).json({ error: "Erro ao buscar reservas." });
+  }
+});
+
+
+app.post("/reservar-unidade", async (req, res) => {
+  const { livro_id, usuario_id } = req.body;
+
+  if (!livro_id || !usuario_id) {
+    return res.status(400).json({ error: "Campos obrigatórios não fornecidos." });
+  }
+
+  const dbInstance = await openDb();
+
+  try {
+    const user = await dbInstance.get(`SELECT bloqueado FROM usuarios WHERE id = ?`, [usuario_id]);
+    if (!user || user.bloqueado) {
+      return res.status(403).json({ error: "Usuário não autorizado ou bloqueado." });
+    }
+
+    const jaReservado = await dbInstance.get(
+      `SELECT id FROM reservas WHERE livro_id = ? AND usuario_id = ? AND status = 'Reservado'`,
+      [livro_id, usuario_id]
+    );
+    if (jaReservado) {
+      return res.status(400).json({ error: "Você já reservou este livro." });
+    }
+
+    const unidadesReservadas = await dbInstance.all(
+      `SELECT numero_unidade FROM reservas WHERE livro_id = ? AND status = 'Reservado'`,
+      [livro_id]
+    );
+
+    const livroInfo = await dbInstance.get(
+      `SELECT quantidade_disponivel FROM livros WHERE id = ?`,
+      [livro_id]
+    );
+
+    if (!livroInfo) {
+      return res.status(404).json({ error: "Livro não encontrado." });
+    }
+
+    const todasUnidades = Array.from(
+      { length: livroInfo.quantidade_disponivel },
+      (_, i) => i + 1
+    );
+    const reservadas = unidadesReservadas.map((r) => r.numero_unidade);
+    const unidadeLivre = todasUnidades.find((n) => !reservadas.includes(n));
+
+    if (!unidadeLivre) {
+      return res.status(400).json({ error: "Todas as unidades estão reservadas." });
+    }
+
+    await dbInstance.run(
+      `INSERT INTO reservas (livro_id, usuario_id, numero_unidade, status, data_reserva, data_devolucao) 
+       VALUES (?, ?, ?, 'Reservado', DATETIME('now'), DATETIME('now', '+7 days'))`,
+      [livro_id, usuario_id, unidadeLivre]
+    );
+
+    res.status(201).json({
+      message: `✅ Unidade ${unidadeLivre} reservada com sucesso.`,
+      numero_unidade: unidadeLivre
+    });
+  } catch (err) {
+    console.error("Erro ao reservar unidade:", err);
+    res.status(500).json({ error: "Erro ao reservar unidade." });
+  }
+});
+
+
 
 /////////////////////// INICIAR SERVIDOR ///////////////////////
 
