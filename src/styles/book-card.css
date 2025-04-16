@@ -10,7 +10,6 @@
     cursor: pointer;
     transition: transform 0.2s;
     align-items: center;
-
   }
   
   .book-card:hover {
@@ -70,26 +69,8 @@
   }
   
  /* Lista de livros */
-  .books-list{
+  .books-list {
     display: flex;
     flex-wrap: wrap;
     gap: 15px;
   }
-
-
-  @media screen and (max-width: 1440px){
-    .book-card-title {
-      font-size: 12px;
-      font-weight: bold;
-      color: var(--marrom-primario);
-
-    }
-    .book-card p{
-      height: 30px;
-    } 
-    .book-card{
-      display: flex;
-      flex-direction: column;
-
-    }
-    }
