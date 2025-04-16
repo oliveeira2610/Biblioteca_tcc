@@ -112,7 +112,7 @@ const MultasUsuarios = () => {
         </tbody>
       </table>
 
-      <h1>Reservas Ativas</h1>
+      <h1 className="ativas1">Reservas Ativas</h1>
       <div className="books-list">
         {reservasAtivas.length === 0 ? (
           <p>Nenhuma reserva ativa no momento.</p>
