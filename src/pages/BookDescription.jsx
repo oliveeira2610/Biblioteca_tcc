@@ -287,7 +287,7 @@ function BookDescription() {
 
 
 
-            {bookDetails.local === "GameEstereggs" && (
+            {bookDetails.local === "DinossauroGame" && (
               <button
                 onClick={() => navigate("/dinossauro")}
                 className="esteregg-button"
