@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { format } from "date-fns";
 import "../../src/styles/global.css";
 import "../../src/styles/BookDetails.css";
+import { div } from "framer-motion/client";
 
 function BookDetails() {
   const { id } = useParams();
@@ -83,6 +84,8 @@ function BookDetails() {
   if (!bookDetails) return <p>Livro não encontrado</p>;
 
   return (
+    <div className="body-book-details">
+
     <div className="book-details-container">
       <div className="book-image">
         <img src={bookDetails.imagem || "default-image.jpg"} alt={bookDetails.nome_do_livro} />
@@ -143,6 +146,7 @@ function BookDetails() {
           <p>Este livro não tem reservas no momento.</p>
         )}
       </div>
+    </div>
     </div>
   );
 }

@@ -73,16 +73,53 @@
 
 /* Responsivo */
   
+@media (max-width: 768px) {
+  .navbar {
+    padding: 0.5rem 1rem; /* reduz o espaço vertical e lateral */
+    display: flex;
+    align-items: center;
+  }
+  .logo_ola {
+    display: flex;
+    align-items: center; /* alinha logo + texto na horizontal */
+  }
+  
 
-@media screen and (max-width: 1440px) {
+  .navbar-container img {
+    height: 40px;
+    width: auto;
+  }
+
+  .logo {
+    font-size: 1.8rem; /* fonte um pouco menor */
+  }
+
+  .user-greeting {
+    font-size: 10px;
+    margin: 0
+  }
+
+  .nav-links {
+    gap: 1rem;
+    font-size: 0.5;
+  }
+  .user-greeting{
+    display: flex;
+  
+  }
   .navbar{
-    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+  .navbar-container img {
+    height: 35px; 
+  }
+  .nav-links a {
+    font-size: 0.80rem; 
+    padding: 0.3rem 0.5rem; 
   }
 }
 
 
-@media screen and (max-width: 880px) {
-  .navbar{
-    width: 100%;
-  }
-}
+
+
