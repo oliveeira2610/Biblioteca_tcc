@@ -3,7 +3,6 @@ import { useParams, useNavigate } from "react-router-dom";
 import "../../src/styles/bookDescription.css";
 import "../../src/styles/button.css";
 import "../../src/styles/colors.css";
-import FlappyBird from "../../src/components/EasterEgg2";
 
 function BookDescription() {
   const { id } = useParams();
@@ -12,14 +11,13 @@ function BookDescription() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [notificationExists, setNotificationExists] = useState(false);
+  const [isInQueue, setIsInQueue] = useState(false);
   const navigate = useNavigate();
   const userId = localStorage.getItem("userId");
 
   const fetchBookDetails = async () => {
     try {
-      const response = await fetch(
-        `http://localhost:3001/livro-detalhes/${id}`
-      );
+      const response = await fetch(`http://localhost:3001/livro-detalhes/${id}`);
       if (!response.ok) throw new Error("Livro não encontrado");
       const data = await response.json();
       setBookDetails(data);
@@ -30,33 +28,9 @@ function BookDescription() {
     }
   };
 
-  const handleEntrarNaFila = async () => {
-    const userId = localStorage.getItem("userId");
-    if (!userId || !bookDetails?.id) {
-      return alert("Erro ao identificar usuário ou livro.");
-    }
-  
-    try {
-      const response = await fetch("http://localhost:3001/fila-reserva", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ livro_id: bookDetails.id, usuario_id: userId }),
-      });
-  
-      const data = await response.json();
-      alert(data.message);
-    } catch (err) {
-      console.error("Erro ao entrar na fila:", err);
-      alert("Erro ao entrar na fila. Tente novamente.");
-    }
-  };
-  
-
   const fetchUserDetails = async () => {
     try {
-      const response = await fetch(
-        `http://localhost:3001/usuario-logado?id=${userId}`
-      );
+      const response = await fetch(`http://localhost:3001/usuario-logado?id=${userId}`);
       if (!response.ok) throw new Error("Usuário não encontrado");
       const data = await response.json();
       setUser(data);
@@ -67,9 +41,7 @@ function BookDescription() {
 
   const checkNotification = async () => {
     try {
-      const response = await fetch(
-        `http://localhost:3001/check-notification/${userId}/${id}`
-      );
+      const response = await fetch(`http://localhost:3001/check-notification/${userId}/${id}`);
       if (!response.ok) throw new Error("Erro ao verificar notificação");
       const data = await response.json();
       setNotificationExists(data.exists);
@@ -78,21 +50,58 @@ function BookDescription() {
     }
   };
 
-  const fetchData = async () => {
-    await fetchBookDetails();
-    await fetchUserDetails();
-    await checkNotification();
+  const checkFila = async () => {
+    if (!bookDetails?.id) return;
+
+    try {
+      const res = await fetch(`http://localhost:3001/fila-reserva/${bookDetails.id}`);
+      const fila = await res.json();
+      setIsInQueue(fila.some(f => f.usuario_id === Number(userId)));
+    } catch (err) {
+      console.error("Erro ao verificar fila:", err);
+    }
   };
 
-  useEffect(() => {
-    if (!id) return;
-    if (!userId) {
-      setError("Usuário não autenticado");
-      return;
+  const handleEntrarNaFila = async () => {
+    if (!userId || !bookDetails?.id) {
+      return alert("Erro ao identificar usuário ou livro.");
     }
 
-    fetchData();
-  }, [id, userId]);
+    try {
+      const response = await fetch("http://localhost:3001/fila-reserva", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ livro_id: bookDetails.id, usuario_id: userId }),
+      });
+
+      const data = await response.json();
+      alert(data.message);
+      await checkFila();
+    } catch (err) {
+      console.error("Erro ao entrar na fila:", err);
+      alert("Erro ao entrar na fila. Tente novamente.");
+    }
+  };
+
+  const handleCancelarFila = async () => {
+    if (!userId || !bookDetails?.id) {
+      return alert("Erro ao identificar usuário ou livro.");
+    }
+
+    try {
+      const response = await fetch(
+        `http://localhost:3001/fila-reserva/${bookDetails.id}/${userId}`,
+        { method: "DELETE" }
+      );
+
+      const data = await response.json();
+      alert(data.message || "Fila cancelada com sucesso!");
+      await checkFila();
+    } catch (err) {
+      console.error("Erro ao cancelar fila:", err);
+      alert("Erro ao cancelar a fila. Tente novamente.");
+    }
+  };
 
   const registerNotification = async () => {
     if (!user?.id || !bookDetails?.id) {
@@ -107,14 +116,11 @@ function BookDescription() {
         bookId: Number(bookDetails.id),
       });
 
-      const response = await fetch(
-        "http://localhost:3001/register-notification",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: requestBody,
-        }
-      );
+      const response = await fetch("http://localhost:3001/register-notification", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: requestBody,
+      });
 
       if (!response.ok) {
         const data = await response.json();
@@ -160,14 +166,28 @@ function BookDescription() {
     }
   };
 
+  const fetchData = async () => {
+    await fetchBookDetails();
+    await fetchUserDetails();
+    await checkNotification();
+    await checkFila();
+  };
+
+  useEffect(() => {
+    if (!id || !userId) {
+      setError("Usuário ou livro não identificado.");
+      return;
+    }
+    fetchData();
+  }, [id, userId]);
+
   if (loading) return <p>Carregando detalhes...</p>;
   if (error) return <p>Erro: {error}</p>;
   if (!bookDetails) return <p>Livro não encontrado.</p>;
 
   return (
     <div className="book-description_container">
-      <button onClick={() => navigate("/search")} className="back-button">
-      </button>
+      <button onClick={() => navigate("/search")} className="back-button" />
       <div className="body-book-description">
         <div className="book-details-image">
           {bookDetails.imagem ? (
@@ -178,142 +198,66 @@ function BookDescription() {
         </div>
 
         <div className="book-details-content">
-          <div className="book-details-info">
-          
-            <h1>{bookDetails.nome_do_livro}</h1>
-            <p id="info-geral">
-              <strong id="h2-book-info1">Autor:</strong>{" "}
-              <p id="paragrafos">{bookDetails.autor || "Não informado"} </p>
-            </p>
-            <p id="info-geral"> 
-              <strong id="h2-book-info1">Gênero:</strong>{" "}
-              <p id="paragrafos">{bookDetails.genero || "Não informado"} </p>
-            </p>
-            <p id="info-geral">
-              <strong id="h2-book-info1">Data de Lançamento:</strong>{" "}
-              <p id="paragrafos"> {bookDetails.ano_publicacao || "Não informado"} </p>
-            </p>
-            <p id="info-geral">
-              <strong id="h2-book-info1"> Editora:</strong>{" "}
-              {bookDetails.editora || "Não informado"} 
-            </p>
+          <h1>{bookDetails.nome_do_livro}</h1>
+          <p><strong>Autor:</strong> {bookDetails.autor || "Não informado"}</p>
+          <p><strong>Gênero:</strong> {bookDetails.genero || "Não informado"}</p>
+          <p><strong>Data de Lançamento:</strong> {bookDetails.ano_publicacao || "Não informado"}</p>
+          <p><strong>Editora:</strong> {bookDetails.editora || "Não informado"}</p>
+          <p><strong>Sinopse:</strong> {bookDetails.sinopse || "Sinopse não disponível"}</p>
 
-            
-            <strong id="h2-book-info1">Sinopse:</strong>
-            <div className="sinopse_livro">
-              <p> {bookDetails.sinopse || "Sinopse não disponível"}</p>
-            </div>
-
-
-            <h1 className="titulo-book">{bookDetails.nome_do_livro}</h1>
-
-            <div className="h2-e-paragrafos"> 
-              <strong id="h2-book-info1">Autor:</strong>{" "}
-              <p id="paragrafos">{bookDetails.autor || "Não informado"} </p>
-            </div>
-            
-            <div className="h2-e-paragrafos">
-              <strong id="h2-book-info1">Gênero:</strong>{" "}
-              <p id="paragrafos">{bookDetails.genero || "Não informado"} </p>
-            </div>
-            
-            <div className="h2-e-paragrafos">
-              <strong id="h2-book-info1">Data de Lançamento:</strong>{" "}
-              <p id="paragrafos">{bookDetails.ano_publicacao || "Não informado"}</p>
-            </div>
-            
-
-            <div className="h2-e-paragrafos">
-              <strong id="h2-book-info1"> Editora:</strong>{" "}
-              <p id="paragrafos"> {bookDetails.editora || "Não informado"} </p>
-            </div>
-
-            <strong id="h2-book-info1">Sinopse:</strong>
-
-
-            <div className="sinopse_livro">
-              <p id="paragrafos">
-                {" "}
-                {bookDetails.sinopse || "Sinopse não disponível"}
+          {notificationExists ? (
+            <>
+              <p className="error-message">
+                Você já registrou uma notificação para este livro.
               </p>
-            </div>
-
-            
-
-            {notificationExists ? (
-              <>
-                <p className="error-message">
-                  Você já registrou uma notificação para este livro.
-                </p>
-                <button
-                  onClick={cancelNotification}
-                  className="cancel-notification-button"
-                >
-                  Cancelar Notificação
-                </button>
-
-              </>
-            ) : (
-              <button onClick={registerNotification} className="notify-button">
-                Registrar Notificação
+              <button onClick={cancelNotification} className="cancel-notification-button">
+                Cancelar Notificação
               </button>
-            )}
-            {user?.bloqueado ? (
-              <button className="reserve-button" disabled>
-                Usuário bloqueado para reservas
+            </>
+          ) : (
+            <button onClick={registerNotification} className="notify-button">
+              Registrar Notificação
+            </button>
+          )}
+
+          {user?.bloqueado ? (
+            <button className="reserve-button" disabled>
+              Usuário bloqueado para reservas
+            </button>
+          ) : bookDetails.quantidade_disponivel_nao_alugada > 0 ? (
+            <button
+              onClick={() => navigate(`/bookStatus/${id}`)}
+              className="reserve-button"
+            >
+              Reservar
+            </button>
+          ) : (
+            isInQueue ? (
+              <button onClick={handleCancelarFila} className="cancel-button">
+                Cancelar Fila de Espera
               </button>
-            ) : bookDetails.quantidade_disponivel_nao_alugada > 0 ? (
-              <button
-                onClick={() => navigate(`/bookStatus/${id}`)}
-                className="reserve-button"
-                disabled={
-                  user?.bloqueado ||
-                  bookDetails.quantidade_disponivel_nao_alugada <= 0
-                }
-              >
-                {user?.bloqueado
-                  ? "Usuário bloqueado para reservas"
-                  : bookDetails.quantidade_disponivel_nao_alugada > 0
-                  ? "Reservar"
-                  : "Indisponível no momento"}
-              </button>
-              
             ) : (
               <button onClick={handleEntrarNaFila}>
-                  Entrar na fila de reserva
+                Entrar na fila de reserva
               </button>
-            )}
+            )
+          )}
 
-
-
-
-            {bookDetails.local === "DinossauroGame" && (
-              <button
-                onClick={() => navigate("/dinossauro")}
-                className="esteregg-button"
-              >
-                Acessar Easter Egg 🎮
-              </button>
-            )}
-            {bookDetails.local === "flapbird" && (
-              <button
-                onClick={() => navigate("/flapBird")}
-                className="esteregg-button"
-              >
-                Acessar Easter Egg 🎮
-              </button>
-            )}
-            {bookDetails.local === "Doom" && (
-              <a
-                href="https://doompdf.pages.dev/doom.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="esteregg-button"
-              >
-                Acessar Easter Egg 🎮
-              </a>
-            )}
-          </div>
+          {bookDetails.local === "DinossauroGame" && (
+            <button onClick={() => navigate("/dinossauro")} className="esteregg-button">
+              Acessar Easter Egg 🎮
+            </button>
+          )}
+          {bookDetails.local === "flapbird" && (
+            <button onClick={() => navigate("/flapBird")} className="esteregg-button">
+              Acessar Easter Egg 🎮
+            </button>
+          )}
+          {bookDetails.local === "Doom" && (
+            <a href="https://doompdf.pages.dev/doom.pdf" target="_blank" rel="noopener noreferrer" className="esteregg-button">
+              Acessar Easter Egg 🎮
+            </a>
+          )}
         </div>
       </div>
     </div>
