@@ -4,18 +4,27 @@
     .register-book-container {
       max-width: 500px;
       margin: 50px auto;
-      padding: 30px;
-      background: #fff;
+      padding: 40px;
+      background: var(--marrom-claro);
       border-radius: 12px;
-      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+      box-shadow: 0px 0px 11px var(--marrom-escuro);
       text-align: center;
+    }
+
+    .input-register {
+      background-color: var(--branco-diferente);
+    }
+
+    .input-register1 {
+      background-color: var(--branco-diferente);
+      margin-left: 10px;
     }
     
     /* Título */
     .register-book-container h1 {
       font-size: 24px;
-      color: #333;
-      margin-bottom: 20px;
+      color: var(--branco-primario);
+      padding-bottom: 30px;
     }
     
     /* Formulário */
@@ -23,6 +32,7 @@
       display: flex;
       flex-direction: column;
       gap: 15px;
+      margin-right: 20px;
     }
     
     /* Inputs e Textarea */
@@ -31,10 +41,11 @@
     .register-book-form select {
       width: 100%;
       padding: 12px;
-      border: 1px solid #ddd;
+      border: none;
       border-radius: 8px;
       font-size: 16px;
       transition: all 0.3s ease-in-out;
+      box-shadow: 0px 0px 8px var(--marrom-claro);
     }
     
     .register-book-form input:focus,
@@ -42,7 +53,7 @@
     .register-book-form select:focus {
       border-color: #4CAF50;
       outline: none;
-      box-shadow: 0px 0px 6px rgba(76, 175, 80, 0.5);
+      box-shadow: 0px 0px 6px var(--marrom-escuro);
     }
     
     /* Textarea */
@@ -53,8 +64,6 @@
     
     /* Botão de Cadastro */
     .register-book-form button {
-      background: #4CAF50;
-      color: white;
       font-size: 18px;
       padding: 12px;
       border: none;
@@ -62,10 +71,7 @@
       cursor: pointer;
       transition: background 0.3s;
     }
-    
-    .register-book-form button:hover {
-      background: #45a049;
-    }
+  
     
     /* Responsividade */
     @media (max-width: 600px) {

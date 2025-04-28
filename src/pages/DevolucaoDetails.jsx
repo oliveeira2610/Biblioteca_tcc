@@ -101,14 +101,14 @@ function DevolucaoDetails() {
 
   return (
     <div className="devolucao-details-container">
-      <div className="book-image">
+      <div className="book-image-devolucao">
         <img
           src={devolucaoDetails.imagem ? devolucaoDetails.imagem : "default-image.jpg"}
           alt={devolucaoDetails.nome_do_livro}
         />
       </div>
 
-      <div className="book-info">
+      <div className="book-info-devolucao">
         <h1>{devolucaoDetails.nome_do_livro}</h1>
         <p><strong>Autor:</strong> {devolucaoDetails.autor}</p>
         <p><strong>Editora:</strong> {devolucaoDetails.editora}</p>
@@ -124,7 +124,7 @@ function DevolucaoDetails() {
           <p><strong>CPF:</strong> {devolucaoDetails.cpf}</p>
           <p><strong>Telefone:</strong> {devolucaoDetails.telefone}</p>
           <div className="reserva-info">
-            <p><strong>Status da reserva:</strong> {devolucaoDetails.status}</p>
+            <p className="yt"><strong>Status da reserva:</strong> {devolucaoDetails.status}</p>
             <p><strong>Data de reserva:</strong> {devolucaoDetails.data_reserva ? format(new Date(devolucaoDetails.data_reserva), "dd/MM/yyyy") : "N/A"}</p>
             <p><strong>Data de devolução prevista:</strong> {devolucaoDetails.data_devolucao ? format(new Date(devolucaoDetails.data_devolucao), "dd/MM/yyyy") : "N/A"}</p>
             <p><strong>Data real da devolução:</strong> {devolucaoDetails.data_devolvido ? format(new Date(devolucaoDetails.data_devolvido), "dd/MM/yyyy") : "N/A"}</p>
@@ -134,15 +134,16 @@ function DevolucaoDetails() {
       </div>
 
       <div className="observacoes-section">
-        <h2>Observações</h2>
+        <h2 className="text-observ">Observações</h2>
         <textarea
+        className="caixa-branca"
           value={novaObservacao}
           onChange={handleObservacaoChange}
           placeholder="Escreva suas observações aqui..."
           rows="4"
           cols="50"
         />
-        <button onClick={handleAddObservacao}>Adicionar Observação</button>
+        <button className="botao-base1" onClick={handleAddObservacao}>Adicionar Observação</button>
         <div className="observacoes-list">
           {observacoes.map((obs) => (
             <div key={obs.id} className="observacao-item">

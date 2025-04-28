@@ -218,6 +218,7 @@ const Users = () => {
                       )}
 
                       <button
+                      className="botao-base"
                         onClick={(e) => {
                           e.stopPropagation();
                           handleReturnBook(book.reservaId, book.id, usuario.id);

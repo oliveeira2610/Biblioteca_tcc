@@ -88,18 +88,18 @@ function BookDetails() {
         <img src={bookDetails.imagem || "default-image.jpg"} alt={bookDetails.nome_do_livro} />
       </div>
       <div className="book-info">
-        <h1>{bookDetails.nome_do_livro}</h1>
-        <p><strong>Autor:</strong> {bookDetails.autor}</p>
-        <p><strong>Gênero:</strong> {bookDetails.genero}</p>
-        <p><strong>Editora:</strong> {bookDetails.editora}</p>
-        <p><strong>Sinopse:</strong> {bookDetails.sinopse}</p>
-        <p><strong>ISBN:</strong> {bookDetails.isbn}</p>
-        <p><strong>Ano de Publicação:</strong> {bookDetails.ano_publicacao}</p>
-        <p><strong>Quantidade disponível:</strong> {bookDetails.quantidade_disponivel}</p>
-        <p><strong>Status:</strong> {bookDetails.status}</p>
-        <p><strong>📌 Número:</strong> {bookDetails.numero || "Não informado"}</p>
-        <p><strong>Unidades:</strong> {bookDetails.unidades?.join(", ") || "Nenhuma unidade disponível"}</p>
-        <button onClick={handleEditClick}>{editMode ? "Cancelar" : "Editar Informações"}</button>
+        <h1 className="ui">{bookDetails.nome_do_livro}</h1>
+        <p><strong id="h2-book-info1">Autor:</strong> {bookDetails.autor}</p>
+        <p><strong id="h2-book-info1">Gênero:</strong> {bookDetails.genero}</p>
+        <p><strong id="h2-book-info1">Editora:</strong> {bookDetails.editora}</p>
+        <p><strong id="h2-book-info1">Sinopse:</strong> {bookDetails.sinopse}</p>
+        <p><strong id="h2-book-info1">ISBN:</strong> {bookDetails.isbn}</p>
+        <p><strong id="h2-book-info1">Ano de Publicação:</strong> {bookDetails.ano_publicacao}</p>
+        <p><strong id="h2-book-info1">Quantidade disponível:</strong> {bookDetails.quantidade_disponivel}</p>
+        <p><strong id="h2-book-info1">Status:</strong> {bookDetails.status}</p>
+        <p><strong id="h2-book-info1">Número:</strong> {bookDetails.numero || "Não informado"}</p>
+        <p><strong id="h2-book-info1">Unidades:</strong> {bookDetails.unidades?.join(", ") || "Nenhuma unidade disponível"}</p>
+        <button className="botao-base" onClick={handleEditClick}>{editMode ? "Cancelar" : "Editar Informações"}</button>
       </div>
       {editMode && (
         <div className="book-edit">
@@ -122,7 +122,7 @@ function BookDetails() {
       <div className="reservation-details">
         {bookDetails.reservasPorUsuario && bookDetails.reservasPorUsuario.length > 0 ? (
           bookDetails.reservasPorUsuario.map((usuario, index) => (
-            <div key={index} className="usuario-reservas">
+            <div key={index} className="usuario-reservas-details">
               <h3>{usuario.nome_usuario}</h3>
               <p><strong>Email:</strong> {usuario.usuario_email}</p>
               <p><strong>CPF:</strong> {usuario.usuario_cpf}</p>

@@ -115,8 +115,8 @@ function ReservedBooks() {
               )}
               <h3 className="book-card-title">{book.nome_do_livro}</h3>
               <p className="book-card-author">{book.autor}</p>
-              <p><strong>Editora:</strong> {book.editora}</p>
-              <p><strong>Status:</strong> {book.reserva_status}</p>
+              <p className="book-card-editora"><strong>Editora:</strong> {book.editora}</p>
+              <p className="book-card-status-book"><strong>Status:</strong> {book.reserva_status}</p>
               {book.multa > 0 && (
                 <p className="book-card-fine">Multa pendente: R$ {book.multa.toFixed(2)}</p>
               )}

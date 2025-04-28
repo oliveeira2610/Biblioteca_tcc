@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import '../../src/styles/registerBook.css';
+import '../../src/styles/button.css';
 
 function RegisterBook() {
   const location = useLocation();
@@ -92,21 +93,21 @@ function RegisterBook() {
     <div className="register-book-container">
       <h1>{formData.id ? 'Editar Livro' : 'Registrar Livro'}</h1>
       <form onSubmit={handleSubmit} className="register-book-form">
-        <input type="text" name="nome_do_livro" placeholder="Nome do Livro" value={formData.nome_do_livro} onChange={handleInputChange} required />
-        <input type="text" name="autor" placeholder="Autor" value={formData.autor} onChange={handleInputChange} required />
-        <input type="text" name="genero" placeholder="Gênero" value={formData.genero} onChange={handleInputChange} required />
-        <input type="text" name="editora" placeholder="Editora" value={formData.editora} onChange={handleInputChange} required />
-        <textarea name="sinopse" placeholder="Sinopse" value={formData.sinopse} onChange={handleInputChange}></textarea>
-        <input type="text" name="isbn" placeholder="ISBN" value={formData.isbn} onChange={handleInputChange} required />
-        <input type="number" name="ano_publicacao" placeholder="Ano de Publicação" value={formData.ano_publicacao} onChange={handleInputChange} required />
-        <input type="text" name="imagem" placeholder="URL da Imagem" value={formData.imagem} onChange={handleInputChange} />
-        <input type="number" name="quantidade_disponivel" placeholder="Quantidade de Unidades" value={formData.quantidade_disponivel} onChange={handleInputChange} min="1" required />
-        <input type="text" name="numero" placeholder="Número" value={formData.numero} onChange={handleInputChange} required />
-        <select name="status" value={formData.status} onChange={handleInputChange} required>
+        <input className="input-register" type="text" name="nome_do_livro" placeholder="Nome do Livro" value={formData.nome_do_livro} onChange={handleInputChange} required />
+        <input className="input-register" type="text" name="autor" placeholder="Autor" value={formData.autor} onChange={handleInputChange} required />
+        <input className="input-register" type="text" name="genero" placeholder="Gênero" value={formData.genero} onChange={handleInputChange} required />
+        <input className="input-register" type="text" name="editora" placeholder="Editora" value={formData.editora} onChange={handleInputChange} required />
+        <textarea className="input-register" name="sinopse" placeholder="Sinopse" value={formData.sinopse} onChange={handleInputChange}></textarea>
+        <input className="input-register" type="text" name="isbn" placeholder="ISBN" value={formData.isbn} onChange={handleInputChange} required />
+        <input className="input-register" type="number" name="ano_publicacao" placeholder="Ano de Publicação" value={formData.ano_publicacao} onChange={handleInputChange} required />
+        <input className="input-register" type="text" name="imagem" placeholder="URL da Imagem" value={formData.imagem} onChange={handleInputChange} />
+        <input className="input-register" type="number" name="quantidade_disponivel" placeholder="Quantidade de Unidades" value={formData.quantidade_disponivel} onChange={handleInputChange} min="1" required />
+        <input className="input-register" type="text" name="numero" placeholder="Número" value={formData.numero} onChange={handleInputChange} required />
+        <select className="input-register1" name="status" value={formData.status} onChange={handleInputChange} required>
           <option value="Disponível">Disponível</option>
           <option value="Indisponível">Indisponível</option>
         </select>
-        <button type="submit">{formData.id ? 'Atualizar Livro' : 'Cadastrar Livro'}</button>
+        <button className='botao-base' type="submit">{formData.id ? 'Atualizar Livro' : 'Cadastrar Livro'}</button>
       </form>
     </div>
   );

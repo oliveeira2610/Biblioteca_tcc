@@ -30,7 +30,7 @@
 
 
   .auth-header img{
-    width: 350px;
+    width: 380px;
     margin-top: 0px
   }
 
@@ -198,4 +198,5 @@
 
     .texto_header {
       color: #826049;
+      margin-top: 20px;
     }

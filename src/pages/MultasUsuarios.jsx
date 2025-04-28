@@ -65,10 +65,11 @@ const MultasUsuarios = () => {
 
   return (
     <div className="multas-usuarios">
-      <h1>Multas Aplicadas</h1>
+      <h1 className="aplicadass">Multas Aplicadas</h1>
       <form onSubmit={handleSubmit} className="form-multa">
         <label>ID da Reserva:</label>
         <input
+        className="inputa"
           type="number"
           value={reservaId}
           onChange={(e) => setReservaId(e.target.value)}
@@ -76,21 +77,22 @@ const MultasUsuarios = () => {
         />
         <label>Valor da Multa (R$):</label>
         <input
+        className="inputa"
           type="number"
           step="0.01"
           value={valorMulta}
           onChange={(e) => setValorMulta(e.target.value)}
           required
         />
-        <button type="submit" disabled={!reservaId || !valorMulta}>
+        <button className="botao-multas" type="submit" disabled={!reservaId || !valorMulta}>
           Adicionar Multa
         </button>
       </form>
 
-      <table>
+      <table className="thread1">
         <thead>
           <tr>
-            <th>Usuário</th>
+            <th >Usuário</th>
             <th>Total de Multas</th>
           </tr>
         </thead>
@@ -113,7 +115,7 @@ const MultasUsuarios = () => {
       </table>
 
       <h1 className="ativas1">Reservas Ativas</h1>
-      <div className="books-list">
+      <div className="books-list1">
         {reservasAtivas.length === 0 ? (
           <p>Nenhuma reserva ativa no momento.</p>
         ) : (
@@ -138,23 +140,23 @@ const MultasUsuarios = () => {
               <p className="book-card-author">
                 {book.autor || "Autor desconhecido"}
               </p>
-              <p>
+              <p className="book-card-reserved-user">
                 <strong>Usuário que Reservou:</strong>{" "}
                 {book.usuario || "Não informado"}
               </p>
-              <p>
+              <p className="book-card-id">
                 <strong>ID da Reserva:</strong> {book.reserva_id || "N/A"}
               </p>
-              <p>
+              <p className="book-card-devolution">
                 <strong>Data de Devolução:</strong>{" "}
                 {book.data_devolucao
                   ? new Date(book.data_devolucao).toLocaleDateString()
                   : "Data não definida"}
               </p>
-              <p>
+              <p className="book-card-editora">
                 <strong>Editora:</strong> {book.editora || "Não informada"}
               </p>
-              <p>
+              <p className="book-card-status-book">
                 <strong>Status da Reserva:</strong>{" "}
                 {book.reserva_status || "Indefinido"}
               </p>

@@ -168,7 +168,7 @@ const ManageDatabaseBooks = () => {
               onClick={() => handleCardClick(book.id)}
               style={{ cursor: "pointer" }}
             >
-              <h3>{book.nome_do_livro}</h3>
+              <h3 className="book-card-title">{book.nome_do_livro}</h3>
               {book.imagem ? (
                 <img
                   src={book.imagem}
@@ -178,14 +178,14 @@ const ManageDatabaseBooks = () => {
               ) : (
                 <div className="no-image-placeholder">Sem imagem</div>
               )}
-              <p>Autor: {book.autor}</p>
-              <p>Status: {book.status}</p>
+              <p className="book-card-author">Autor: {book.autor}</p>
+              <p className="book-card-status-book">Status: {book.status}</p>
             </div>
 
-            <button onClick={() => releaseAllReservations(book.id)}>
+            <button className="botao-base" onClick={() => releaseAllReservations(book.id)}>
               Liberar Reservas
             </button>
-            <button onClick={() => freeBook(book.id)}>Remover livro</button>
+            <button className="botao-base" onClick={() => freeBook(book.id)}>Remover livro</button>
           </div>
         ))}
       </div>

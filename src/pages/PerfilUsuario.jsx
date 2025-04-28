@@ -171,7 +171,7 @@ function PerfilUsuario() {
         </div>
         <div className="segundo_container">
           <div className="esquerda_segundo">
-            <h1>LIVROS QUE VOCÊ ESTÁ ACOMPANHANDO</h1>
+            <h1 className="h1-user">LIVROS QUE VOCÊ ESTÁ ACOMPANHANDO</h1>
 
             <div className="livros_acompanhando">
               {userInfo.watchlist && userInfo.watchlist.length > 0 ? (
@@ -195,7 +195,7 @@ function PerfilUsuario() {
           </div>
 
           <div className="direita_segundo">
-            <h1>NOTIFICAÇÕES</h1>
+            <h1 className="h1-user">NOTIFICAÇÕES</h1>
             <div className="notificacoes">
               {userInfo.notifications && userInfo.notifications.length > 0 ? (
                 <div className="books-list">
