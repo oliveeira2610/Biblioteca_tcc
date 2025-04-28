@@ -182,8 +182,6 @@ function BookDescription() {
               <p> {bookDetails.sinopse || "Sinopse não disponível"}</p>
             </div>
 
-
-           
             {notificationExists ? (
               <>
                 <p className="error-message">

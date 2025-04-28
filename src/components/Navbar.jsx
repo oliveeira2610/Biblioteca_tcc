@@ -44,7 +44,7 @@ const Navbar = () => {
           <li>
             <Link to="/perfil-usuario" className="linksnavbar" >Perfil</Link>
           </li>
-          {role === "admin" && ( // Exibe o Dashboard apenas para admins
+          {role === "admin" && ( 
             <li><Link to="/dashboard" className="linksnavbar" >Dashboard</Link></li>
           )}
           <li>

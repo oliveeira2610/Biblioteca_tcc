@@ -37,7 +37,7 @@
   cursor: pointer;
   flex-direction: column;
   min-height: 180px;
-  width: 44%;
+  width: 44vw;
   text-decoration: none;
 }
 
@@ -45,7 +45,7 @@
   display: flex;
   flex-wrap: wrap;
   width: auto;
-justify-content: center;
+  justify-content: center;
 }
 
 
@@ -86,24 +86,10 @@ justify-content: center;
 
 
 /* Responsividade */
-@media (max-width: 768px) {
-  .dashboard {
-    padding: 2rem;
-  }
 
-  .dashboard h1 {
-    font-size: 2.2rem;
-  }
-
+@media (max-width: 1024px) {
   .dashboard .card {
-    padding: 1.5rem;
-  }
-
-  .dashboard .card h2 {
-    font-size: 1.6rem;
-  }
-
-  .dashboard .card p {
-    font-size: 2rem;
+    width: 37vw; 
   }
 }
+

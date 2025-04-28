@@ -225,6 +225,10 @@ body{
   .direita_primeira{
     width: 48vw;
   }
+  .segundo_container{
+    margin-top: 20px;
+    height: 50vh;
+  }
 
   h1{
     font-size: 15px;
@@ -233,5 +237,54 @@ body{
   .livros_acompanhando,
   .notificacoes{
     width: 80%;
+  }
+}
+
+
+
+@media screen and (max-width: 690px){
+  .primeiro_container{
+    height: 50vh;
+  }
+  .segundo_container{
+    height: 50vh;
+    margin-top: 40px;
+  }
+  .esquerda_primeira{
+    height: 400px;
+    width: 250px;
+  }
+  .direita_primeira{
+    height: 400px;
+    width: 280px;
+  }
+  .img_perfil img{
+    height: 150px;
+  }
+  h2{
+    font-size: 18px;
+  }
+  h1{
+    font-size: 12px;
+  }
+}
+
+
+@media screen and (max-width: 590px){
+  .direita_primeira{
+    width: 48vw;
+  }
+  .esquerda_primeira{
+    width: 32vw;
+  }
+
+  .img_perfil img{
+    height: 120px;
+  }
+  .dados-pessoais p{
+    font-size: 13px;
+  }
+  h1{
+    font-size: 10px;
   }
 }

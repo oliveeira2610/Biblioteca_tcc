@@ -136,6 +136,7 @@ button {
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  height: 50px;
   margin-top: 10px;
 }
 
@@ -181,4 +182,11 @@ button {
 
 .titulo-book{
   margin: 0;
+}
+
+
+#info-geral{
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 8px;
 }

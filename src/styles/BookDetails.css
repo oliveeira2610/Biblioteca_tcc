@@ -1,4 +1,10 @@
-/* Estilos gerais para a página de detalhes do livro */
+.body-book-details{
+  height: 90.5vh;
+  display: flex;
+  align-items: center;
+}
+
+
 .book-details-container {
   font-family: 'Roboto', sans-serif;
   background-color: var(--marrom);
@@ -10,8 +16,7 @@
   max-width: 1500px;
   margin: 0 auto;
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-  border-bottom-right-radius: 8px;
-  border-bottom-left-radius: 8px;
+  border-radius: 8px;
 }
 
 /* Estilo para a imagem do livro */
