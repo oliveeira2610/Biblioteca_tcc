@@ -1476,11 +1476,11 @@ app.put("/reservas/:id/devolver", async (req, res) => {
       unidade: reserva.numero_unidade,
     });
     
-    createNotification(
-      reserva.livro_id,
-      reserva.numero_unidade,
-      `A unidade ${reserva.numero_unidade} do livro foi devolvida e está disponível.`
-    );
+    // createNotification(
+    //   reserva.livro_id,
+    //   reserva.numero_unidade,
+    //   `A unidade ${reserva.numero_unidade} do livro foi devolvida e está disponível.`
+    // );
     
     
 
@@ -2186,11 +2186,11 @@ app.put("/reservas/:id/devolver-e-registrar", async (req, res) => {
     // Remove a reserva original
     await db.run(`DELETE FROM reservas WHERE id = ?`, [id]);
 
-    createNotification(
-      reserva.livro_id,
-      reserva.numero_unidade,
-      `A unidade ${reserva.numero_unidade} do livro foi devolvida e está disponível.`
-    );
+    // createNotification(
+    //   reserva.livro_id,
+    //   reserva.numero_unidade,
+    //   `A unidade ${reserva.numero_unidade} do livro foi devolvida e está disponível.`
+    // );
 
 
     atualizarStatusLivro(reserva.livro_id);

@@ -24,3 +24,13 @@
     justify-content: center;
     margin-bottom: 2rem;
   }
+
+  .botao-base {
+    background-color: var(--marrom-primario);
+    color: var(--branco-diferente);
+  }
+
+  .botao-base:hover {
+    background-color: var(--marrom-escuro);
+    color: var(--branco-primario);
+  }

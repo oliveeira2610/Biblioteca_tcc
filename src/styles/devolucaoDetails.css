@@ -4,58 +4,91 @@
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;
-    background-color: #f5f5f5;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: var(--marrom-claro);
+    box-shadow: 0 0px 14px var(--marrom-escuro);
   }
   
-  .book-image img {
-    width: 100%;
-    max-height: 400px;
+  .book-image-devolucao img {
+    width: 20vw;
+    max-height: 600px;
+    height: auto;
     object-fit: cover;
     border-radius: 10px;
     margin-bottom: 20px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .book-image-devolucao {
+    padding-left: 190px;
   }
   
-  .book-info h1 {
+  .book-info-devolucao h1 {
     font-size: 2em;
     margin-bottom: 10px;
-    color: #333;
+    color: var(--marrom);
   }
   
-  .book-info p {
+  .book-info-devolucao p {
     font-size: 1.2em;
     margin-bottom: 8px;
-    color: #555;
+    color: var(--marrom-escuro);
   }
   
-  .reservation-details1 {
-    margin-top: 20px;
-  }
+ .book-info-devolucao {
+  background-color: var(--branco-primario);
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+ .caixa-branca {
+  background-color: var(--branco-diferente);
+  border-radius: 10px;
+  border: none;
+  color: var(--marrom-escuro);
+  box-shadow: 0 0px 14px var(--marrom);
+ }
   
   .usuario-reservas {
-    background-color: #fff;
+    background-color: var(--marrom);
     padding: 15px;
-    margin-bottom: 10px;
+    margin-top: 3vh;
     border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 0px 14px var(--marrom-escuro);
   }
   
   .usuario-reservas h3 {
     font-size: 1.5em;
     margin-bottom: 10px;
-    color: #333;
+    color: var(--branco-diferente);
+  }
+
+  .botao-base1 {
+    background-color: var(--marrom-primario);
+    color: var(--branco-diferente);
+    display: flex;
+    margin-top: 20px;
+  }
+
+  .text-observ {
+    color: var(--branco-primario);
+  }
+
+  .botao-base1:hover {
+    background-color: var(--marrom-escuro);
+    color: var(--branco-primario);
   }
   
   .usuario-reservas p {
     font-size: 1em;
     margin-bottom: 5px;
-    color: #666;
+    color: var(--branco-primario);
   }
   
   .reserva-info {
     margin-top: 10px;
-    background-color: #f9f9f9;
+    background-color: var(--marrom-claro);
     padding: 10px;
     border-radius: 5px;
   }
@@ -63,10 +96,10 @@
   .reserva-info p {
     font-size: 1em;
     margin-bottom: 5px;
-    color: #444;
+    color: var(--branco-diferente);
   }
   
   .reserva-info strong {
-    color: #333;
+    color: var(--marrom-escuro);
   }
   
