@@ -1,0 +1,137 @@
+/* container principal da página */
+.notifications-page-container {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* título da página */
+  .notifications-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+  }
+
+  .titolo {
+    color: var(--marrom);
+    font-size: 2rem;
+  }
+  
+  /* botão para limpar todas as notificações */
+  .clear-all-button {
+    background-color: var(--marrom);
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    border-radius: 5px;
+  }
+  
+  .clear-all-button:hover {
+    background-color: var(--marrom-claro);
+  }
+  
+  /* lista de notificações */
+  .notifications-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  /* cartão de cada notificação */
+  .notification-card {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px;
+    background-color: #fafafa;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+  }
+  
+  .notification-card:hover {
+    transform: scale(1.05);
+  }
+  
+  /* imagem do livro dentro do cartão */
+  .notification-card-image {
+    width: 100px;
+    height: 150px;
+    object-fit: cover;
+    margin-bottom: 10px;
+  }
+  
+  .no-image-placeholder {
+    width: 100px;
+    height: 150px;
+    background-color: #e0e0e0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #888;
+  }
+  
+  /* título do livro no cartão */
+  .notification-card-title {
+    font-size: 1.25rem;
+    font-weight: bold;
+    margin: 10px 0;
+  }
+  
+  /* nome do autor no cartão */
+  .notification-card-author {
+    font-size: 1rem;
+    color: #555;
+  }
+  
+  /* status de disponibilidade do livro */
+  .notification-availability {
+    font-size: 0.9rem;
+    margin: 5px 0;
+  }
+  
+  .available {
+    color: green;
+  }
+  
+  .unavailable {
+    color: red;
+  }
+  
+  /* mensagem da notificação */
+  .notification-message {
+    font-size: 0.9rem;
+    color: #444;
+    margin: 10px 0;
+  }
+  
+  /* data/hora da notificação */
+  .notification-timestamp {
+    font-size: 0.8rem;
+    color: #888;
+  }
+  
+  /* botão para limpar a notificação específica */
+  .clear-notification-button {
+    background-color: #ff9800;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    align-self: flex-start;
+  }
+  
+  .clear-notification-button:hover {
+    background-color: #f57c00;
+  }
+  
+  /* caso não haja notificações */
+  .no-notifications-message {
+    font-size: 1.2rem;
+    color: #999;
+    text-align: center;
+  }
+  

@@ -1,0 +1,78 @@
+/* Estilo geral da página */
+.historico-reservas {
+  font-family: 'Poppins', sans-serif;
+  background-color: var(--branco-diferente);
+  color: var(--marrom-escuro);
+  padding: 2rem;
+  margin: 0 auto;
+  max-width: 1200px;
+}
+
+/* Cabeçalho */
+.historico-reservas h1 {
+  font-size: 2.8rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  color: var(--marrom);
+}
+
+.historico-reservas h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: var(--marrom-claro);
+  border-bottom: 2px solid var(--marrom-claro);
+  padding-bottom: 0.5rem;
+  margin-top: 3rem;
+}
+
+/* Estilo das tabelas */
+.historico-reservas table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 2rem;
+  background-color: var(--branco-primario);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.historico-reservas th,
+.historico-reservas td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--marrom-claro);
+}
+
+.historico-reservas th {
+  background-color: var(--marrom);
+  color: white;
+  font-size: 1.1rem;
+}
+
+.historico-reservas td {
+  font-size: 1rem;
+}
+
+.historico-reservas tr:hover {
+  background-color: var(--branco-diferente);
+}
+
+/* Estilo das colunas de data */
+.historico-reservas td:first-child,
+.historico-reservas td:nth-child(2) {
+  font-weight: bold;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+  .historico-reservas table {
+    font-size: 0.9rem;
+  }
+
+  .historico-reservas h1 {
+    font-size: 2.2rem;
+  }
+
+  .historico-reservas h2 {
+    font-size: 1.8rem;
+  }
+}
+

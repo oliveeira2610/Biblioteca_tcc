@@ -1,0 +1,86 @@
+/* Estilização principal do contêiner de busca de livros */
+.search-books-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 3vh;
+  min-height: 100vh;
+}
+
+.search-books-container h1 {
+  color: var(--marrom-escuro);
+  font-size: 3.3vh;
+  margin-bottom: 30px;
+}
+
+/* Estilização do formulário de busca */
+
+.search-input {
+  background-color: var(--marrom-claro);
+  height: 3vh;
+  box-shadow: 0px 0px 12px 5px #BD9B75;
+  width: 75vh;
+  padding: 0.8rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 12px;
+  transition: border-color 0.3s ease;
+  color: var(--branco-primario);
+}
+
+.search-button {
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.search-button:hover {
+  background-color: #0056b3;
+}
+
+/* Mensagem de erro */
+.no-results {
+  color: #d9534f;
+  font-size: 16px;
+  margin-top: 10px;
+}
+
+/* Seção de gêneros */
+.genre-section {
+  width: 80%;
+  max-width: 1000px;
+  margin-bottom: 30px;
+}
+
+.genre-section h2 {
+  color: var(--marrom);
+  margin-bottom: 15px;
+  border-bottom: 2px solid  var(--marrom);
+  padding-bottom: 5px;
+}
+
+/* .books-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  justify-content: center;
+} */
+
+/* Estilização do status de disponibilidade */
+.book-availability {
+  font-size: 14px;
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+.available {
+  color: green;
+}
+
+.unavailable {
+  color: red;
+}

@@ -1,0 +1,26 @@
+/* Botão de voltar */
+.back-button {
+    align-self: flex-start;
+    background-color: #2a9d8f;
+    color: white;
+    border: none;
+    padding: 0.8rem 2rem;
+    font-size: 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-bottom: 2rem;
+  }
+  
+  .back-button:hover {
+    background-color: #21867a;
+  }
+
+
+ /* Formulário de pesquisa */
+ .search-form {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-bottom: 2rem;
+  }
