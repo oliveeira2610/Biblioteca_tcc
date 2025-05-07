@@ -22,12 +22,12 @@ body {
   transform: scale(1.05);
 }
 
-/* .home-container {
+.home-container {
   height: 90.5vh;
-} */
+}
 
 .img-wrapper {
-  position: relative; /* Para posicionar o texto corretamente */
+  position: relative; 
   width: 100%;
   display: flex;
   justify-content: center;
