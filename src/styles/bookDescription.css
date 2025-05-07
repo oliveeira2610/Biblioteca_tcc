@@ -50,13 +50,6 @@
   border-radius: 8px;
 }
 
-.book-details-image {
-  text-align: center;
-  justify-content: center;
-  width: auto;
-  display: flex;
-  padding: 30px;
-}
 
 .book-details-image-description {
   text-align: center;

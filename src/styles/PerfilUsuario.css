@@ -147,13 +147,12 @@ body{
   margin: 0 10px;
   height: 85%;
   width: 90%;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  padding: 20px;
+  flex-wrap: wrap;
 
 }
 
-.h1-user {
+h1 {
   font-size: 18px;
   color: #4a773c;
   text-align: center;

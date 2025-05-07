@@ -8,9 +8,12 @@
 .notifications-title {
   font-size: 2rem;
   font-weight: bold;
-  display: flex;
-  justify-content: center;
+  margin-bottom: 15px;
+}
+
+.titolo {
   color: var(--marrom);
+  font-size: 2rem;
 }
 
 /* botão para limpar todas as notificações */
@@ -39,11 +42,10 @@
 .notification-card {
   display: flex;
   flex-direction: column;
-  border: none;
-  box-shadow: 0px 0px 10px 5px #BD9B75;
+  border: 1px solid #ddd;
   border-radius: 8px;
   padding: 15px;
-  background-color: var(--marrom);
+  background-color: #fafafa;
   cursor: pointer;
   transition: transform 0.2s ease;
 }
@@ -132,3 +134,4 @@
   color: #999;
   text-align: center;
 }
+
