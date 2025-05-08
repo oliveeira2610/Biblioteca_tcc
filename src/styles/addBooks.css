@@ -1,20 +1,34 @@
 .addlivr {
-    font-size: 3vh;
+    font-size: 3.4vh;
     padding: 3vh;
     color: var(--marrom);
-}
-
-.register-button {
-    background-color: var(--marrom);
-    color: var(--branco-primario);
-    margin-bottom: 6px;
+    display: flex;
+    justify-content: center;
 }
 
 .books-list1 {
-    padding-left: 11.4vh;
+    justify-content: center;
     display: flex;
     flex-wrap: wrap;
     gap: 15px;
     padding-top: 3vh;
     padding-bottom: 6vh;
+}
+
+.botao-base1 {
+    background-color: var(--marrom-primario);
+    color: var(--branco-diferente);
+    padding: 14px;
+  }
+
+.botao-base1:hover {
+    background-color: var(--marrom-escuro);
+    color: var(--branco-primario);
+  }
+
+.carregando {
+    display: flex;
+    justify-content: center;
+    color: var(--marrom);
+    margin-bottom: 4px
 }
