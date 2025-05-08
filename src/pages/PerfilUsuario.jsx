@@ -137,11 +137,12 @@ function PerfilUsuario() {
   const totalAcompanhando = userInfo.watchlist?.length || 0;
 
   return (
-    <div className="perfil-usuario-container floating-background">
+    <div className="perfil-usuario-container">
       <FloatingLetters />
-      <button className="logout-button" onClick={handleLogout}>Sair</button>
+      
 
       <div className="container_principal_user">
+      
         <div className="primeiro_container">
           <div className="esquerda_primeira">
             <div className="img_perfil">
@@ -154,6 +155,7 @@ function PerfilUsuario() {
               <p><strong>Status:</strong> {userInfo.bloqueado ? "🚫 Bloqueado" : "✅ Ativo"}</p>
               <p><strong>Livros Reservados:</strong> {totalReservados}</p>
               <p><strong>Acompanhando:</strong> {totalAcompanhando}</p>
+              <button className="logout-button" onClick={handleLogout}>Sair</button>
             </div>
           </div>
 
@@ -172,7 +174,7 @@ function PerfilUsuario() {
             </div>
 
             <h2>LIVROS RESERVADOS</h2>
-            <div className="livros-reservados books-list">
+            <div className="livros-reservados">
               {(userInfo.reservas || []).length > 0 ? (
                 userInfo.reservas.map((reserva) => (
                   <div key={reserva.livroId} className="book-card">
@@ -192,7 +194,7 @@ function PerfilUsuario() {
         <div className="segundo_container">
           <div className="esquerda_segundo">
             <h2>LIVROS QUE VOCÊ ESTÁ ACOMPANHANDO</h2>
-            <div className="livros_acompanhando books-list">
+            <div className="livros_acompanhando">
               {(userInfo.watchlist || []).length > 0 ? (
                 userInfo.watchlist.map((book) => (
                   <div key={book.book_id} className="book-card">
@@ -210,7 +212,7 @@ function PerfilUsuario() {
 
           <div className="direita_segundo">
             <h2>NOTIFICAÇÕES</h2>
-            <div className="notificacoes books-list">
+            <div className="notificacoes ">
               {(userInfo.notifications || []).length > 0 ? (
                 userInfo.notifications.map((notif) => (
                   <div key={notif.id} className="book-card">

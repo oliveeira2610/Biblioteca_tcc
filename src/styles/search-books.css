@@ -18,7 +18,7 @@
 .search-input {
   background-color: var(--marrom-claro);
   height: 3vh;
-  box-shadow: 0px 0px 12px 5px #BD9B75;
+  box-shadow: 0px 0px 10px 2px #BD9B75;
   width: 75vh;
   padding: 0.8rem;
   font-size: 1rem;
@@ -30,7 +30,7 @@
 
 .search-button {
   padding: 10px 15px;
-  background-color: #007bff;
+  background-color: #0058b6;
   color: white;
   border: none;
   border-radius: 5px;

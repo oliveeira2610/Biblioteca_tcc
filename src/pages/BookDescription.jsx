@@ -197,13 +197,13 @@ function BookDescription() {
           )}
         </div>
 
-        <div className="book-details-content">
+        <div className="book-details-info">
           <h1>{bookDetails.nome_do_livro}</h1>
-          <p><strong>Autor:</strong> {bookDetails.autor || "Não informado"}</p>
-          <p><strong>Gênero:</strong> {bookDetails.genero || "Não informado"}</p>
-          <p><strong>Data de Lançamento:</strong> {bookDetails.ano_publicacao || "Não informado"}</p>
-          <p><strong>Editora:</strong> {bookDetails.editora || "Não informado"}</p>
-          <p><strong>Sinopse:</strong> {bookDetails.sinopse || "Sinopse não disponível"}</p>
+          <p className="detalhe"><strong className="detalhes-strong">Autor:</strong> {bookDetails.autor || "Não informado"}</p>
+          <p className="detalhe"><strong className="detalhes-strong">Gênero:</strong> {bookDetails.genero || "Não informado"}</p>
+          <p className="detalhe"><strong className="detalhes-strong">Data de Lançamento:</strong> {bookDetails.ano_publicacao || "Não informado"}</p>
+          <p className="detalhe"><strong className="detalhes-strong">Editora:</strong> {bookDetails.editora || "Não informado"}</p>
+          <p><strong className="detalhes-strong">Sinopse:</strong></p> <p className="sinopse-detalhes"> {bookDetails.sinopse || "Sinopse não disponível"}</p>
 
           {notificationExists ? (
             <>
