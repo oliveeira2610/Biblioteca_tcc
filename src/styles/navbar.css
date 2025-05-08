@@ -11,7 +11,7 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.container_principal_u  r{
+.container_principal_u{
   padding: 20px;
 }
 
@@ -49,7 +49,11 @@
   gap: 1.5rem;
   margin: 0;
   padding: 0;
+  
 }
+
+
+
 
 .nav-links li {
   display: inline-block;

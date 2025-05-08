@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../../src/styles/global.css";
+
 import "../../src/styles/home.css";
 import { useNavigate } from "react-router-dom";
 

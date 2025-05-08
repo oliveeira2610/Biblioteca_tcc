@@ -1,3 +1,5 @@
+
+
 .book-description_container {
   font-family: Arial, sans-serif;
 }
@@ -191,12 +193,12 @@ button {
 }
 
 .reserve-button {
-  background-color: var(--marrom-claro);
+  background-color: #3B7629;
   color: var(--branco-primario);
 }
 
 .reserve-button:hover {
-  background-color: var(--marrom);
+  background-color: #6db357;
   color: var(--branco-primario);
 }
 
