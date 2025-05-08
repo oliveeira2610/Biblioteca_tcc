@@ -7,8 +7,12 @@ body{
 }
 
 .logout-button{
-  background-color: rgb(113, 15, 15);
+  background-color: rgb(202, 28, 28);
   width: 100%;
+}
+
+.logout-button:hover{
+  background-color: rgb(184, 21, 21);
 }
 
 .primeiro_container{
@@ -62,7 +66,7 @@ body{
 .multas_perfil{
   width: 100%;
   background-color: #FFF9E1;
-  height: 25%;
+  height: 30%;
   box-shadow: 0px 0px 10px 2px #BD9B75;
   border-radius: 17px;
   display: flex;
@@ -127,7 +131,7 @@ body{
 .livros-reservados {
   display: flex;
   background-color: #FFF9E1;
-  height: 42%;
+  height: 40%;
   width: 100%;
   border-radius: 30px;
   box-shadow: 0px 0px 10px 2px #BD9B75;

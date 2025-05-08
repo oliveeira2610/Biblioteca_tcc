@@ -17,21 +17,41 @@
   font-weight: bold;
 }
 
-.back-button {
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-  color: #8b6f47;
-  font-size: 35px;
-  cursor: pointer;
-  color: #826049; 
+.book-description-wrapper {
+  height: 100vh;
+  background-color: #fdf6e3; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
+
+
+.back-button{
+  display: flex;
+  background-color: transparent;
+  align-items: center;
+  transition: all 0.3s;
+  transform: rotate(180deg)
+}
+
+.back-button:hover{
+  background-color: transparent;
+    
+}
+  
+.back-button:after{
+  background-color: transparent;
+  cursor: pointer;
+  content: "➔";
+  font-size: 3vh;
+  color: #8E6B44;
+}
+
 
 .body-book-description {
   display: flex;
   flex-direction: row;
   gap: 20px;
-  margin-top: 2.7vw;
   background-color: #FFF9E1;
   padding: 30px;
   height: auto;
@@ -56,7 +76,7 @@
 
 .detalhe{
   color: #B28C33;
-  font-size: 20px
+  font-size: 23px
 }
 
 .book-details-image img {
@@ -121,7 +141,7 @@ p {
 }
 
 .book-details-info h1 {
-  color: #3b5998;
+  color: 35C3D27;
 }
 
 #h2-book-info1 {
@@ -142,6 +162,7 @@ p {
 
 /* Botões */
 button {
+  
   padding: 10px;
   border: none;
   border-radius: 5px;
@@ -151,17 +172,21 @@ button {
 }
 
 .notify-button {
-  background-color: var(--marrom);
+  background-color: #3B7629;
   color: var(--branco-primario);
 }
 
 .notify-button:hover {
-  background-color: var(--marrom-claro);
-  color: var(--branco-primario);
+  background-color: #6db357;
 }
 
-.cancel-notification-button {
-  background-color: #d9534f;
+.cancel-button {
+  background-color: #cf352f;
+  color: white;
+}
+
+.cancel-button:hover {
+  background-color: rgb(167, 48, 48);
   color: white;
 }
 

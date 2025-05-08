@@ -164,7 +164,7 @@ function PerfilUsuario() {
             <div className="multas_perfil">
               {(userInfo.reservas || []).map((reserva) => (
                 <div key={reserva.livroId} className="book-card">
-                  <h3>{reserva.nome_do_livro}</h3>
+                  <h4>{reserva.nome_do_livro}</h4>
                   <p><strong>Multa:</strong> R$ {(reserva.multa || 0).toFixed(2)}</p>
                   {reserva.multa > 0 && (
                     <button onClick={() => payFine(reserva.livroId)} className="pay-button">Pagar Multa</button>

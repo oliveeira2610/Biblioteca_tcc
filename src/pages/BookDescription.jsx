@@ -3,6 +3,8 @@ import { useParams, useNavigate } from "react-router-dom";
 import "../../src/styles/bookDescription.css";
 import "../../src/styles/button.css";
 import "../../src/styles/colors.css";
+import { div } from "framer-motion/client";
+
 
 function BookDescription() {
   const { id } = useParams();
@@ -186,8 +188,11 @@ function BookDescription() {
   if (!bookDetails) return <p>Livro não encontrado.</p>;
 
   return (
-    <div className="book-description_container">
+    
+    <div className="book-description-wrapper">
       <button onClick={() => navigate("/search")} className="back-button" />
+  
+      
       <div className="body-book-description">
         <div className="book-details-image">
           {bookDetails.imagem ? (
@@ -210,7 +215,7 @@ function BookDescription() {
               <p className="error-message">
                 Você já registrou uma notificação para este livro.
               </p>
-              <button onClick={cancelNotification} className="cancel-notification-button">
+              <button onClick={cancelNotification} className="cancel-button">
                 Cancelar Notificação
               </button>
             </>
@@ -237,7 +242,7 @@ function BookDescription() {
                 Cancelar Fila de Espera
               </button>
             ) : (
-              <button onClick={handleEntrarNaFila}>
+              <button onClick={handleEntrarNaFila} className="notify-button">
                 Entrar na fila de reserva  
               </button>
             )
@@ -261,6 +266,7 @@ function BookDescription() {
           )}
         </div>
       </div>
+
     </div>
   );
 }

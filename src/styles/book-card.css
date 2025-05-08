@@ -8,17 +8,15 @@
     text-align: center;
     cursor: pointer;
     transition: transform 0.2s;
-    align-items: center;
+    align-items: end;
     flex: 0 0 auto;          
-    width: 180px;
-    height: 200px;
+    width: 200px;
+    height: auto;
     overflow: hidden;
     word-break: break-word;
- 
-  
-    
 }
-  
+
+
   .book-card:hover {
     transform: scale(1.05);
   }
