@@ -1,7 +1,9 @@
 .gerencialivr {
     color: var(--marrom);
-    font-size: 3vh;
+    font-size: 3.4vh;
     padding: 3vh;
+    display: flex;
+    justify-content: center;
 }
 
 .search-input-manage { 
@@ -24,4 +26,15 @@
     gap: 15px;
     padding-top: 7vh;
     padding-bottom: 6vh;
+}
+
+.botao-base4 {
+  background-color: var(--marrom-primario);
+  color: var(--branco-diferente);
+  margin-top: 0.5vw;
+}
+
+.botao-base4:hover {
+  background-color: var(--marrom-escuro);
+  color: var(--branco-primario);
 }

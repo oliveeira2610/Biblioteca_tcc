@@ -7,8 +7,10 @@
 
 .aplicadass {
   font-size: 3vh;
-  margin-top: 2.6vh;
+  padding: 2.5vh;
   color: var(--marrom);
+  display: flex;
+  justify-content: center;
 }
 
 .thread1 {
@@ -19,8 +21,10 @@
 
 .ativas1 {
   font-size: 3vh;
-  margin-top: 2.5vh;
+  padding: 2.5vh;
   color: var(--marrom);
+  display: flex;
+  justify-content: center;
 }
 
 .form-multa {
@@ -53,6 +57,7 @@
 .botao-multas {
   background-color: var(--marrom);
   margin-top: 0px;
+  color: var(--branco-diferente);
 }
 
 .botao-multas:hover {
@@ -64,7 +69,8 @@
   padding-right: 15px;
 }
 
-.books-list1 {
+.books-list2 {
   gap: 20px;
-  padding-left: 75px;
+  display: flex;
+  justify-content: center;
 }

@@ -46,7 +46,7 @@ function AddBooks() {
 
   return (
     <div className="add-books-container">
-      <h1 className='addlivr'>ADICIONAR LIVROS</h1>
+      <h1 className='addlivr'>Adicionar Livros</h1>
       <form onSubmit={handleSearch} className="search-form">
         <input
           type="text"
@@ -55,10 +55,10 @@ function AddBooks() {
           className="search-input"
         />
 
-        <button type="button" className="register-button" onClick={handleRegisterBookClick}>Registrar Livro</button>
+        <button type="button" className="botao-base1" onClick={handleRegisterBookClick}>Registrar Livro</button>
       </form>
 
-      {loading && <p>Carregando...</p>}
+      {loading && <p className='carregando'>Carregando...</p>}
 
       <div className="books-list1">
         {books.map((book) => {

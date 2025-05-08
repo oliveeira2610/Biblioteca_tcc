@@ -28,6 +28,7 @@
   .botao-base {
     background-color: var(--marrom-primario);
     color: var(--branco-diferente);
+    margin-top: 0.5vw;
   }
 
   .botao-base:hover {

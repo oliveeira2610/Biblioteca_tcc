@@ -9,6 +9,8 @@
 
   .livro-reser {
     color: var(--marrom);
-    margin-bottom: 45px;
-    font-size: 3vh;
+    padding-bottom: 2.7vh;
+    font-size: 3.2vh;
+    display: flex;
+    justify-content: center;
   }

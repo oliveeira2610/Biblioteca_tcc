@@ -182,10 +182,10 @@ const ManageDatabaseBooks = () => {
               <p>Status: {book.status}</p>
             </div>
 
-            <button onClick={() => releaseAllReservations(book.id)}>
+            <button className="botao-base4" onClick={() => releaseAllReservations(book.id)}>
               Liberar Reservas
             </button>
-            <button onClick={() => freeBook(book.id)}>Remover livro</button>
+            <button className="botao-base4" onClick={() => freeBook(book.id)}>Remover livro</button>
           </div>
         ))}
       </div>

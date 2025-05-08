@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { format } from "date-fns";
 import "../../src/styles/global.css";
 import "../../src/styles/BookDetails.css";
+import { div } from "framer-motion/client";
 
 function BookDetails() {
   const { id } = useParams();
@@ -83,23 +84,25 @@ function BookDetails() {
   if (!bookDetails) return <p>Livro não encontrado</p>;
 
   return (
+
+    
+    <div className="body-book-details">
+
     <div className="book-details-container">
-      <div className="book-image">
-        <img src={bookDetails.imagem || "default-image.jpg"} alt={bookDetails.nome_do_livro} />
-      </div>
-      <div className="book-info">
-        <h1>{bookDetails.nome_do_livro}</h1>
-        <p><strong>Autor:</strong> {bookDetails.autor}</p>
-        <p><strong>Gênero:</strong> {bookDetails.genero}</p>
-        <p><strong>Editora:</strong> {bookDetails.editora}</p>
-        <p><strong>Sinopse:</strong> {bookDetails.sinopse}</p>
-        <p><strong>ISBN:</strong> {bookDetails.isbn}</p>
-        <p><strong>Ano de Publicação:</strong> {bookDetails.ano_publicacao}</p>
-        <p><strong>Quantidade disponível:</strong> {bookDetails.quantidade_disponivel}</p>
-        <p><strong>Status:</strong> {bookDetails.status}</p>
-        <p><strong>📌 Número:</strong> {bookDetails.numero || "Não informado"}</p>
-        <p><strong>Unidades:</strong> {bookDetails.unidades?.join(", ") || "Nenhuma unidade disponível"}</p>
-        <button onClick={handleEditClick}>{editMode ? "Cancelar" : "Editar Informações"}</button>
+
+      <div className="book-info1">
+        <h1 className="ui">{bookDetails.nome_do_livro}</h1>
+        <p><strong id="h2-book-info2">Autor:</strong> {bookDetails.autor}</p>
+        <p><strong id="h2-book-info2">Gênero:</strong> {bookDetails.genero}</p>
+        <p><strong id="h2-book-info2">Editora:</strong> {bookDetails.editora}</p>
+        <p><strong id="h2-book-info2">Sinopse:</strong> {bookDetails.sinopse}</p>
+        <p><strong id="h2-book-info2">ISBN:</strong> {bookDetails.isbn}</p>
+        <p><strong id="h2-book-info2">Ano de Publicação:</strong> {bookDetails.ano_publicacao}</p>
+        <p><strong id="h2-book-info2">Quantidade disponível:</strong> {bookDetails.quantidade_disponivel}</p>
+        <p><strong id="h2-book-info2">Status:</strong> {bookDetails.status}</p>
+        <p><strong id="h2-book-info2">Número:</strong> {bookDetails.numero || "Não informado"}</p>
+        <p><strong id="h2-book-info2">Unidades:</strong> {bookDetails.unidades?.join(", ") || "Nenhuma unidade disponível"}</p> <br />
+        <button className="botao-base" onClick={handleEditClick}>{editMode ? "Cancelar" : "Editar Informações"}</button>
       </div>
       {editMode && (
         <div className="book-edit">
@@ -117,12 +120,13 @@ function BookDetails() {
           <input type="text" name="numero" placeholder="Número" value={editedBook.numero || ""} onChange={handleInputChange} />
           <button onClick={updateBookDetails}>Salvar Alterações</button>
         </div>
+        
       )}
 
       <div className="reservation-details">
         {bookDetails.reservasPorUsuario && bookDetails.reservasPorUsuario.length > 0 ? (
           bookDetails.reservasPorUsuario.map((usuario, index) => (
-            <div key={index} className="usuario-reservas">
+            <div key={index} className="usuario-reservas-details">
               <h3>{usuario.nome_usuario}</h3>
               <p><strong>Email:</strong> {usuario.usuario_email}</p>
               <p><strong>CPF:</strong> {usuario.usuario_cpf}</p>
@@ -134,8 +138,7 @@ function BookDetails() {
                   <p><strong>Data de devolução:</strong> {reserva.data_devolucao ? format(new Date(reserva.data_devolucao), "dd/MM/yyyy") : "N/A"}</p>
                   <p><strong>Multa:</strong> R$ {reserva.multa ? reserva.multa.toFixed(2) : "0.00"}</p>
                   <p><strong>Tempo de atraso:</strong> {calcularDiasAtraso(reserva.data_devolucao) > 0 ? `${calcularDiasAtraso(reserva.data_devolucao)} dias` : "Não atrasado"}</p>
-                  <p><strong>Unidade reservada:</strong> {reserva.numero_unidade || "N/A"}</p>
-
+                  <p><strong>Unidade:</strong> {reserva.unidade || "Não especificada"}</p>
                 </div>
               ))}
             </div>
@@ -144,6 +147,7 @@ function BookDetails() {
           <p>Este livro não tem reservas no momento.</p>
         )}
       </div>
+    </div>
     </div>
   );
 }
