@@ -2537,6 +2537,41 @@ app.put("/verificar-disponibilidade/:livroId", (req, res) => {
 });
 
 
+const mercadopago = require("mercadopago");
+
+// Substitua pela sua chave real de acesso do Mercado Pago
+mercadopago.configure({
+  access_token: "TOKEN"
+});
+
+app.post("/criar-preferencia", async (req, res) => {
+  const { titulo, preco, livroId } = req.body;
+
+  const preference = {
+    items: [
+      {
+        title: titulo,
+        unit_price: parseFloat(preco),
+        quantity: 1,
+      },
+    ],
+    back_urls: {
+      success: `http://localhost:5173/pagamento-multa/${livroId}?status=sucesso`,
+      failure: `http://localhost:5173/pagamento-multa/${livroId}?status=erro`,
+    },
+    auto_return: "approved",
+  };
+
+  try {
+    const response = await mercadopago.preferences.create(preference);
+    res.json({ id: response.body.id });
+  } catch (error) {
+    console.error("Erro ao criar preferência:", error);
+    res.status(500).json({ error: "Erro ao criar preferência" });
+  }
+});
+
+
 /////////////////////// INICIAR SERVIDOR ///////////////////////
 
 // Iniciar o servidor

@@ -135,6 +135,8 @@ function PerfilUsuario() {
 
   const totalReservados = userInfo.reservas?.length || 0;
   const totalAcompanhando = userInfo.watchlist?.length || 0;
+  const multasPendentes = userInfo.reservas?.filter((r) => r.multa > 0) || [];
+
 
   return (
     <div className="perfil-usuario-container">
@@ -167,7 +169,13 @@ function PerfilUsuario() {
                   <h4>{reserva.nome_do_livro}</h4>
                   <p><strong>Multa:</strong> R$ {(reserva.multa || 0).toFixed(2)}</p>
                   {reserva.multa > 0 && (
-                    <button onClick={() => payFine(reserva.livroId)} className="pay-button">Pagar Multa</button>
+                    <button
+                    onClick={() => navigate(`/pagamento-multa/${reserva.livroId}`)}
+                    className="pay-button"
+                  >
+                    Pagar Multa
+                  </button>
+                  
                   )}
                 </div>
               ))}
