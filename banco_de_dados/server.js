@@ -3,6 +3,7 @@ const sqlite3 = require("sqlite3").verbose();
 const cors = require("cors");
 const cron = require("node-cron");
 
+
 const app = express();
 const PORT = 3001;
 
@@ -2536,40 +2537,63 @@ app.put("/verificar-disponibilidade/:livroId", (req, res) => {
   );
 });
 
+const mercadopago = require('mercadopago');
 
-const mercadopago = require("mercadopago");
+// Configurar Mercado Pago com o access token
+mercadopago.configurations.setAccessToken('APP_USR-1992352580537848-041009-794f1c26296587ffe9800629de114c91-2119770319');
 
-// Substitua pela sua chave real de acesso do Mercado Pago
-mercadopago.configure({
-  access_token: "TOKEN"
-});
+// Middleware para permitir parsing do corpo das requisições em JSON
 
-app.post("/criar-preferencia", async (req, res) => {
-  const { titulo, preco, livroId } = req.body;
-
-  const preference = {
-    items: [
-      {
-        title: titulo,
-        unit_price: parseFloat(preco),
-        quantity: 1,
-      },
-    ],
-    back_urls: {
-      success: `http://localhost:5173/pagamento-multa/${livroId}?status=sucesso`,
-      failure: `http://localhost:5173/pagamento-multa/${livroId}?status=erro`,
-    },
-    auto_return: "approved",
-  };
+app.post("/create_preference", async (req, res) => {
+  const { title, quantity, price } = req.body;
 
   try {
+    const preference = {
+      items: [
+        {
+          title,
+          quantity,
+          currency_id: "BRL",
+          unit_price: parseFloat(price),
+        },
+      ],
+      auto_return: "approved",
+    };
+
     const response = await mercadopago.preferences.create(preference);
-    res.json({ id: response.body.id });
+    res.json({ init_point: response.body.init_point });
   } catch (error) {
     console.error("Erro ao criar preferência:", error);
-    res.status(500).json({ error: "Erro ao criar preferência" });
+    res.status(500).json({ error: "Erro ao criar link de pagamento" });
   }
 });
+
+app.get("/check_payment_status", async (req, res) => {
+  const { preference_id } = req.query;  // Passar o preference_id que foi usado para criar a preferência
+
+  try {
+    const paymentData = await mercadopago.payment.search({
+      preference_id: preference_id,
+    });
+
+    const payment = paymentData.body.results[0];  // Pega o primeiro pagamento (assumindo que há apenas um)
+
+    if (payment.status === 'approved') {
+      // Se o pagamento foi aprovado
+      res.json({ status: 'Aprovado', payment });
+    } else if (payment.status === 'pending') {
+      // Se o pagamento está pendente
+      res.json({ status: 'Pendente', payment });
+    } else {
+      // Se o pagamento falhou
+      res.json({ status: 'Falhou', payment });
+    }
+  } catch (error) {
+    console.error("Erro ao verificar status do pagamento:", error);
+    res.status(500).json({ error: "Erro ao verificar o status do pagamento" });
+  }
+});
+
 
 
 /////////////////////// INICIAR SERVIDOR ///////////////////////
