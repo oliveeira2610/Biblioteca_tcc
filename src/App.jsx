@@ -21,7 +21,11 @@ import RegisterBook from './pages/RegisterBook';
 import PerfilUsuarioAdm from './pages/PerfilUsuarioAdm';
 import Dinossauro from './pages/Dinossauro';
 import FlapBird from './pages/FlapBird';
-import PagamentoMulta from "./pages/PagamentoMulta";
+import CheckoutPage from './pages/CheckoutPage';
+import Failure from './pages/Failure';
+import Pending from './pages/Pending';
+import Success from './pages/Success';
+
 import Navbar from './components/Navbar'; 
 import AdminRoute from "./components/AdminRoute"; 
 import './styles/global.css';
@@ -68,7 +72,12 @@ function Layout() {
         <Route path="/flapBird" element={<FlapBird />} />
         <Route path="/historico-reservas" element={<HistoricoReservas />} />
         <Route path="/devolucao-detalhes/:livroId/:usuarioId" element={<DevolucaoDetails />} />
-        <Route path="/pagamento-multa/:livroId" element={<PagamentoMulta />} />
+        <Route path="/checkout" element={<CheckoutPage />} />
+        <Route path="/failure" element={<Failure />} />
+        <Route path="/pending" element={<Pending />} />
+        <Route path="/success" element={<Success />} />
+        
+        
 
 
       </Routes>
