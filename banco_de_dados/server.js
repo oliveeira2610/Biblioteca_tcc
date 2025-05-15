@@ -2540,7 +2540,7 @@ app.put("/verificar-disponibilidade/:livroId", (req, res) => {
 const mercadopago = require('mercadopago');
 
 // Configurar Mercado Pago com o access token
-mercadopago.configurations.setAccessToken('APP_USR-1992352580537848-041009-794f1c26296587ffe9800629de114c91-2119770319');
+mercadopago.configurations.setAccessToken('');
 
 // Middleware para permitir parsing do corpo das requisições em JSON
 
