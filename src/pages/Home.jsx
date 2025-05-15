@@ -32,7 +32,7 @@ function Home() {
   };
 
   const handleCardClick = (bookId) => {
-    navigate(`/book/${bookId}`);
+    navigate(`/BookDescription/${bookId}`);
   };
   
 

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "../../src/styles/global.css";
-import "../../src/styles/perfilUsuario.css";
 import "../../src/styles/FloatingBackground.css";
+import "../../src/styles/perfilUsuarioAdm.css";
 
 function FloatingLetters() {
   const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".split("");
@@ -55,6 +55,7 @@ function PerfilUsuarioAdm() {
   const [isBlocked, setIsBlocked] = useState(false); // Adicionado estado para bloqueio do usuário
   const [error, setError] = useState(null); // Adicionado estado para erros
   const navigate = useNavigate();
+  const [mostrarComentarios, setMostrarComentarios] = useState(false); //skibidi
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -62,10 +63,11 @@ function PerfilUsuarioAdm() {
         const [userRes, historicoRes, commentsRes] = await Promise.all([
           fetch(`http://localhost:3001/perfil-usuario/${userId}`),
           fetch(`http://localhost:3001/usuarios/${userId}/historico-reservas`),
-          fetch(`http://localhost:3001/usuarios/${userId}/comentarios`)
+          fetch(`http://localhost:3001/usuarios/${userId}/comentarios`),
         ]);
 
-        if (!userRes.ok || !historicoRes.ok || !commentsRes.ok) throw new Error("Erro ao buscar dados");
+        if (!userRes.ok || !historicoRes.ok || !commentsRes.ok)
+          throw new Error("Erro ao buscar dados");
 
         const userData = await userRes.json();
         const historicoData = await historicoRes.json();
@@ -87,12 +89,16 @@ function PerfilUsuarioAdm() {
 
   const toggleBlockUser = async () => {
     try {
-      const response = await fetch(`http://localhost:3001/usuarios/${userId}/bloquear`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ bloqueado: !isBlocked }),
-      });
-      if (!response.ok) throw new Error("Erro ao atualizar status de bloqueio.");
+      const response = await fetch(
+        `http://localhost:3001/usuarios/${userId}/bloquear`,
+        {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ bloqueado: !isBlocked }),
+        }
+      );
+      if (!response.ok)
+        throw new Error("Erro ao atualizar status de bloqueio.");
       setIsBlocked(!isBlocked);
     } catch (err) {
       setError(err.message);
@@ -102,7 +108,9 @@ function PerfilUsuarioAdm() {
   const deleteUser = async () => {
     if (!window.confirm("Tem certeza que deseja excluir este usuário?")) return;
     try {
-      const response = await fetch(`http://localhost:3001/usuarios/${userId}`, { method: "DELETE" });
+      const response = await fetch(`http://localhost:3001/usuarios/${userId}`, {
+        method: "DELETE",
+      });
       if (!response.ok) throw new Error("Erro ao excluir usuário.");
       alert("Usuário excluído com sucesso!");
       navigate("/usuarios");
@@ -117,11 +125,14 @@ function PerfilUsuarioAdm() {
 
   const saveAdminComment = async () => {
     try {
-      const response = await fetch(`http://localhost:3001/usuarios/${userId}/comentario`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ comment: adminComment }),
-      });
+      const response = await fetch(
+        `http://localhost:3001/usuarios/${userId}/comentario`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ comment: adminComment }),
+        }
+      );
 
       if (!response.ok) throw new Error("Erro ao salvar comentário.");
 
@@ -135,13 +146,18 @@ function PerfilUsuarioAdm() {
 
   const deleteAdminComment = async (commentId) => {
     try {
-      const response = await fetch(`http://localhost:3001/usuarios/comentario/${commentId}`, {
-        method: "DELETE",
-      });
+      const response = await fetch(
+        `http://localhost:3001/usuarios/comentario/${commentId}`,
+        {
+          method: "DELETE",
+        }
+      );
 
       if (!response.ok) throw new Error("Erro ao deletar comentário.");
 
-      setAdminComments(adminComments.filter(comment => comment.id !== commentId));
+      setAdminComments(
+        adminComments.filter((comment) => comment.id !== commentId)
+      );
     } catch (error) {
       console.error(error);
     }
@@ -150,79 +166,149 @@ function PerfilUsuarioAdm() {
   if (loading) return <p>Carregando...</p>;
   if (!userInfo) return <p>Usuário não encontrado.</p>;
 
+  const alternarComentarios = () => {
+    setMostrarComentarios(!mostrarComentarios);
+  }; //skibidi
+
   return (
-    <div className="perfil-usuario-container floating-background">
+    <div className="perfil-usuario-container ">
       <FloatingLetters />
-      <h1>Perfil do Usuário</h1>
 
-      <div className="dados-pessoais">
-        <h2>Dados Pessoais</h2>
-        <p><strong>Nome:</strong> {userInfo.userName}</p>
-        <p><strong>Email:</strong> {userInfo.email}</p>
-        <p><strong>Telefone:</strong> {userInfo.telefone}</p>
-        <p><strong>Multa Pendente:</strong> {userInfo.multa}</p>
-        <p><strong>Status:</strong> {isBlocked ? "Bloqueado" : "Desbloqueado"}</p>
-      </div>
+      <div className="container_principal_user">
+        <div className="primeiro_container">
+          <div className="esquerda_primeira">
+            
+            <button onClick={alternarComentarios}>
+              {mostrarComentarios
+                ? "Ver Dados Pessoais"
+                : "Ver Comentários do Admin"}
+            </button>
 
-      {/* Seção de Histórico de Reservas (Livros Devolvidos) */}
-      <div className="historico-reservas">
-        <h2>Livros Devolvidos</h2>
-        {historicoReservas.length > 0 ? (
-          <div className="livros-container">
-            {historicoReservas.map((book) => (
-              <div
-                key={book.livro_id}
-                className="book-card"
-                onClick={() => navigate(`/devolucao-detalhes/${book.livro_id}/${userId}`)}
-                style={{ cursor: "pointer" }}
-              >
-                {book.imagem ? (
-                  <img
-                    src={book.imagem}
-                    alt={book.nome_do_livro}
-                    className="book-card-image"
-                  />
-                ) : (
-                  <div className="no-image-placeholder">Sem imagem</div>
-                )}
-                <h3 className="book-card-title">{book.nome_do_livro}</h3>
-                <p className="book-card-author">{book.autor}</p>
-                <p><strong>Data de Reserva:</strong> {new Date(book.data_reserva).toLocaleDateString()}</p>
-                <p><strong>Data de Devolução:</strong> {new Date(book.data_devolucao).toLocaleDateString()}</p>
-                <p><strong>Data Real da Devolução:</strong> {book.data_devolvido ? new Date(book.data_devolvido).toLocaleDateString() : "N/A"}</p>
-                <p><strong>Multa:</strong> R$ {book.multa?.toFixed(2) || "0.00"}</p>
+            {!mostrarComentarios ? (
+              <div className="dados-pessoais">
+                <div className="img_perfil">
+                  <img src="/src/assets/img/perfil_icone.png" alt="Perfil" />
+                </div>
+                <h2>Dados Pessoais</h2>
+                <p>
+                  <strong>Nome:</strong> {userInfo.userName}
+                </p>
+                <p>
+                  <strong>Email:</strong> {userInfo.email}
+                </p>
+                <p>
+                  <strong>Telefone:</strong> {userInfo.telefone}
+                </p>
+                <p>
+                  <strong>Multa Pendente:</strong> {userInfo.multa}
+                </p>
+                <p>
+                  <strong>Status:</strong>{" "}
+                  {isBlocked ? "Bloqueado" : "Desbloqueado"}
+                </p>
+
+                <button
+                  onClick={toggleBlockUser}
+                  className="block-user-button"
+                  style={{ backgroundColor: isBlocked ? "red" : "green" }}
+                >
+                  {isBlocked ? "Desbloquear Reservas" : "Bloquear Reservas"}
+                </button>
+
+                <button
+                  onClick={deleteUser}
+                  className="delete-user-button"
+                  style={{ backgroundColor: "red" }}
+                >
+                  Excluir Usuário
+                </button>
               </div>
-            ))}
+            ) : (
+              <div className="admin-comment-section">
+                <ul className="admin-comments-list">
+                  {adminComments.map((comment) => (
+                    <li key={comment.id} className="admin-comment-item">
+                      <p>{comment.comment}</p>
+                      <button
+                        onClick={() => deleteAdminComment(comment.id)}
+                        className="delete-comment-button"
+                      >
+                        Apagar
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
-        ) : (
-          <p>Nenhuma devolução encontrada.</p>
-        )}
-      </div>
-  
-      <div className="admin-comment-section">
-        <h2>Comentários do Administrador</h2>
-        <ul className="admin-comments-list">
-          {adminComments.map(comment => (
-            <li key={comment.id} className="admin-comment-item">
-              <p>{comment.comment}</p>
-              <button onClick={() => deleteAdminComment(comment.id)} className="delete-comment-button">Apagar</button>
-            </li>
-          ))}
-        </ul>
-        <textarea
-          value={adminComment}
-          onChange={handleCommentChange}
-          placeholder="Adicione um comentário sobre este usuário"
-        />
-        <button onClick={saveAdminComment}>Salvar Comentário</button>
-      </div>
-      <button onClick={toggleBlockUser} className="block-user-button" style={{ backgroundColor: isBlocked ? 'red' : 'green' }}>
-        {isBlocked ? "Desbloquear Reservas" : "Bloquear Reservas"}
-      </button>
+          <div className="direita_primeira">
+            {}
+            <h4 className="Livros-devolvidos">LIVROS DEVOLVIDOS</h4>
+            <div className="historico-reservas1">
+              {historicoReservas.length > 0 ? (
+                <div className="livros-container">
+                  {historicoReservas.map((book) => (
+                    <div
+                      key={book.livro_id}
+                      className="book-card"
+                      onClick={() =>
+                        navigate(
+                          `/devolucao-detalhes/${book.livro_id}/${userId}`
+                        )
+                      }
+                      style={{ cursor: "pointer" }}
+                    >
+                      {book.imagem ? (
+                        <img
+                          src={book.imagem}
+                          alt={book.nome_do_livro}
+                          className="book-card-image"
+                        />
+                      ) : (
+                        <div className="no-image-placeholder">Sem imagem</div>
+                      )}
+                      <h3 className="book-card-title">{book.nome_do_livro}</h3>
+                      <p className="book-card-author">{book.autor}</p>
+                      <p>
+                        <strong>Data de Reserva:</strong>{" "}
+                        {new Date(book.data_reserva).toLocaleDateString()}
+                      </p>
+                      <p>
+                        <strong>Data de Devolução:</strong>{" "}
+                        {new Date(book.data_devolucao).toLocaleDateString()}
+                      </p>
+                      <p>
+                        <strong>Data Real da Devolução:</strong>{" "}
+                        {book.data_devolvido
+                          ? new Date(book.data_devolvido).toLocaleDateString()
+                          : "N/A"}
+                      </p>
+                      <p>
+                        <strong>Multa:</strong> R${" "}
+                        {book.multa?.toFixed(2) || "0.00"}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p>Nenhuma devolução encontrada.</p>
+              )}
+            </div>
+          </div>
+        </div>
 
-      <button onClick={deleteUser} className="delete-user-button" style={{ backgroundColor: 'red' }}>
-        Excluir Usuário
-      </button>
+        <div className="admin-comment-section">
+          <h2>Comentários do Administrador</h2>
+
+          <textarea
+            value={adminComment}
+            onChange={handleCommentChange}
+            placeholder="Adicione um comentário sobre este usuário"
+            className="area-de-texto"
+          />
+          <button onClick={saveAdminComment}>Salvar Comentário</button>
+        </div>
+      </div>
     </div>
   );
 }
