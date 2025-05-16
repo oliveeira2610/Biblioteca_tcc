@@ -303,35 +303,6 @@ function PerfilUsuarioAdm() {
           </button>
         </div>
 
-        <div className="perfil-adm-historico">
-          <h2>Livros Devolvidos</h2>
-          {historicoReservas.length > 0 ? (
-            <div className="perfil-adm-livros">
-              {historicoReservas.map((book) => (
-                <div
-                  key={book.livro_id}
-                  className="perfil-adm-livro"
-                  onClick={() => navigate(`/devolucao-detalhes/${book.livro_id}/${userId}`)}
-                >
-                  {book.imagem ? (
-                    <img src={book.imagem} alt={book.nome_do_livro} className="perfil-adm-livro-img" />
-                  ) : (
-                    <div className="perfil-adm-sem-img">Sem imagem</div>
-                  )}
-                  <h3 className="perfil-adm-livro-titulo">{book.nome_do_livro}</h3>
-                  <p className="perfil-adm-livro-autor">{book.autor}</p>
-                  <p><strong>Data de Reserva:</strong> {new Date(book.data_reserva).toLocaleDateString()}</p>
-                  <p><strong>Data de Devolução:</strong> {new Date(book.data_devolucao).toLocaleDateString()}</p>
-                  <p><strong>Data Real da Devolução:</strong> {book.data_devolvido ? new Date(book.data_devolvido).toLocaleDateString() : "N/A"}</p>
-                  <p><strong>Multa:</strong> R$ {book.multa?.toFixed(2) || "0.00"}</p>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <p>Nenhuma devolução encontrada.</p>
-          )}
-        </div>
-
         <div className="perfil-adm-comentarios">
           <h2>Comentários do Administrador</h2>
           <ul className="perfil-adm-lista-comentarios">
