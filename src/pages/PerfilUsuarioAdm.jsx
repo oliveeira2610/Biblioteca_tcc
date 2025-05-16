@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "../../src/styles/global.css";
+
+
+import "../../src/styles/perfilUsuarioAdm.css";
+
 import "../../src/styles/FloatingBackground.css";
 import "../../src/styles/perfilUsuarioAdm.css";
 
@@ -166,23 +170,18 @@ function PerfilUsuarioAdm() {
   if (loading) return <p>Carregando...</p>;
   if (!userInfo) return <p>Usuário não encontrado.</p>;
 
-  const alternarComentarios = () => {
-    setMostrarComentarios(!mostrarComentarios);
-  }; //skibidi
+ 
 
   return (
-    <div className="perfil-usuario-container ">
+
+    <><div className="perfil-usuario-container ">
       <FloatingLetters />
 
       <div className="container_principal_user">
         <div className="primeiro_container">
           <div className="esquerda_primeira">
-            
-            <button onClick={alternarComentarios}>
-              {mostrarComentarios
-                ? "Ver Dados Pessoais"
-                : "Ver Comentários do Admin"}
-            </button>
+
+           
 
             {!mostrarComentarios ? (
               <div className="dados-pessoais">
@@ -207,21 +206,9 @@ function PerfilUsuarioAdm() {
                   {isBlocked ? "Bloqueado" : "Desbloqueado"}
                 </p>
 
-                <button
-                  onClick={toggleBlockUser}
-                  className="block-user-button"
-                  style={{ backgroundColor: isBlocked ? "red" : "green" }}
-                >
-                  {isBlocked ? "Desbloquear Reservas" : "Bloquear Reservas"}
-                </button>
 
-                <button
-                  onClick={deleteUser}
-                  className="delete-user-button"
-                  style={{ backgroundColor: "red" }}
-                >
-                  Excluir Usuário
-                </button>
+
+
               </div>
             ) : (
               <div className="admin-comment-section">
@@ -242,7 +229,7 @@ function PerfilUsuarioAdm() {
             )}
           </div>
           <div className="direita_primeira">
-            {}
+
             <h4 className="Livros-devolvidos">LIVROS DEVOLVIDOS</h4>
             <div className="historico-reservas1">
               {historicoReservas.length > 0 ? (
@@ -251,19 +238,16 @@ function PerfilUsuarioAdm() {
                     <div
                       key={book.livro_id}
                       className="book-card"
-                      onClick={() =>
-                        navigate(
-                          `/devolucao-detalhes/${book.livro_id}/${userId}`
-                        )
-                      }
+                      onClick={() => navigate(
+                        `/devolucao-detalhes/${book.livro_id}/${userId}`
+                      )}
                       style={{ cursor: "pointer" }}
                     >
                       {book.imagem ? (
                         <img
                           src={book.imagem}
                           alt={book.nome_do_livro}
-                          className="book-card-image"
-                        />
+                          className="book-card-image" />
                       ) : (
                         <div className="no-image-placeholder">Sem imagem</div>
                       )}
@@ -297,19 +281,79 @@ function PerfilUsuarioAdm() {
           </div>
         </div>
 
-        <div className="admin-comment-section">
-          <h2>Comentários do Administrador</h2>
+      
+      </div>
+    </div><div className="perfil-adm-container floating-background">
 
+        <h1 className="perfil-adm-titulo">Perfil do Usuário</h1>
+
+        <div className="perfil-adm-dados">
+          <h2>Dados Pessoais</h2>
+          <p><strong>Nome:</strong> {userInfo.userName}</p>
+          <p><strong>Email:</strong> {userInfo.email}</p>
+          <p><strong>Telefone:</strong> {userInfo.telefone}</p>
+          <p><strong>Multa Pendente:</strong> {userInfo.multa}</p>
+          <p><strong>Status:</strong> {isBlocked ? "Bloqueado" : "Desbloqueado"}</p>
+          <button onClick={toggleBlockUser} className="perfil-adm-btn-bloquear" style={{ backgroundColor: isBlocked ? 'red' : 'green' }}>
+            {isBlocked ? "Desbloquear Reservas" : "Bloquear Reservas"}
+          </button>
+
+          <button onClick={deleteUser} className="perfil-adm-btn-excluir">
+            Excluir Usuário
+          </button>
+        </div>
+
+        <div className="perfil-adm-historico">
+          <h2>Livros Devolvidos</h2>
+          {historicoReservas.length > 0 ? (
+            <div className="perfil-adm-livros">
+              {historicoReservas.map((book) => (
+                <div
+                  key={book.livro_id}
+                  className="perfil-adm-livro"
+                  onClick={() => navigate(`/devolucao-detalhes/${book.livro_id}/${userId}`)}
+                >
+                  {book.imagem ? (
+                    <img src={book.imagem} alt={book.nome_do_livro} className="perfil-adm-livro-img" />
+                  ) : (
+                    <div className="perfil-adm-sem-img">Sem imagem</div>
+                  )}
+                  <h3 className="perfil-adm-livro-titulo">{book.nome_do_livro}</h3>
+                  <p className="perfil-adm-livro-autor">{book.autor}</p>
+                  <p><strong>Data de Reserva:</strong> {new Date(book.data_reserva).toLocaleDateString()}</p>
+                  <p><strong>Data de Devolução:</strong> {new Date(book.data_devolucao).toLocaleDateString()}</p>
+                  <p><strong>Data Real da Devolução:</strong> {book.data_devolvido ? new Date(book.data_devolvido).toLocaleDateString() : "N/A"}</p>
+                  <p><strong>Multa:</strong> R$ {book.multa?.toFixed(2) || "0.00"}</p>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p>Nenhuma devolução encontrada.</p>
+          )}
+        </div>
+
+        <div className="perfil-adm-comentarios">
+          <h2>Comentários do Administrador</h2>
+          <ul className="perfil-adm-lista-comentarios">
+            {adminComments.map(comment => (
+              <li key={comment.id} className="perfil-adm-comentario">
+                <p>{comment.comment}</p>
+                <button onClick={() => deleteAdminComment(comment.id)} className="perfil-adm-btn-apagar">Apagar</button>
+              </li>
+            ))}
+          </ul>
           <textarea
             value={adminComment}
             onChange={handleCommentChange}
-            placeholder="Adicione um comentário sobre este usuário"
-            className="area-de-texto"
-          />
-          <button onClick={saveAdminComment}>Salvar Comentário</button>
+            className="perfil-adm-textarea"
+            placeholder="Adicione um comentário sobre este usuário" />
+          <button onClick={saveAdminComment} className="perfil-adm-btn-salvar">Salvar Comentário</button>
         </div>
-      </div>
-    </div>
+
+
+      </div></>
+
+
   );
 }
 

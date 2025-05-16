@@ -107,17 +107,32 @@ function PerfilUsuario() {
     }));
   };
 
-  const payFine = async (livroId) => {
-    await fetch(`http://localhost:3001/pagar-multa/${livroId}`, {
-      method: "POST",
-    });
-    setUserInfo((prev) => ({
-      ...prev,
-      reservas: prev.reservas.map((r) =>
-        r.livroId === livroId ? { ...r, multa: 0 } : r
-      ),
-    }));
+  const payFine = async (livroId, nome_do_livro, multa) => {
+    try {
+      const response = await fetch("http://localhost:3001/create_preference", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title: `Multa - ${nome_do_livro}`,
+          quantity: 1,
+          price: multa,
+        }),
+      });
+  
+      const data = await response.json();
+      if (data.init_point) {
+        window.location.href = data.init_point; // Redireciona para o pagamento
+      } else {
+        alert("Erro ao gerar link de pagamento.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Erro ao iniciar pagamento.");
+    }
   };
+  
 
   const deleteNotification = async (bookId) => {
     await fetch(`http://localhost:3001/notifications/${userId}/${bookId}`, {
@@ -135,6 +150,8 @@ function PerfilUsuario() {
 
   const totalReservados = userInfo.reservas?.length || 0;
   const totalAcompanhando = userInfo.watchlist?.length || 0;
+  const multasPendentes = userInfo.reservas?.filter((r) => r.multa > 0) || [];
+
 
   return (
     <div className="perfil-usuario-container">
@@ -167,7 +184,15 @@ function PerfilUsuario() {
                   <h4>{reserva.nome_do_livro}</h4>
                   <p><strong>Multa:</strong> R$ {(reserva.multa || 0).toFixed(2)}</p>
                   {reserva.multa > 0 && (
-                    <button onClick={() => payFine(reserva.livroId)} className="pay-button">Pagar Multa</button>
+                    <button
+                    onClick={() => payFine(reserva.livroId, reserva.nome_do_livro, reserva.multa)}
+                    className="pay-button"
+                  >
+                    Pagar Multa
+                  </button>
+                  
+                  
+                  
                   )}
                 </div>
               ))}

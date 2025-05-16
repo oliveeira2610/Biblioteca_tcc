@@ -3,6 +3,7 @@ const sqlite3 = require("sqlite3").verbose();
 const cors = require("cors");
 const cron = require("node-cron");
 
+
 const app = express();
 const PORT = 3001;
 
@@ -2535,6 +2536,7 @@ app.put("/verificar-disponibilidade/:livroId", (req, res) => {
     }
   );
 });
+
 
 
 /////////////////////// INICIAR SERVIDOR ///////////////////////

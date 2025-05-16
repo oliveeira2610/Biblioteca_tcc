@@ -21,6 +21,8 @@ import RegisterBook from './pages/RegisterBook';
 import PerfilUsuarioAdm from './pages/PerfilUsuarioAdm';
 import Dinossauro from './pages/Dinossauro';
 import FlapBird from './pages/FlapBird';
+
+
 import Navbar from './components/Navbar'; 
 import AdminRoute from "./components/AdminRoute"; 
 import './styles/global.css';
@@ -67,6 +69,9 @@ function Layout() {
         <Route path="/flapBird" element={<FlapBird />} />
         <Route path="/historico-reservas" element={<HistoricoReservas />} />
         <Route path="/devolucao-detalhes/:livroId/:usuarioId" element={<DevolucaoDetails />} />
+      
+        
+        
 
 
       </Routes>

@@ -1,4 +1,5 @@
 
+
 .container_principal_user{
     height: auto;
 }
@@ -55,4 +56,206 @@
     flex-direction: column;
 }
 
+
+.perfil-adm-container {
+    padding: 5vw;
+    background-color: #fff9e1;
+    color: #3b3b3b;
+    border-radius: 20px;
+    box-shadow: 0px 0px 15px 2px #bd9b75;
+    margin: 30px auto;
+    max-width: 1200px;
+    position: relative;
+  }
+  
+  .perfil-adm-titulo {
+    text-align: center;
+    font-size: 2rem;
+    color: #543927;
+  }
+  
+  .perfil-adm-dados,
+  .perfil-adm-historico,
+  .perfil-adm-comentarios {
+    background-color: #fdf7e0;
+    padding: 20px;
+    border-radius: 20px;
+    margin-bottom: 30px;
+    box-shadow: 0px 0px 10px 2px #bd9b75;
+  }
+  
+  .perfil-adm-dados h2,
+  .perfil-adm-historico h2,
+  .perfil-adm-comentarios h2 {
+    color: #826049;
+    margin-bottom: 15px;
+    font-size: 1.4rem;
+  }
+  
+  .perfil-adm-livros {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+  }
+  
+  .perfil-adm-livro {
+    background-color: #fff;
+    border-radius: 15px;
+    box-shadow: 0 0 8px 1px #bd9b75;
+    padding: 15px;
+    margin: 10px;
+    flex: 1 1 250px;
+    max-width: 100%;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  .perfil-adm-livro:hover {
+    transform: scale(1.03);
+  }
+  
+  .perfil-adm-livro-img {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    object-fit: cover;
+    margin-bottom: 10px;
+  }
+  
+  .perfil-adm-sem-img {
+    width: 100%;
+    height: 200px;
+    background-color: #ccc;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-style: italic;
+    color: #666;
+    margin-bottom: 10px;
+  }
+  
+  .perfil-adm-livro-titulo {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #5a9349;
+  }
+  
+  .perfil-adm-livro-autor {
+    font-style: italic;
+    color: #826049;
+    margin-bottom: 8px;
+  }
+  
+  .perfil-adm-lista-comentarios {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 10px;
+  }
+  
+  .perfil-adm-comentario {
+    background-color: #f8f3e5;
+    border: 1px solid #bd9b75;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 10px;
+    position: relative;
+    font-size: 0.95rem;
+  }
+  
+  .perfil-adm-btn-apagar {
+    background-color: #b72626;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+  }
+  
+  .perfil-adm-textarea {
+    width: 100%;
+    min-height: 100px;
+    border-radius: 10px;
+    border: 1px solid #bd9b75;
+    padding: 10px;
+    font-size: 1rem;
+    margin-bottom: 10px;
+    resize: vertical;
+  }
+  
+  .perfil-adm-btn-salvar,
+  .perfil-adm-btn-bloquear,
+  .perfil-adm-btn-excluir {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 10px;
+    box-shadow: 0 0 5px #bd9b75;
+    width: 100%;
+    max-width: 250px;
+  }
+  
+  .perfil-adm-btn-bloquear {
+    color: white;
+    background-color: #cfa600;
+    transition: background-color 0.3s ease;
+  }
+  
+  .perfil-adm-btn-bloquear:hover {
+    background-color: #b38d00;
+  }
+  
+  .perfil-adm-btn-excluir {
+    background-color: #b72626;
+    color: white;
+    transition: background-color 0.3s ease;
+  }
+  
+  .perfil-adm-btn-excluir:hover {
+    background-color: #9e1f1f;
+  }
+  
+  /* Responsivo */
+  @media (max-width: 768px) {
+    .perfil-adm-container {
+      padding: 20px;
+    }
+  
+    .perfil-adm-livro {
+      flex: 1 1 100%;
+    }
+  
+    .perfil-adm-btn-salvar,
+    .perfil-adm-btn-bloquear,
+    .perfil-adm-btn-excluir {
+      width: 100%;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .perfil-adm-livro-titulo,
+    .perfil-adm-livro-autor,
+    .perfil-adm-comentario {
+      font-size: 0.9rem;
+    }
+  
+    .perfil-adm-btn-apagar {
+      font-size: 0.75rem;
+      padding: 4px 8px;
+    }
+  
+    .perfil-adm-dados h2,
+    .perfil-adm-historico h2,
+    .perfil-adm-comentarios h2 {
+      font-size: 1.2rem;
+    }
+  }
+  
 
