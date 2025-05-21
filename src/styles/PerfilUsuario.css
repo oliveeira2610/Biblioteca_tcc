@@ -82,6 +82,26 @@ body{
   overflow-y: hidden;   
 }
 
+
+.multas_perfil::-webkit-scrollbar {
+
+  height: 8px;
+}
+
+.multas_perfil::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.multas_perfil::-webkit-scrollbar-thumb {
+  background: #BD9B75;
+  border-radius: 10px;
+}
+
+.multas_perfil::-webkit-scrollbar-thumb:hover {
+  background: #a07e5a;
+}
+
 .reservados_perfil{
   width: 100%;
   background-color: #cfa600;
@@ -146,6 +166,25 @@ body{
 }
 
 
+.livros-reservados::-webkit-scrollbar {
+
+  height: 8px;
+}
+
+.livros-reservados::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.livros-reservados::-webkit-scrollbar-thumb {
+  background: #BD9B75;
+  border-radius: 10px;
+}
+
+.livros-reservados::-webkit-scrollbar-thumb:hover {
+  background: #a07e5a;
+}
+
 
 .livros_e_notificacoes {
   display: flex;
@@ -167,7 +206,57 @@ body{
   display: flex;
   gap: 20px;
   margin: 20px;
+
+
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+
+  overflow-y: auto;
+
+  
 }
+
+.livros_acompanhando::-webkit-scrollbar {
+  width: 8px;
+}
+
+.livros_acompanhando::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.livros_acompanhando::-webkit-scrollbar-thumb {
+  background: #BD9B75;
+  border-radius: 10px;
+}
+
+.livros_acompanhando::-webkit-scrollbar-thumb:hover {
+  background: #a07e5a;
+}
+
+
+
+
+.notificacoes::-webkit-scrollbar {
+
+  height: 8px;
+}
+
+.notificacoes::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.notificacoes::-webkit-scrollbar-thumb {
+  background: #BD9B75;
+  border-radius: 10px;
+}
+
+.notificacoes::-webkit-scrollbar-thumb:hover {
+  background: #a07e5a;
+}
+
 
 h1{
   font-size: 18px;
