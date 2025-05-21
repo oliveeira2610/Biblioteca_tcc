@@ -3,18 +3,11 @@ LESSIE
 
 ATUALIZAÇÕES:
 
-criar um fetch que faz um get nesta rota, substituir o 4 pelo numero do livro
-http://localhost:3001/verificar-disponibilidade/4
-
-C:\Temp\TCC_GRP2\Biblioteca_tcc\banco_de_dados\server.js
-
 
 PROJETOS FUTUROS:
 
 
-Sistema de pagamento para liberar multas -- na pagina perfil  -> cards
-
-
+tirar o salvamento do local storage da tela de login e ver se n ta salvando em outro lugar, trocar por um autenticação por token (jwt ou express-session), também adicionar verificação de login e permissão nas rotas do backend, separar permissões de usuarios nas rotas do backend
 
 
 
@@ -23,39 +16,12 @@ PRECISA FAZER:
 
 
 
-
-
-Ver com grupo se tira a pagina de reserved books e apenas mostre a quantidade ou repaginar o historico
-
-
-
-
-
-criar sistema de filas, fazer reserva para o livro indisponivel
-
-remover campos estante e localização bookdetails  /// RECRIAR TABELA DE LIVROS COM CODIGO DO SERVER.JS
-
-criar sistema para diferenciar exemplares, na tela de managedatabooks fazer os cards serem agrupamentos das unidades individuais dos livros 
-
 criar uma dashboard com informações de quantos livros e quantas vezes foram reservados no mes e por usuario
 
 
-
-                        JapaJapaJapaJapaJapaJapaJapa
-
-
-fazer o status de multa ficar vermelho e evitdente na aba perfil JapaJapaJapaJapaJapaJapaJapa
-
-
-
-
-
-
-
-
-
-
 MELHORIAS FEITAS NO PROJETO:
+
+// FEITO // Sistema de pagamento para liberar multas -- na pagina perfil  -> cards
 
 // FEITO // tela nova DevolucoaoUsuario.jsx = tela que mostra as informações da devolução do livro e o usuario que devolveu e a data de devolução
 
