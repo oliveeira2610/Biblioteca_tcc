@@ -2538,6 +2538,49 @@ app.put("/verificar-disponibilidade/:livroId", (req, res) => {
 });
 
 
+const mercadopago = require("mercadopago");
+
+mercadopago.configure({
+  access_token: "", // troque pelo seu token real
+});
+
+app.post("/criar-preferencia", async (req, res) => {
+  const { valor } = req.body;
+  console.log("🔍 Valor recebido:", valor);
+
+  if (!valor || isNaN(valor)) {
+    console.error("❌ Valor inválido:", valor);
+    return res.status(400).json({ error: "Valor inválido para pagamento." });
+  }
+
+  try {
+    const preference = {
+      items: [
+        {
+          title: "Multa de Atraso",
+          quantity: 1,
+          unit_price: parseFloat(valor),
+          currency_id: "BRL",
+        },
+      ],
+      back_urls: {
+        success: "https://chatgpt.com/",
+        failure: "https://chatgpt.com/",
+        pending: "https://chatgpt.com/",
+      },
+      auto_return: "approved", // deve ser válido!
+    };
+
+    const response = await mercadopago.preferences.create(preference);
+    console.log("✅ Preferência criada:", response.body.init_point);
+    res.json({ url: response.body.init_point });
+  } catch (error) {
+    console.error("🔥 Erro ao criar preferência:", error.message);
+    res.status(500).json({ error: "Erro ao criar preferência de pagamento" });
+  }
+});
+
+
 
 /////////////////////// INICIAR SERVIDOR ///////////////////////
 

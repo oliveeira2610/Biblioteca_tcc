@@ -152,12 +152,31 @@ function PerfilUsuario() {
   const totalAcompanhando = userInfo.watchlist?.length || 0;
   const multasPendentes = userInfo.reservas?.filter((r) => r.multa > 0) || [];
 
-
+  async function iniciarPagamento(valorMulta) {
+    try {
+      const res = await fetch("http://localhost:3001/criar-preferencia", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ valor: valorMulta }),
+      });
+  
+      if (!res.ok) throw new Error("Erro ao criar preferência de pagamento");
+  
+      const data = await res.json();
+      window.location.href = data.url;
+    } catch (err) {
+      console.error("Erro:", err.message);
+      alert("Não foi possível iniciar o pagamento.");
+    }
+  }
+  
+  
+  
   return (
     <div className="perfil-usuario-container">
       <FloatingLetters />
       
-
+  
       <div className="container_principal_user">
       
         <div className="primeiro_container">
@@ -175,29 +194,27 @@ function PerfilUsuario() {
               <button className="logout-button" onClick={handleLogout}>Sair</button>
             </div>
           </div>
-
+  
           <div className="direita_primeira">
             <h2>SUAS MULTAS</h2>
             <div className="multas_perfil">
-              {(userInfo.reservas || []).map((reserva) => (
-                <div key={reserva.livroId} className="book-card">
-                  <h4>{reserva.nome_do_livro}</h4>
-                  <p><strong>Multa:</strong> R$ {(reserva.multa || 0).toFixed(2)}</p>
-                  {reserva.multa > 0 && (
-                    <button
-                    onClick={() => payFine(reserva.livroId, reserva.nome_do_livro, reserva.multa)}
+            {(userInfo.reservas || []).map((reserva) => (
+              <div key={reserva.livroId} className="book-card">
+                <h4>{reserva.nome_do_livro}</h4>
+                <p><strong>Multa:</strong> R$ {(reserva.multa || 0).toFixed(2)}</p>
+                {reserva.multa > 0 && (
+                  <button
+                    onClick={() => iniciarPagamento(reserva.multa)} // ✅ Aqui está certo
                     className="pay-button"
                   >
                     Pagar Multa
                   </button>
-                  
-                  
-                  
-                  )}
-                </div>
-              ))}
+                )}
+              </div>
+            ))}
+  
             </div>
-
+  
             <h2>LIVROS RESERVADOS</h2>
             <div className="livros-reservados">
               {(userInfo.reservas || []).length > 0 ? (
@@ -215,7 +232,7 @@ function PerfilUsuario() {
             </div>
           </div>
         </div>
-
+  
         <div className="segundo_container">
           <div className="esquerda_segundo">
             <h2>LIVROS QUE VOCÊ ESTÁ ACOMPANHANDO</h2>
@@ -234,7 +251,7 @@ function PerfilUsuario() {
               )}
             </div>
           </div>
-
+  
           <div className="direita_segundo">
             <h2>NOTIFICAÇÕES</h2>
             <div className="notificacoes ">
@@ -260,6 +277,6 @@ function PerfilUsuario() {
       </div>
     </div>
   );
-}
-
-export default PerfilUsuario;
+  }
+  
+  export default PerfilUsuario;
