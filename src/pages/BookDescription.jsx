@@ -190,7 +190,7 @@ function BookDescription() {
   return (
     
     <div className="book-description-wrapper">
-      <button onClick={() => navigate("/search")} className="back-button" />
+      <button onClick={() => navigate(-1)} className="back-button" />
   
       
       <div className="body-book-description">

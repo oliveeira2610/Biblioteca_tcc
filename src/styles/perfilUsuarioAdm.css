@@ -64,8 +64,8 @@
     border-radius: 20px;
     box-shadow: 0px 0px 15px 2px #bd9b75;
     margin: 30px auto;
-    max-width: 1200px;
     position: relative;
+    width: 85%;
   }
   
   .perfil-adm-titulo {
@@ -82,6 +82,7 @@
     border-radius: 20px;
     margin-bottom: 30px;
     box-shadow: 0px 0px 10px 2px #bd9b75;
+    width: 100%;
   }
   
   .perfil-adm-dados h2,
@@ -91,6 +92,22 @@
     margin-bottom: 15px;
     font-size: 1.4rem;
   }
+  
+  .botoes-adm{
+    display: flex;
+    flex-direction: column;
+    
+  }
+
+
+  .perfil-adm-btn-apagar{
+    background-color: blue;
+  }
+
+  .perfil-adm-comentario{
+    background-color: blue;
+  }
+
   
   .perfil-adm-livros {
     display: flex;
@@ -186,6 +203,7 @@
     font-size: 1rem;
     margin-bottom: 10px;
     resize: vertical;
+    width: 100%;
   }
   
   .perfil-adm-btn-salvar,

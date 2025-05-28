@@ -218,7 +218,6 @@ function PerfilUsuarioAdm() {
                       <p>{comment.comment}</p>
                       <button
                         onClick={() => deleteAdminComment(comment.id)}
-                        className="delete-comment-button"
                       >
                         Apagar
                       </button>
@@ -283,7 +282,7 @@ function PerfilUsuarioAdm() {
 
       
       </div>
-    </div><div className="perfil-adm-container floating-background">
+    </div><div className="perfil-adm-container ">
 
         <h1 className="perfil-adm-titulo">Perfil do Usuário</h1>
 
@@ -294,13 +293,16 @@ function PerfilUsuarioAdm() {
           <p><strong>Telefone:</strong> {userInfo.telefone}</p>
           <p><strong>Multa Pendente:</strong> {userInfo.multa}</p>
           <p><strong>Status:</strong> {isBlocked ? "Bloqueado" : "Desbloqueado"}</p>
+          <div className="botoes-adm">
           <button onClick={toggleBlockUser} className="perfil-adm-btn-bloquear" style={{ backgroundColor: isBlocked ? 'red' : 'green' }}>
             {isBlocked ? "Desbloquear Reservas" : "Bloquear Reservas"}
           </button>
+         
 
           <button onClick={deleteUser} className="perfil-adm-btn-excluir">
             Excluir Usuário
           </button>
+          </div>
         </div>
 
         <div className="perfil-adm-comentarios">

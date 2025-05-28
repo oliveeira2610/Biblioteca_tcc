@@ -198,13 +198,13 @@ function PerfilUsuario() {
           <div className="direita_primeira">
             <h2>SUAS MULTAS</h2>
             <div className="multas_perfil">
-            {(userInfo.reservas || []).map((reserva) => (
-              <div key={reserva.livroId} className="book-card">
-                <h4>{reserva.nome_do_livro}</h4>
-                <p><strong>Multa:</strong> R$ {(reserva.multa || 0).toFixed(2)}</p>
-                {reserva.multa > 0 && (
-                  <button
-                    onClick={() => iniciarPagamento(reserva.multa)} // ✅ Aqui está certo
+              {(userInfo.reservas || []).map((reserva) => (
+                <div key={reserva.livroId} className="book-card">
+                  <h4>{reserva.nome_do_livro}</h4>
+                  <p><strong>Multa:</strong> R$ {(reserva.multa || 0).toFixed(2)}</p>
+                  {reserva.multa > 0 && (
+                    <button
+                    onClick={() => payFine(reserva.livroId, reserva.nome_do_livro, reserva.multa)}
                     className="pay-button"
                   >
                     Pagar Multa
@@ -223,7 +223,6 @@ function PerfilUsuario() {
                     <h3>{reserva.nome_do_livro}</h3>
                     <p><strong>Data de Reserva:</strong> {new Date(reserva.data_reserva).toLocaleDateString()}</p>
                     <p><strong>Data de Devolução:</strong> {new Date(reserva.data_devolucao).toLocaleDateString()}</p>
-                    <p><strong>Multa:</strong> R$ {(reserva.multa || 0).toFixed(2)}</p>
                   </div>
                 ))
               ) : (
@@ -239,7 +238,7 @@ function PerfilUsuario() {
             <div className="livros_acompanhando">
               {(userInfo.watchlist || []).length > 0 ? (
                 userInfo.watchlist.map((book) => (
-                  <div key={book.book_id} className="book-card">
+                  <div key={book.book_id} className="book-cards">
                     <h3>{book.nome_do_livro}</h3>
                     <button onClick={() => cancelNotification(book.book_id)} className="cancel-button">
                       Cancelar Notificação

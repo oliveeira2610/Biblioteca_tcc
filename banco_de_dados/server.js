@@ -2620,7 +2620,7 @@ app.put("/verificar-disponibilidade/:livroId", (req, res) => {
 const mercadopago = require("mercadopago");
 
 mercadopago.configure({
-  access_token: "APP_USR-1992352580537848-041009-794f1c26296587ffe9800629de114c91-2119770319", // troque pelo seu token real
+  access_token: "", // troque pelo seu token real
 });
 
 app.post("/criar-preferencia", async (req, res) => {
