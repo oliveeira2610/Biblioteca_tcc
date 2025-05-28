@@ -1,76 +1,270 @@
-.books-list-multa {
-  padding-left: 6vw;
-  flex-wrap: wrap;
-  display: flex;
-  gap: 2vh;
+/* ===== VARIÁVEIS ===== */
+:root {
+  --primary-color: #5A9349;
+  --secondary-color: #BD9B75;
+  --dark-brown: #826049;
+  --light-brown: #F4ECCE;
+  --white: #FFFFFF;
+  --light-gray: #F5F5F5;
+  --error-color: #B72626;
+  --success-color: #4CAF50;
+  --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s ease;
 }
 
-.aplicadass {
-  font-size: 3vh;
-  padding: 2.5vh;
-  color: var(--marrom);
-  display: flex;
-  justify-content: center;
+/* ===== RESET E ESTILOS GERAIS ===== */
+.multas-usuarios {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: var(--dark-brown);
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-.thread1 {
-  padding-left: 44vw;
-  color: var(--marrom-escuro);
-  justify-content: space-between;
+.multas-usuarios h1 {
+  color: var(--primary-color);
+  text-align: center;
+  margin-bottom: 2rem;
+  font-size: 2.2rem;
+  font-weight: 600;
+  position: relative;
+  padding-bottom: 0.5rem;
 }
 
-.ativas1 {
-  font-size: 3vh;
-  padding: 2.5vh;
-  color: var(--marrom);
-  display: flex;
-  justify-content: center;
+.multas-usuarios h1::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 3px;
+  background-color: var(--secondary-color);
 }
 
+/* ===== FORMULÁRIO ===== */
 .form-multa {
-  display: flex;
-  gap: 20px;
-  justify-content: center;
-  padding: 20px;
+  background-color: var(--light-gray);
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: var(--box-shadow);
+  margin-bottom: 3rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  align-items: end;
 }
 
 .form-multa label {
-  display: flex;
-  margin-top: 10px;
-  justify-content: center;
-
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--dark-brown);
 }
 
-.inputa { 
-  background-color: var(--marrom-claro);
-  height: 1.5vh;
-  width: 7vw;
-  padding: 0.9rem;
-  font-size: 0.923rem;
+.form-multa input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: var(--transition);
+  background-color: var(--white);
+}
+
+.form-multa input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(90, 147, 73, 0.2);
+}
+
+.form-multa button {
+  grid-column: 1 / -1;
+  background-color: var(--primary-color);
+  color: var(--white);
   border: none;
-  border-radius: 10px;
-  transition: border-color 0.3s ease;
-  color: var(--branco-diferente);
-  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  margin-top: 0.5rem;
 }
 
-.botao-multas {
-  background-color: var(--marrom);
-  margin-top: 0px;
-  color: var(--branco-diferente);
+.form-multa button:hover {
+  background-color: #4a7c3d;
+  transform: translateY(-2px);
+  box-shadow: var(--box-shadow);
 }
 
-.botao-multas:hover {
-  background-color: var(--amarelo-suave);
-  color: var(--marrom);
+.form-multa button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
 }
 
-.textos3{
-  padding-right: 15px;
+/* ===== TABELA ===== */
+.multas-usuarios table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 3rem;
+  box-shadow: var(--box-shadow);
+  border-radius: 8px;
+  overflow: hidden;
 }
 
+.multas-usuarios th,
+.multas-usuarios td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.multas-usuarios th {
+  background-color: var(--primary-color);
+  color: var(--white);
+  font-weight: 500;
+}
+
+.multas-usuarios tr:nth-child(even) {
+  background-color: var(--light-gray);
+}
+
+.multas-usuarios tr:hover {
+  background-color: rgba(189, 155, 117, 0.1);
+}
+
+.multas-usuarios tr:last-child td {
+  border-bottom: none;
+}
+
+/* ===== LISTA DE LIVROS ===== */
 .books-list2 {
-  gap: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.book-card {
+  background-color: var(--white);
+  border-radius: 8px;
+  box-shadow: var(--box-shadow);
+  overflow: hidden;
+  transition: var(--transition);
+  cursor: pointer;
+  padding: 1.2rem;
+}
+
+.book-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.book-card-image {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.no-image-placeholder {
+  width: 100%;
+  height: 180px;
+  background-color: var(--light-gray);
   display: flex;
+  align-items: center;
   justify-content: center;
+  color: var(--dark-brown);
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.book-card-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--dark-brown);
+}
+
+.book-card-author {
+  color: #666;
+  margin-bottom: 0.8rem;
+  font-size: 0.9rem;
+}
+
+.book-card p {
+  margin: 0.3rem 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.book-card-fine {
+  color: var(--error-color);
+  font-weight: 500;
+  margin-top: 0.8rem !important;
+}
+
+/* ===== MENSAGENS DE ESTADO ===== */
+.multas-usuarios p.empty-message {
+  text-align: center;
+  color: #666;
+  padding: 2rem;
+  grid-column: 1 / -1;
+}
+
+/* ===== RESPONSIVIDADE ===== */
+@media (max-width: 768px) {
+  .multas-usuarios {
+    padding: 1rem;
+  }
+  
+  .form-multa {
+    grid-template-columns: 1fr;
+    padding: 1.5rem;
+  }
+  
+  .multas-usuarios h1 {
+    font-size: 1.8rem;
+  }
+  
+  .books-list2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .multas-usuarios table {
+    font-size: 0.9rem;
+  }
+  
+  .multas-usuarios th,
+  .multas-usuarios td {
+    padding: 0.8rem 0.5rem;
+  }
+  
+  .book-card {
+    padding: 1rem;
+  }
+}
+
+/* ===== ANIMAÇÕES ===== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.book-card {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.book-card:nth-child(odd) {
+  animation-delay: 0.1s;
+}
+
+.book-card:nth-child(even) {
+  animation-delay: 0.2s;
 }

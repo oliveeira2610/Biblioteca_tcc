@@ -1,305 +1,274 @@
-body{
+/* Estilos base */
+body {
   height: 100vh;
+  margin: 0;
+  padding: 0;
+  font-family: Arial, sans-serif;
 }
 
-.container_principal_user{
+.container_principal_user {
   height: auto;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
-.logout-button{
+.logout-button {
   background-color: rgb(202, 28, 28);
   width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
 }
 
-.logout-button:hover{
+.logout-button:hover {
   background-color: rgb(184, 21, 21);
 }
 
-.primeiro_container{
-  align-items: center;
-  height: 70vh;
-  display: flex;
-  justify-content: space-around;
-}
-
-
-.esquerda_primeira{
-  background-color: #FFF9E1;
-  height: 91%;
-  width: 30vw;
-  border-radius: 40px;
-  box-shadow: 0px 0px 10px 2px #BD9B75;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-}
-
-.direita_primeira{
-  height: 64vh;
-  width: 60vw;
+/* Primeiro container - Perfil e informações */
+.primeiro_container {
   display: flex;
   flex-direction: column;
-  justify-content: space-between  
-}
-
-.img_perfil img{
-  height: 300px;
-}
-
-.dados-pessoais p{
-  font-size: 18px;
-  counter-reset: #9c480b;
-  margin: 5px 0; 
-  line-height: 1.2; 
-  
-  
-}
-
-
-
-#nome_p{
-  font-size: 40px;
-  color: #826049; 
-  margin-bottom: 9px;
-}
-
-.multas_perfil{
-  width: 100%;
-  background-color: #FFF9E1;
-  height: 30%;
-  box-shadow: 0px 0px 10px 2px #BD9B75;
-  border-radius: 17px;
-  display: flex;
-  justify-content: start;
-  flex-wrap: wrap;
-  padding: 20px;
-  display: flex;
-  
   gap: 20px;
-  overflow-x: auto;
-  flex-wrap: nowrap;
-  overflow-y: hidden;   
+  width: 100%;
 }
 
-.reservados_perfil{
+.esquerda_primeira {
+  background-color: #FFF9E1;
   width: 100%;
-  background-color: #cfa600;
-  height: 50%;
+  border-radius: 20px;
+  box-shadow: 0px 0px 10px 2px #BD9B75;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.direita_primeira {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.img_perfil img {
+  width: 150px;
+  height: auto;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.dados-pessoais p {
+  font-size: 16px;
+  color: #9c480b;
+  margin: 8px 0;
+  line-height: 1.4;
+}
+
+#nome_p {
+  font-size: 24px;
+  color: #826049;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+/* Multas e reservas */
+.multas_perfil,
+.reservados_perfil,
+.livros-reservados {
+  background-color: #FFF9E1;
   box-shadow: 0px 0px 10px 2px #BD9B75;
   border-radius: 17px;
+  padding: 15px;
+  width: 100%;
+  box-sizing: border-box;
+  justify-content: center;
   display: flex;
-  flex-wrap: wrap;
-  padding: 20px;
+  gap: 15px;
+  overflow-x: auto;
+  min-height: 150px;
 }
 
-#livros_reservados_h2{
+.multas_perfil {
+  display: flex;
+  gap: 15px;
+  overflow-x: auto;
+  min-height: 150px;
+}
+
+.reservados_perfil {
+  background-color: #FFF9E1;
+  min-height: 200px;
+}
+
+/* Títulos */
+h2 {
+  color: #826049;
+  margin: 10px 0;
+  font-size: 20px;
+}
+
+#livros_reservados_h2 {
   color: #5A9349;
 }
 
-#suas_multas{
+#suas_multas {
   color: #B72626;
-} 
-
-
-.segundo_container{
-  margin-top: 70px;
-  height: 80vh;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  align-items: center;
 }
 
-.esquerda_segundo{
-  
-  height: 100%;
-  width: 50%;
+/* Segundo container - Acompanhamento e notificações */
+.segundo_container {
+  margin-top: 40px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-}
-
-.direita_segundo{
-
-  height: 100%;
-  width: 50%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-.livros-reservados {
-  display: flex;
-  background-color: #FFF9E1;
-  height: 40%;
+  gap: 30px;
   width: 100%;
-  border-radius: 30px;
-  box-shadow: 0px 0px 10px 2px #BD9B75;
-  padding: 20px;
-  gap: 20px;
-  overflow-x: auto;
-  flex-wrap: nowrap;
-  overflow-y: hidden;        
-        
-
 }
 
-
-
-.livros_e_notificacoes {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 20px;
+.esquerda_segundo,
+.direita_segundo {
+  width: 100%;
 }
 
 .livros_acompanhando,
 .notificacoes {
   background-color: #f8f3e5;
-  padding: 15px;
   border-radius: 8px;
   box-shadow: 0px 0px 10px 2px #BD9B75;
-  margin: 0 10px;
-  height: 85%;
-  width: 90%;
-  padding: 20px;
-  flex-wrap: wrap;
-  display: flex;
-  gap: 20px;
-  margin: 20px;
-}
-
-h1{
-  font-size: 18px;
-  color: #4a773c;
-  text-align: center;
-}
-
-.books-list {
+  padding: 15px;
+  min-height: 200px;
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  height: auto;
+  gap: 15px;
+  overflow-x: auto;
+  justify-content: center;
 }
 
-@media screen and (max-width: 1570px){
-  .direita_primeira{
-    width: 48vw;
+/* Cards de livros */
+.book-card {
+  background-color:#fffbe9;
+  border-radius: 10px;
+  padding: 15px;
+  min-width: 200px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.book-card h3, .book-card h4 {
+  margin: 0;
+  color: #826049;
+  font-size: 16px;
+}
+
+.book-card p {
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+.book-card button {
+  padding: 8px 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: auto;
+}
+
+.pay-button {
+  background-color: #5A9349;
+  color: white;
+}
+
+.cancel-button, .delete-button {
+  background-color: #B72626;
+  color: white;
+}
+
+/* Media Queries para responsividade */
+@media screen and (min-width: 768px) {
+  .primeiro_container {
+    flex-direction: row;
+  }
+  
+  .esquerda_primeira {
+    width: 30%;
+    height: auto;
+  }
+  
+  .direita_primeira {
+    width: 68%;
+  }
+  
+  .segundo_container {
+    flex-direction: row;
+  }
+  
+  .esquerda_segundo,
+  .direita_segundo {
+    width: 48%;
+  }
+  
+  .img_perfil img {
+    width: 200px;
+  }
+  
+  #nome_p {
+    font-size: 28px;
   }
 }
 
-@media screen and (max-width: 1440px) {
-  .container_principal_user{
-    padding: 50px;
+@media screen and (min-width: 1024px) {
+  .container_principal_user {
+    padding: 30px;
   }
-  .esquerda_primeira{
-    height: 500px;
-    width: 300px;
+  
+  .esquerda_primeira {
+    width: 25%;
   }
-  .direita_primeira{
-    height: 58vh;
-    width: 63vw;
+  
+  .direita_primeira {
+    width: 73%;
   }
-  .img_perfil img{
-  height: 200px;
+  
+  #nome_p {
+    font-size: 32px;
   }
-  .dados-pessoais p{
-  font-size: 15px;
-  }
-  #nome_p{
-  font-size: 30px;
-  }
-
-.reservados_perfil{
-  width: 95%;
-}
-.multas_perfil{
-  width: 95%;
-}
-.book-card{
-  width: 10vw;
-  height: 24vh;
-}
-.book-card-title{
-  height: 2vh;
-}
-.livros_acompanhando,
-.notificacoes{
-  height: 60%;
-}
-.container_principal_user{
-  height: auto;
-}
-.segundo_container{
-  height: 60vh;
-}
-
-}
-
-@media screen and (max-width: 980px){
-  .direita_primeira{
-    width: 48vw;
-  }
-  .segundo_container{
-    margin-top: 20px;
-    height: 50vh;
-  }
-
-  h1{
-    font-size: 15px;
-  }
-
-  .livros_acompanhando,
-  .notificacoes{
-    width: 80%;
-  }
-}
-
-
-
-@media screen and (max-width: 690px){
-  .primeiro_container{
-    height: 50vh;
-  }
-  .segundo_container{
-    height: 50vh;
-    margin-top: 40px;
-  }
-  .esquerda_primeira{
-    height: 400px;
-    width: 250px;
-  }
-  .direita_primeira{
-    height: 400px;
-    width: 280px;
-  }
-  .img_perfil img{
-    height: 150px;
-  }
-  h2{
+  
+  .dados-pessoais p {
     font-size: 18px;
   }
-  h1{
-    font-size: 12px;
-  }
 }
 
-
-@media screen and (max-width: 590px){
-  .direita_primeira{
-    width: 48vw;
+/* Melhorias para telas muito pequenas */
+@media screen and (max-width: 480px) {
+  .container_principal_user {
+    padding: 10px;
   }
-  .esquerda_primeira{
-    width: 32vw;
+  
+  .img_perfil img {
+    width: 120px;
   }
-
-  .img_perfil img{
-    height: 120px;
+  
+  #nome_p {
+    font-size: 20px;
   }
-  .dados-pessoais p{
-    font-size: 13px;
+  
+  .dados-pessoais p {
+    font-size: 14px;
   }
-  h1{
-    font-size: 10px;
+  
+  .book-card {
+    min-width: 160px;
+    padding: 10px;
+  }
+  
+  h2 {
+    font-size: 18px;
   }
 }

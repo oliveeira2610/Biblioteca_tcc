@@ -8,23 +8,29 @@
   position: sticky;
   top: 0;
   z-index: 1000;
+  flex-wrap: wrap;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.container_principal_u{
+.container_principal_u {
   padding: 20px;
-}
-
-.navbar-container img{
-  height: 58px;
-  width: 104px;
 }
 
 .navbar-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 96%;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+.navbar-container img {
+  height: 58px;
+  width: 104px;
+}
+
+.Imglogo {
+  margin-right: 20px;
 }
 
 .logo {
@@ -33,12 +39,7 @@
   margin: 0;
 }
 
-.Imglogo{
-  margin-right: 20px;
-  
-}
-
-.logo_ola{
+.logo_ola {
   display: flex;
   align-items: center;
 }
@@ -46,14 +47,11 @@
 .nav-links {
   list-style: none;
   display: flex;
+  flex-wrap: wrap;
   gap: 1.5rem;
   margin: 0;
   padding: 0;
-  
 }
-
-
-
 
 .nav-links li {
   display: inline-block;
@@ -72,58 +70,63 @@
 }
 
 .user-greeting {
-  font-size: 27px;
+  font-size: 1.2rem;
+  font-weight: 500;
+  margin-left: 1rem;
 }
 
-/* Responsivo */
-  
-@media (max-width: 768px) {
-  .navbar {
-    padding: 0.5rem 1rem; /* reduz o espaço vertical e lateral */
-    display: flex;
-    align-items: center;
-  }
-  .logo_ola {
-    display: flex;
-    align-items: center; /* alinha logo + texto na horizontal */
-  }
-  
-
-  .navbar-container img {
-    height: 40px;
-    width: auto;
-  }
-
+/* Tablet */
+@media (max-width: 1024px) {
   .logo {
-    font-size: 1.8rem; /* fonte um pouco menor */
-  }
-
-  .user-greeting {
-    font-size: 10px;
-    margin: 0
+    font-size: 1.3rem;
   }
 
   .nav-links {
     gap: 1rem;
-    font-size: 0.5;
   }
-  .user-greeting{
-    display: flex;
-  
+
+  .user-greeting {
+    font-size: 1rem;
   }
-  .navbar{
-    display: flex;
-    justify-content: center;
-  }
+
   .navbar-container img {
-    height: 35px; 
-  }
-  .nav-links a {
-    font-size: 0.80rem; 
-    padding: 0.3rem 0.5rem; 
+    height: 48px;
+    width: auto;
   }
 }
 
+/* Mobile */
+@media (max-width: 768px) {
+  .navbar {
+    padding: 0.5rem 1rem;
+  }
 
+  .navbar-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 
+  .navbar-container img {
+    height: 40px;
+    width: auto;
+    margin-bottom: 0.5rem;
+  }
 
+  .nav-links {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    gap: 0.8rem;
+    margin-top: 1rem;
+  }
+
+  .nav-links a {
+    font-size: 1rem;
+    padding: 0.3rem 0;
+  }
+
+  .user-greeting {
+    font-size: 0.9rem;
+    margin-left: 0;
+  }
+}
