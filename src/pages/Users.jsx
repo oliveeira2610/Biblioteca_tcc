@@ -144,6 +144,20 @@ const Users = () => {
       console.error("Erro ao marcar devolução:", error);
     }
   };
+
+  const handleConfirmReservation = async (reservaId) => {
+    try {
+      const response = await fetch(`http://localhost:3001/reservas/${reservaId}/confirmar`, {
+        method: "PUT",
+      });
+  
+      if (!response.ok) throw new Error("Erro ao confirmar reserva");
+      alert("Reserva confirmada com sucesso!");
+      fetchUsers();
+    } catch (error) {
+      console.error("Erro ao confirmar reserva:", error);
+    }
+  };
   
 
   const filteredUsers = usuarios.filter((usuario) => {
@@ -232,15 +246,27 @@ const Users = () => {
                         </p>
                       )}
 
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleReturnBook(book.reservaId);
-                        }}
-                        
-                      >
-                        Marcar como Devolvido
-                      </button>
+                      <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleReturnBook(book.reservaId);
+                          }}
+                        >
+                          Marcar como Devolvido
+                        </button>
+
+                        <button
+                          style={{ backgroundColor: "#4CAF50", color: "white" }}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleConfirmReservation(book.reservaId);
+                          }}
+                        >
+                          Confirmar Reserva
+                        </button>
+                      </div>
+
                     </div>
                   ))
                 ) : (
