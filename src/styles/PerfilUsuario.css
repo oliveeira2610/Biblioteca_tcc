@@ -36,10 +36,9 @@ body {
   width: 100%;
 }
 
-<<<<<<< HEAD
 .esquerda_primeira {
   background-color: #FFF9E1;
-=======
+}
 
 .multas_perfil::-webkit-scrollbar {
 
@@ -61,7 +60,6 @@ body {
 }
 
 .reservados_perfil{
->>>>>>> 708ea40f103c4f7257db0e17e1b3d5522858bfd1
   width: 100%;
   border-radius: 20px;
   box-shadow: 0px 0px 10px 2px #BD9B75;
@@ -153,11 +151,9 @@ h2 {
   width: 100%;
 }
 
-<<<<<<< HEAD
 .esquerda_segundo,
 .direita_segundo {
   width: 100%;
-=======
 
 .livros-reservados::-webkit-scrollbar {
 
@@ -183,7 +179,6 @@ h2 {
   display: flex;
   justify-content: space-between;
   margin-top: 20px;
->>>>>>> 708ea40f103c4f7257db0e17e1b3d5522858bfd1
 }
 
 .livros_acompanhando,
@@ -191,27 +186,12 @@ h2 {
   background-color: #f8f3e5;
   border-radius: 8px;
   box-shadow: 0px 0px 10px 2px #BD9B75;
-<<<<<<< HEAD
-  padding: 15px;
-  min-height: 200px;
-=======
-  margin: 0 10px;
-  height: 85%;
-  width: 90%;
   padding: 20px;
   flex-wrap: wrap;
   display: flex;
   gap: 20px;
   margin: 20px;
-
-
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-
   overflow-y: auto;
-
-  
 }
 
 .livros_acompanhando::-webkit-scrollbar {
@@ -232,11 +212,7 @@ h2 {
   background: #a07e5a;
 }
 
-
-
-
 .notificacoes::-webkit-scrollbar {
-
   height: 8px;
 }
 
@@ -262,7 +238,6 @@ h1{
 }
 
 .books-list {
->>>>>>> 708ea40f103c4f7257db0e17e1b3d5522858bfd1
   display: flex;
   flex-wrap: wrap;
   gap: 15px;
@@ -393,4 +368,6 @@ h1{
   h2 {
     font-size: 18px;
   }
+}
+
 }
