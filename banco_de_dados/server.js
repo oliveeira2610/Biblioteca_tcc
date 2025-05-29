@@ -2659,6 +2659,43 @@ app.post("/criar-preferencia", async (req, res) => {
   }
 });
 
+// Rota para atualizar foto do usuário
+app.put('/atualizar-foto/:userId', async (req, res) => {
+  const { userId } = req.params;
+  const { foto_url } = req.body;
+
+  // Validações
+  if (!foto_url) {
+    return res.status(400).json({ error: 'URL da foto é obrigatória' });
+  }
+
+  try {
+    // Verifica se o usuário existe
+    const userExists = await db.get('SELECT id FROM usuarios WHERE id = ?', [userId]);
+    if (!userExists) {
+      return res.status(404).json({ error: 'Usuário não encontrado' });
+    }
+
+    // Atualiza a foto
+    await db.run(
+      'UPDATE usuarios SET foto_url = ? WHERE id = ?',
+      [foto_url, userId]
+    );
+    
+    res.json({ 
+      success: true,
+      foto_url: foto_url 
+    });
+  } catch (err) {
+    console.error('Erro no banco de dados:', err);
+    res.status(500).json({ 
+      error: 'Erro ao atualizar foto',
+      details: process.env.NODE_ENV === 'development' ? err.message : undefined
+    });
+  }
+});
+
+
 
 
 /////////////////////// INICIAR SERVIDOR ///////////////////////

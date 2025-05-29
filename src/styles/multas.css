@@ -1,16 +1,4 @@
-/* ===== VARIÁVEIS ===== */
-:root {
-  --primary-color: #5A9349;
-  --secondary-color: #BD9B75;
-  --dark-brown: #826049;
-  --light-brown: #F4ECCE;
-  --white: #FFFFFF;
-  --light-gray: #F5F5F5;
-  --error-color: #B72626;
-  --success-color: #4CAF50;
-  --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  --transition: all 0.3s ease;
-}
+
 
 /* ===== RESET E ESTILOS GERAIS ===== */
 .multas-usuarios {
@@ -148,15 +136,6 @@
   margin-top: 1.5rem;
 }
 
-.book-card {
-  background-color: var(--white);
-  border-radius: 8px;
-  box-shadow: var(--box-shadow);
-  overflow: hidden;
-  transition: var(--transition);
-  cursor: pointer;
-  padding: 1.2rem;
-}
 
 .book-card:hover {
   transform: translateY(-5px);

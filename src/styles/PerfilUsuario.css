@@ -1,47 +1,118 @@
-/* Estilos base */
+.form-upload {
+  margin-top: 10px;
+}
+
+.form-upload label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.form-upload input[type="file"] {
+  cursor: pointer;
+}
+
 body {
   height: 100vh;
   margin: 0;
   padding: 0;
-  font-family: Arial, sans-serif;
+  box-sizing: border-box;
 }
 
 .container_principal_user {
   height: auto;
   padding: 20px;
-  box-sizing: border-box;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 .logout-button {
   background-color: rgb(202, 28, 28);
   width: 100%;
-  padding: 10px;
-  border: none;
-  border-radius: 5px;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-  margin-top: 10px;
 }
 
 .logout-button:hover {
   background-color: rgb(184, 21, 21);
 }
 
-/* Primeiro container - Perfil e informações */
 .primeiro_container {
+  align-items: center;
+  height: auto;
+  min-height: 70vh;
   display: flex;
-  flex-direction: column;
+  justify-content: space-around;
+  flex-wrap: wrap;
   gap: 20px;
   width: 100%;
 }
 
 .esquerda_primeira {
   background-color: #FFF9E1;
+  height: auto;
+  min-height: 500px;
+  width: 100%;
+  max-width: 400px;
+  border-radius: 40px;
+  box-shadow: 0px 0px 10px 2px #BD9B75;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 20px;
+  margin: 10px;
+}
+
+.direita_primeira {
+  height: auto;
+  min-height: 500px;
+  width: 100%;
+  max-width: 800px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin: 10px;
+}
+
+.img_perfil img {
+  max-height: 300px;
+  width: auto;
+  max-width: 100%;
+}
+
+.dados-pessoais p {
+  font-size: clamp(14px, 2vw, 18px);
+  color: #9c480b;
+  margin: 5px 0;
+  line-height: 1.2;
+}
+
+.book-card p {
+  margin-top: 10px;
+}
+
+#nome_p {
+  font-size: clamp(24px, 4vw, 40px);
+  color: #826049;
+  margin-bottom: 9px;
+}
+
+.multas_perfil {
+  width: 100%;
+  background-color: #FFF9E1;
+  min-height: 150px;
+  box-shadow: 0px 0px 10px 2px #BD9B75;
+  border-radius: 17px;
+  display: flex;
+  justify-content: start;
+  padding: 20px;
+  gap: 20px;
+  overflow-x: auto;
+  flex-wrap: nowrap;
+  overflow-y: hidden;
 }
 
 .multas_perfil::-webkit-scrollbar {
-
   height: 8px;
 }
 
@@ -59,79 +130,15 @@ body {
   background: #a07e5a;
 }
 
-.reservados_perfil{
+.reservados_perfil {
   width: 100%;
-  border-radius: 20px;
-  box-shadow: 0px 0px 10px 2px #BD9B75;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
-  box-sizing: border-box;
-}
-
-.direita_primeira {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.img_perfil img {
-  width: 150px;
-  height: auto;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.dados-pessoais p {
-  font-size: 16px;
-  color: #9c480b;
-  margin: 8px 0;
-  line-height: 1.4;
-}
-
-#nome_p {
-  font-size: 24px;
-  color: #826049;
-  margin-bottom: 15px;
-  text-align: center;
-}
-
-/* Multas e reservas */
-.multas_perfil,
-.reservados_perfil,
-.livros-reservados {
-  background-color: #FFF9E1;
+  background-color: #cfa600;
+  min-height: 200px;
   box-shadow: 0px 0px 10px 2px #BD9B75;
   border-radius: 17px;
-  padding: 15px;
-  width: 100%;
-  box-sizing: border-box;
-  justify-content: center;
   display: flex;
-  gap: 15px;
-  overflow-x: auto;
-  min-height: 150px;
-}
-
-.multas_perfil {
-  display: flex;
-  gap: 15px;
-  overflow-x: auto;
-  min-height: 150px;
-}
-
-.reservados_perfil {
-  background-color: #FFF9E1;
-  min-height: 200px;
-}
-
-/* Títulos */
-h2 {
-  color: #826049;
-  margin: 10px 0;
-  font-size: 20px;
+  flex-wrap: wrap;
+  padding: 20px;
 }
 
 #livros_reservados_h2 {
@@ -142,21 +149,51 @@ h2 {
   color: #B72626;
 }
 
-/* Segundo container - Acompanhamento e notificações */
 .segundo_container {
-  margin-top: 40px;
+  margin-top: 70px;
+  height: auto;
+  min-height: 80vh;
   display: flex;
-  flex-direction: column;
-  gap: 30px;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: flex-start;
   width: 100%;
 }
 
-.esquerda_segundo,
-.direita_segundo {
+.esquerda_segundo {
+  height: auto;
   width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.direita_segundo {
+  height: auto;
+  width: 100%;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.livros-reservados {
+  display: flex;
+  background-color: #FFF9E1;
+  min-height: 150px;
+  width: 100%;
+  border-radius: 30px;
+  box-shadow: 0px 0px 10px 2px #BD9B75;
+  padding: 20px;
+  gap: 20px;
+  overflow-x: auto;
+  flex-wrap: nowrap;
+  overflow-y: hidden;
+}
 
 .livros-reservados::-webkit-scrollbar {
-
   height: 8px;
 }
 
@@ -174,11 +211,12 @@ h2 {
   background: #a07e5a;
 }
 
-
 .livros_e_notificacoes {
   display: flex;
-  justify-content: space-between;
+  flex-wrap: wrap;
+  justify-content: center;
   margin-top: 20px;
+  width: 100%;
 }
 
 .livros_acompanhando,
@@ -186,11 +224,12 @@ h2 {
   background-color: #f8f3e5;
   border-radius: 8px;
   box-shadow: 0px 0px 10px 2px #BD9B75;
-  padding: 20px;
-  flex-wrap: wrap;
-  display: flex;
-  gap: 20px;
-  margin: 20px;
+  padding: 15px;
+  height: auto;
+  min-height: 300px;
+  width: 100%;
+  max-width: 500px;
+  margin: 10px;
   overflow-y: auto;
 }
 
@@ -230,9 +269,8 @@ h2 {
   background: #a07e5a;
 }
 
-
-h1{
-  font-size: 18px;
+h1 {
+  font-size: clamp(14px, 2vw, 18px);
   color: #4a773c;
   text-align: center;
 }
@@ -240,134 +278,108 @@ h1{
 .books-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 15px;
-  overflow-x: auto;
+  gap: 10px;
+  height: auto;
   justify-content: center;
 }
 
-/* Cards de livros */
-.book-card {
-  background-color:#fffbe9;
-  border-radius: 10px;
-  padding: 15px;
-  min-width: 200px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
 }
 
-.book-card h3, .book-card h4 {
-  margin: 0;
-  color: #826049;
-  font-size: 16px;
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 300px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.book-card p {
-  margin: 5px 0;
-  font-size: 14px;
+.modal-content input {
+  width: 100%;
+  padding: 8px;
+  margin: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
-.book-card button {
-  padding: 8px 12px;
+.modal-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 15px;
+}
+
+.modal-buttons button {
+  padding: 8px 15px;
   border: none;
-  border-radius: 5px;
+  border-radius: 4px;
   cursor: pointer;
-  font-weight: bold;
-  margin-top: auto;
 }
 
-.pay-button {
-  background-color: #5A9349;
+.modal-buttons button:first-child {
+  background-color: #4CAF50;
   color: white;
 }
 
-.cancel-button, .delete-button {
-  background-color: #B72626;
+.modal-buttons button:last-child {
+  background-color: #f44336;
   color: white;
 }
 
-/* Media Queries para responsividade */
-@media screen and (min-width: 768px) {
+/* Ajustes para telas menores */
+@media screen and (max-width: 768px) {
   .primeiro_container {
-    flex-direction: row;
+    flex-direction: column;
+    align-items: center;
   }
   
-  .esquerda_primeira {
-    width: 30%;
-    height: auto;
-  }
-  
+  .esquerda_primeira,
   .direita_primeira {
-    width: 68%;
+    max-width: 100%;
+    margin: 10px 0;
   }
   
   .segundo_container {
-    flex-direction: row;
+    flex-direction: column;
+    align-items: center;
   }
   
   .esquerda_segundo,
   .direita_segundo {
-    width: 48%;
+    max-width: 100%;
   }
   
-  .img_perfil img {
-    width: 200px;
-  }
-  
-  #nome_p {
-    font-size: 28px;
+  .livros_acompanhando,
+  .notificacoes {
+    max-width: 100%;
   }
 }
 
-@media screen and (min-width: 1024px) {
-  .container_principal_user {
-    padding: 30px;
-  }
-  
-  .esquerda_primeira {
-    width: 25%;
-  }
-  
-  .direita_primeira {
-    width: 73%;
-  }
-  
-  #nome_p {
-    font-size: 32px;
-  }
-  
-  .dados-pessoais p {
-    font-size: 18px;
-  }
-}
-
-/* Melhorias para telas muito pequenas */
 @media screen and (max-width: 480px) {
-  .container_principal_user {
-    padding: 10px;
-  }
-  
-  .img_perfil img {
-    width: 120px;
-  }
-  
   #nome_p {
-    font-size: 20px;
+    font-size: 24px;
   }
   
   .dados-pessoais p {
     font-size: 14px;
   }
   
-  .book-card {
-    min-width: 160px;
-    padding: 10px;
+  .img_perfil img {
+    max-height: 200px;
   }
   
-  h2 {
-    font-size: 18px;
+  .multas_perfil,
+  .reservados_perfil,
+  .livros-reservados {
+    padding: 10px;
   }
-}
-
 }
