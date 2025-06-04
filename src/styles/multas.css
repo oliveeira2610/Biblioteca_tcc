@@ -236,14 +236,14 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
-.book-card {
+/* .book-card {
   animation: fadeIn 0.5s ease-out forwards;
-}
+} */
 
-.book-card:nth-child(odd) {
+/* .book-card:nth-child(odd) {
   animation-delay: 0.1s;
-}
+} */
 
-.book-card:nth-child(even) {
+/* .book-card:nth-child(even) {
   animation-delay: 0.2s;
-}
+} */

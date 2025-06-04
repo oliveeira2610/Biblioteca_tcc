@@ -137,15 +137,15 @@ function DevolucaoDetails() {
       </div>
 
       <div className="observacoes-section">
-        <h2>Observações</h2>
+        <h2 className="dawn">Observações</h2>
         <textarea
           value={novaObservacao}
           onChange={handleObservacaoChange}
-          placeholder="Escreva suas observações aqui..."
+          placeholder="Escreva as observações aqui..."
           rows="4"
           cols="50"
         />
-        <button onClick={handleAddObservacao}>Adicionar Observação</button>
+        <button className="botao-base6" onClick={handleAddObservacao}>Adicionar Observação</button>
         <div className="observacoes-list">
           {observacoes.map((obs) => (
             <div key={obs.id} className="observacao-item">

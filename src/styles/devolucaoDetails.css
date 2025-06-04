@@ -19,6 +19,16 @@
     justify-content: center;
   }
 
+.dawn {
+  color: var(--marrom-escuro);
+}
+
+  textarea {
+    border-radius: 10px;
+    background-color: var(--branco-primario);
+    color: var(--marrom);
+  }
+
   .book-image-devolucao {
     padding-left: 190px;
   }
@@ -64,18 +74,18 @@
     color: var(--branco-diferente);
   }
 
-  .botao-base1 {
+  .botao-base6 {
     background-color: var(--marrom-primario);
     color: var(--branco-diferente);
     display: flex;
-    margin-top: 20px;
+    align-items: center;
   }
 
   .text-observ {
     color: var(--branco-primario);
   }
 
-  .botao-base1:hover {
+  .botao-base6:hover {
     background-color: var(--marrom-escuro);
     color: var(--branco-primario);
   }

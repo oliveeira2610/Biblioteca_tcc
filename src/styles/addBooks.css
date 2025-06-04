@@ -19,6 +19,7 @@
     background-color: var(--marrom-primario);
     color: var(--branco-diferente);
     padding: 14px;
+    margin-top: 2px;
   }
 
 .botao-base1:hover {
