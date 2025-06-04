@@ -60,6 +60,7 @@ function PerfilUsuarioAdm() {
   const [error, setError] = useState(null); // Adicionado estado para erros
   const navigate = useNavigate();
   const [mostrarComentarios, setMostrarComentarios] = useState(false); //skibidi
+  const [userPhoto, setUserPhoto] = useState("/src/assets/img/perfil_icone.png");
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -69,14 +70,22 @@ function PerfilUsuarioAdm() {
           fetch(`http://localhost:3001/usuarios/${userId}/historico-reservas`),
           fetch(`http://localhost:3001/usuarios/${userId}/comentarios`),
         ]);
-
+  
         if (!userRes.ok || !historicoRes.ok || !commentsRes.ok)
           throw new Error("Erro ao buscar dados");
-
+  
         const userData = await userRes.json();
         const historicoData = await historicoRes.json();
         const commentsData = await commentsRes.json();
-
+  
+        // Buscar a foto do usuário do localStorage como fallback
+        const savedPhoto = localStorage.getItem(`user_${userId}_photo`);
+        if (savedPhoto) {
+          setUserPhoto(savedPhoto);
+        } else if (userData.foto_url) {
+          setUserPhoto(userData.foto_url);
+        }
+  
         setUserInfo(userData);
         setHistoricoReservas(historicoData);
         setAdminComments(commentsData);
@@ -87,7 +96,7 @@ function PerfilUsuarioAdm() {
         setLoading(false);
       }
     };
-
+  
     fetchUserData();
   }, [userId]);
 
@@ -186,7 +195,13 @@ function PerfilUsuarioAdm() {
             {!mostrarComentarios ? (
               <div className="dados-pessoais">
                 <div className="img_perfil">
-                  <img src="/src/assets/img/perfil_icone.png" alt="Perfil" />
+                <img 
+  src={userPhoto} 
+  alt="Perfil" 
+  onError={(e) => {
+    e.target.src = "/src/assets/img/perfil_icone.png";
+  }}
+/>
                 </div>
                 <h2>Dados Pessoais</h2>
                 <p>
