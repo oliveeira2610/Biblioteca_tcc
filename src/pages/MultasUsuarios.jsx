@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import "../../src/styles/global.css";
 import "../../src/styles/multas.css";
 import "../../src/styles/book-card.css";
+import "../../src/styles/colors.css";
 
 const MultasUsuarios = () => {
   const [multas, setMultas] = useState([]);
@@ -82,19 +83,19 @@ const MultasUsuarios = () => {
           onChange={(e) => setValorMulta(e.target.value)}
           required
         />
-        <button type="submit" disabled={!reservaId || !valorMulta}>
+        <button type="submit" className="botao-multa" disabled={!reservaId || !valorMulta}>
           Adicionar Multa
         </button>
       </form>
 
       <table>
-        <thead>
+        <thead className="kkkk">
           <tr>
             <th>Usuário</th>
             <th>Total de Multas</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="hhh">
           {multas.length === 0 ? (
             <tr>
               <td colSpan="2">Nenhuma multa registrada.</td>
