@@ -1,153 +1,99 @@
-
-
-/* Estilos base */
-.body-dashboard {
-  min-height: 89.2vh;
-  display: flex;
+.body-dashboard{
+  height: 89.2vh;
   flex-direction: column;
-  padding: 1rem;
-  box-sizing: border-box;
+  display: flex;
 }
 
-/* Cards principais */
-.card-grande,
+.card-grande{
+  background-color: #F4ECCE;
+  box-shadow: 0px 0px 10px 2px #BD9B75;
+  border-radius: 12px;
+  padding: 2rem;
+  margin: 1rem;
+  transition: all 0.3s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  flex-direction: column;
+  min-height: 180px;
+  width: 94vw;
+  justify-content: center;
+  text-decoration: none;
+  color: var(--marrom-claro);
+}
+
+
 .dashboard .card {
   background-color: #F4ECCE;
   box-shadow: 0px 0px 10px 2px #BD9B75;
   border-radius: 12px;
-  padding: 1.5rem;
-  margin: 0.5rem;
+  padding: 2rem;
+  margin: 1rem;
   transition: all 0.3s ease;
   display: flex;
-  flex-direction: column;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
-  text-align: center;
   cursor: pointer;
+  flex-direction: column;
+  min-height: 180px;
+  width: 44vw;
   text-decoration: none;
-  color: var(--marrom-claro);
-  min-height: 160px;
-  width: 100%;
-  box-sizing: border-box;
 }
 
-.card-grande {
-  margin-bottom: 1.5rem;
+.cards-meio{
+  display: flex;
+  flex-wrap: wrap;
+  width: auto;
+  justify-content: center;
 }
 
-.dashboard .card:hover,
-.card-grande:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+
+.dashboard .card:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
 }
 
-/* Tipografia dos cards */
-.dashboard .card h2,
-.card-grande h2 {
-  font-size: 1.4rem;
+.dashboard .card h2 {
+  font-size: 1.8rem;
   color: var(--marrom-escuro);
-  margin-bottom: 0.8rem;
+  margin-bottom: 1rem;
   font-weight: 600;
 }
 
-.dashboard .card p,
-.card-grande p {
-  font-size: 2.2rem;
+.dashboard .card p {
+  font-size: 2.8rem;
   font-weight: 700;
   color: var(--marrom-claro);
-  margin: 0;
 }
 
-/* Container dos cards do meio */
-.cards-meio {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 1rem;
-  width: 100%;
-}
-
-/* Layout responsivo */
-@media (min-width: 600px) {
-  .body-dashboard {
-    padding: 1.5rem;
-  }
-  
-  .cards-meio {
-    flex-direction: row;
-  }
-  
-  .dashboard .card {
-    width: calc(50% - 1rem);
-    min-height: 180px;
-  }
-  
-  .card-grande {
-    padding: 2rem;
-  }
-  
-  .dashboard .card h2,
-  .card-grande h2 {
-    font-size: 1.6rem;
-  }
-  
-  .dashboard .card p,
-  .card-grande p {
-    font-size: 2.5rem;
-  }
-}
-
-@media (min-width: 900px) {
-  .dashboard .card {
-    width: calc(33.333% - 1rem);
-  }
-  
-  .card-grande {
-    width: calc(100% - 3rem);
-    margin-left: auto;
-    margin-right: auto;
-  }
-  
-  .dashboard .card h2,
-  .card-grande h2 {
-    font-size: 1.8rem;
-  }
-  
-  .dashboard .card p,
-  .card-grande p {
-    font-size: 2.8rem;
-  }
-}
-
-@media (min-width: 1200px) {
-  .body-dashboard {
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-  
-  .dashboard .card {
-    width: calc(25% - 1rem);
-  }
-}
-
-/* Melhorias para acessibilidade e interação */
-.dashboard .card:focus,
-.card-grande:focus {
-  outline: 2px solid var(--marrom-escuro);
-  outline-offset: 2px;
-}
-
-/* Efeito de transição suave para todos os elementos interativos */
-a, button, .card {
-  transition: all 0.2s ease-in-out;
-}
-
-/* Garantir que os links mantenham a cor do texto */
+/* Estilo para os links (cards com Link) */
 .dashboard .card.link-card {
-  color: inherit;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
 }
 
-/* Melhorias para mobile muito pequeno */
+.dashboard .card.link-card:hover {
+  background-color: #f4f6f9;
+}
+
+/* Layout com Flexbox para a disposição dos cards */
+.dashboard .cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+
+/* Responsividade */
+
+@media (max-width: 1024px) {
+  .dashboard .card {
+    width: 37vw; 
+  }
+}
+
+
 @media (max-width: 400px) {
   .dashboard .card h2,
   .card-grande h2 {
